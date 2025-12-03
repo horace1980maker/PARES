@@ -1,0 +1,202 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Optional
+import time
+
+app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:5176",
+    "http://localhost:5177"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mock Data
+MOCK_ORGANIZATIONS = {
+    'Ecuador': [
+        { 'name': 'Fundación Futuro Latinoamericano', 'description': 'Promoting sustainable development and conflict management.' },
+        { 'name': 'EcoCiencia', 'description': 'Conservation of biodiversity and sustainable use of natural resources.' },
+        { 'name': 'Fundación Tierra Viva', 'description': 'Working towards environmental conservation and social equity.' },
+        { 'name': 'Corporación Toisán', 'description': 'Community-based organization focused on sustainable development in the Intag Valley.' }
+    ],
+    'Colombia': [
+        { 'name': 'Fundación Natura', 'description': 'Conservation and sustainable use of biodiversity.' },
+        { 'name': 'Instituto Humboldt', 'description': 'Research on biodiversity and ecosystem services.' }
+    ],
+    'El Salvador': [
+        { 'name': 'SalvaNATURA', 'description': 'Environmental conservation and sustainable development.' },
+        { 'name': 'FIAES', 'description': 'Environmental Fund of El Salvador.' }
+    ],
+    'Mexico': [
+        { 'name': 'Pronatura', 'description': 'Conservation of flora, fauna, and priority ecosystems.' },
+        { 'name': 'FMCN', 'description': 'Mexican Fund for the Conservation of Nature.' }
+    ],
+    'Honduras': [
+        { 'name': 'Fundación Vida', 'description': 'Promoting sustainable development and environmental conservation.' },
+        { 'name': 'Mocaph', 'description': 'Mesa de ONGs Co-Manejadoras de Áreas Protegidas de Honduras.' }
+    ],
+    'Guatemala': [
+        { 'name': 'Defensores de la Naturaleza', 'description': 'Protection of natural and cultural heritage.' },
+        { 'name': 'Fundación para el Ecodesarrollo y la Conservación', 'description': 'Conservation of nature and sustainable development.' }
+    ]
+}
+
+class ChatRequest(BaseModel):
+    organization: str
+    message: str
+
+class ChatResponse(BaseModel):
+    response: str
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+@app.get("/countries")
+def get_countries():
+    return list(MOCK_ORGANIZATIONS.keys())
+
+@app.get("/organizations/{country_name}")
+def get_organizations(country_name: str):
+    if country_name not in MOCK_ORGANIZATIONS:
+        return []
+    return MOCK_ORGANIZATIONS[country_name]
+
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+import os
+
+# ... (Previous code remains the same until ChatRequest)
+
+# Initialize RAG components
+DB_DIR = "chroma_db"
+embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+
+# Check if DB exists
+if os.path.exists(DB_DIR):
+    db = Chroma(persist_directory=DB_DIR, embedding_function=embedding_function)
+    retriever = db.as_retriever(search_kwargs={"k": 3})
+else:
+    db = None
+    retriever = None
+
+# Initialize LLM (Using OpenAI for now, requires API Key env var)
+# If no key, we'll fallback to a mock response or a warning
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0) if os.getenv("OPENAI_API_KEY") else None
+
+# Create prompt template for QA
+template = """You are an assistant for question-answering tasks about organizations in the PARES project. 
+Use the following pieces of retrieved context to answer the question. 
+If you don't know the answer, say that you don't know. 
+Use three sentences maximum and keep the answer concise.
+
+Context: {context}
+
+Question: {question}
+
+Answer:"""
+
+prompt = ChatPromptTemplate.from_template(template)
+
+# Helper function to format documents
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
+
+# Create RAG chain if LLM is available
+if llm and retriever:
+    rag_chain = (
+        {"context": retriever | format_docs, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+else:
+    rag_chain = None
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+    if not db:
+        return {"response": "RAG system not initialized. Please ingest documents first."}
+    
+    if not llm or not rag_chain:
+         # Fallback if no API key
+        docs = retriever.invoke(request.message)
+        context = "\n".join([doc.page_content for doc in docs])
+        return {
+            "response": f"[NO OPENAI KEY] I found relevant info in the documents:\n\n{context[:500]}...\n\n(Please set OPENAI_API_KEY to get a full answer)"
+        }
+    
+    try:
+        # We can add organization context to the query
+        query = f"Context: Organization is {request.organization}. Question: {request.message}"
+        response = rag_chain.invoke(query)
+        return {"response": response}
+    except Exception as e:
+        return {"response": f"Error processing request: {str(e)}"}
+
+class TerritorialInsightRequest(BaseModel):
+    lat: float
+    lng: float
+    location_name: Optional[str] = None
+
+@app.post("/territorial-insight")
+def get_territorial_insight(request: TerritorialInsightRequest):
+    location_context = f"Coordinates: {request.lat}, {request.lng}"
+    if request.location_name:
+        location_context += f", Location Name: {request.location_name}"
+
+    prompt = f"""
+    Analyze the territory at {location_context}.
+    Based on your knowledge (and any available context), provide a brief insight card in Spanish with the following sections:
+    1. Main threats (Amenazas principales)
+    2. Key ecosystem services (Servicios ecosistémicos clave)
+    3. Livelihoods most affected (Medios de vida más afectados)
+    4. Conflicts present (Conflictos presentes)
+    5. Suggested NbS (Soluciones Basadas en Naturaleza sugeridas)
+    6. "Why this area matters" ("Por qué importa esta zona")
+
+    Format the output clearly with headers.
+    """
+
+    if not llm:
+        return {
+            "response": f"[NO OPENAI KEY] Simulating insight for {location_context}:\n\n"
+                        "**Amenazas principales:** Deforestación, expansión agrícola.\n"
+                        "**Servicios ecosistémicos clave:** Regulación hídrica, captura de carbono.\n"
+                        "**Medios de vida más afectados:** Agricultura familiar, turismo comunitario.\n"
+                        "**Conflictos presentes:** Uso de suelo, acceso al agua.\n"
+                        "**NbS sugeridas:** Agroforestería, restauración de riberas.\n"
+                        "**Por qué importa esta zona:** Es un corredor biológico crítico."
+        }
+
+    try:
+        # If we had a retriever specifically for spatial data, we would use it here.
+        # For now, we'll use the general retriever if available, or just the LLM.
+        
+        context = ""
+        if retriever:
+            docs = retriever.invoke(f"Territory info for {location_context}")
+            context = "\n".join([doc.page_content for doc in docs])
+        
+        full_prompt = f"Context:\n{context}\n\nRequest:\n{prompt}"
+        
+        response = llm.invoke(full_prompt)
+        return {"response": response.content}
+    except Exception as e:
+        return {"response": f"Error generating insight: {str(e)}"}
+

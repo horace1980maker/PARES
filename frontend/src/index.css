@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-nature-50 text-nature-900;
+  }
+}
+
+@theme {
+  --color-nature-50: #f0f7ff;
+  --color-nature-100: #e0f0ff;
+  --color-nature-200: #bae0ff;
+  --color-nature-300: #7cc5ff;
+  --color-nature-400: #36a9ff;
+  --color-nature-500: #009ee2;
+  /* Primary Accent */
+  --color-nature-600: #007bbd;
+  --color-nature-700: #006299;
+  --color-nature-800: #005380;
+  --color-nature-900: #001f89;
+  /* Neutral Base */
+  --color-nature-950: #00125a;
+}

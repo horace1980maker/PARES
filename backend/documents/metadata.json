@@ -1,0 +1,169 @@
+{
+  "documentos": [
+    {
+      "id": "TIERRA VIVA_1764687257",
+      "filename": "20210421_PLAN ESTRATEGICO TIERRA VIVA 2021-2025.pdf",
+      "original_filename": "20210421_PLAN ESTRATEGICO TIERRA VIVA 2021-2025.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\20210421_PLAN ESTRATEGICO TIERRA VIVA 2021-2025.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-12-02T08:54:17.364254",
+      "procesado_rag": true
+    },
+    {
+      "id": "TIERRA VIVA_1764687257",
+      "filename": "202307_INTERVENCION 2024-2028.pdf",
+      "original_filename": "202307_INTERVENCION 2024-2028.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\202307_INTERVENCION 2024-2028.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-12-02T08:54:17.354400",
+      "procesado_rag": true
+    },
+    {
+      "id": "TIERRA VIVA_1764103043",
+      "filename": "E3 - Perfil de Proyecto Piloto_correcciones.docx.pdf",
+      "original_filename": "E3 - Perfil de Proyecto Piloto_correcciones.docx.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\E3 - Perfil de Proyecto Piloto_correcciones.docx.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-11-25T14:37:23.302606",
+      "procesado_rag": true
+    },
+    {
+      "id": "TIERRA VIVA_1764092245",
+      "filename": "E4 - Rutas de Adaptación a nivel de Paisaje.pdf",
+      "original_filename": "E4 - Rutas de Adaptación a nivel de Paisaje.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\E4 - Rutas de Adaptación a nivel de Paisaje.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-11-25T11:37:25.712302",
+      "procesado_rag": true
+    },
+    {
+      "id": "TIERRA VIVA_1764092427",
+      "filename": "Entregable_5_Informes_Proceso_Diangostico_Socios_.docx.pdf",
+      "original_filename": "Entregable_5_Informes_Proceso_Diangostico_Socios_.docx.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\Entregable_5_Informes_Proceso_Diangostico_Socios_.docx.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-11-25T11:40:27.295151",
+      "procesado_rag": true
+    },
+    {
+      "id": "TIERRA VIVA_1764092245",
+      "filename": "FINAL-EC-TIERRA-VIVA-Anexo A_rev_12_3_2025.pdf",
+      "original_filename": "FINAL-EC-TIERRA-VIVA-Anexo A_rev_12_3_2025.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\FINAL-EC-TIERRA-VIVA-Anexo A_rev_12_3_2025.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-11-25T11:37:25.718322",
+      "procesado_rag": true
+    },
+    {
+      "id": "TIERRA VIVA_1764687257",
+      "filename": "GUÍA METODOLÓGICA TV.pdf",
+      "original_filename": "GUÍA METODOLÓGICA TV.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\GUÍA METODOLÓGICA TV.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-12-02T08:54:17.339854",
+      "procesado_rag": true
+    },
+    {
+      "id": "TIERRA VIVA_1764556893",
+      "filename": "MODELO Y ESCALERA DE INTERVENCION.pdf",
+      "original_filename": "MODELO Y ESCALERA DE INTERVENCION.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\orgs\\TIERRA VIVA\\MODELO Y ESCALERA DE INTERVENCION.pdf",
+      "pais": "desconocido",
+      "org_id": "TIERRA VIVA",
+      "org_nombre": "TIERRA VIVA",
+      "fecha_subida": "2025-11-30T20:41:33.704421",
+      "procesado_rag": true
+    },
+    {
+      "id": "global_1764690536",
+      "filename": "E2-Manual Talleres Vulnerabilidad y Fragilidad.pdf",
+      "original_filename": "E2-Manual Talleres Vulnerabilidad y Fragilidad.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\global\\E2-Manual Talleres Vulnerabilidad y Fragilidad.pdf",
+      "pais": "global",
+      "org_id": "global",
+      "org_nombre": "Conocimiento Global (NbS)",
+      "fecha_subida": "2025-12-02T09:48:56.667056",
+      "procesado_rag": true
+    },
+    {
+      "id": "global_1764687440",
+      "filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-1_.pdf",
+      "original_filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-1_.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\global\\Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-1_.pdf",
+      "pais": "global",
+      "org_id": "global",
+      "org_nombre": "Conocimiento Global (NbS)",
+      "fecha_subida": "2025-12-02T08:57:20.968266",
+      "procesado_rag": true
+    },
+    {
+      "id": "global_1764687440",
+      "filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-2_.pdf",
+      "original_filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-2_.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\global\\Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-2_.pdf",
+      "pais": "global",
+      "org_id": "global",
+      "org_nombre": "Conocimiento Global (NbS)",
+      "fecha_subida": "2025-12-02T08:57:20.985445",
+      "procesado_rag": true
+    },
+    {
+      "id": "global_1764687441",
+      "filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-3_.pdf",
+      "original_filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-3_.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\global\\Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-3_.pdf",
+      "pais": "global",
+      "org_id": "global",
+      "org_nombre": "Conocimiento Global (NbS)",
+      "fecha_subida": "2025-12-02T08:57:21.006372",
+      "procesado_rag": true
+    },
+    {
+      "id": "global_1764687441",
+      "filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-4_.pdf",
+      "original_filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-4_.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\global\\Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-4_.pdf",
+      "pais": "global",
+      "org_id": "global",
+      "org_nombre": "Conocimiento Global (NbS)",
+      "fecha_subida": "2025-12-02T08:57:21.856438",
+      "procesado_rag": true
+    },
+    {
+      "id": "global_1764687442",
+      "filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-5_.pdf",
+      "original_filename": "Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-5_.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\global\\Guia-para-la-restauracion-de-bosques-montanos-tropicales-y-otros-materiales-Modulo-5_.pdf",
+      "pais": "global",
+      "org_id": "global",
+      "org_nombre": "Conocimiento Global (NbS)",
+      "fecha_subida": "2025-12-02T08:57:22.614256",
+      "procesado_rag": true
+    },
+    {
+      "id": "global_1764687440",
+      "filename": "PROTOCOLO-RESTAURACION-BOSQUES-MONTANOS-VERSION-FINAL-DIGITAL_ND-1.pdf",
+      "original_filename": "PROTOCOLO-RESTAURACION-BOSQUES-MONTANOS-VERSION-FINAL-DIGITAL_ND-1.pdf",
+      "path": "C:\\Users\\narva\\projects\\CATIE\\PARES\\backend\\documents\\global\\PROTOCOLO-RESTAURACION-BOSQUES-MONTANOS-VERSION-FINAL-DIGITAL_ND-1.pdf",
+      "pais": "global",
+      "org_id": "global",
+      "org_nombre": "Conocimiento Global (NbS)",
+      "fecha_subida": "2025-12-02T08:57:20.950017",
+      "procesado_rag": true
+    }
+  ]
+}
