@@ -22,8 +22,8 @@ class RAGProcessor:
         self.db_dir = db_dir
         self.embedding_function = SentenceTransformerEmbeddings(model_name="paraphrase-multilingual-MiniLM-L12-v2")
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200
+            chunk_size=2000,
+            chunk_overlap=400
         )
         
         # Cargar o crear base de datos
@@ -136,14 +136,14 @@ class RAGProcessor:
         
         return self.db.as_retriever(search_kwargs=search_kwargs)
 
-    def search_hybrid(self, query: str, org_id: str, k_org: int = 6, k_global: int = 4):
+    def search_hybrid(self, query: str, org_id: str, k_org: int = 15, k_global: int = 5):
         """
         Realiza una búsqueda híbrida asegurando documentos de la organización y globales.
         
         Args:
             query: Pregunta del usuario
             org_id: ID de la organización
-            k_org: Número de documentos de la organización a recuperar
+            k_org: Número de documentos de la organización a recuperar (Aumentado para mejor contexto)
             k_global: Número de documentos globales a recuperar
             
         Returns:
