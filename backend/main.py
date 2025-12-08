@@ -12,16 +12,22 @@ load_dotenv()
 
 app = FastAPI(title="CATIE PARES API", version="1.0.0")
 
-# CORS Configuration - Simple and working
+# CORS Configuration
+origins = [
+    "http://localhost:5173",
+    "http://localhost:5174", 
+    "http://localhost:5175",
+    "http://localhost:5176",
+    "http://localhost:5177"
+]
+
+# Add production origins from env
+if os.getenv("CORS_ORIGINS"):
+    origins.extend(os.getenv("CORS_ORIGINS").split(","))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:5174", 
-        "http://localhost:5175",
-        "http://localhost:5176",
-        "http://localhost:5177"
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

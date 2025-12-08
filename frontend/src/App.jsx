@@ -6,6 +6,8 @@ import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import LanguageToggle from './components/LanguageToggle';
 
+import config from './config';
+
 function App() {
   const { t } = useTranslation();
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -15,7 +17,7 @@ function App() {
   React.useEffect(() => {
     if (selectedCountry) {
       console.log("Obteniendo organizaciones para:", selectedCountry);
-      fetch(`http://localhost:8001/organizaciones/${selectedCountry}`)
+      fetch(`${config.API_URL}/organizaciones/${selectedCountry}`)
         .then(res => res.json())
         .then(data => {
           console.log("Organizaciones obtenidas:", data);

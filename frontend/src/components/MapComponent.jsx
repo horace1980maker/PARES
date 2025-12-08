@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import 'leaflet/dist/leaflet.css';
 import TerritorialInsightCard from './TerritorialInsightCard';
 
+import config from '../config';
+
 const MapComponent = ({ onCountrySelect, selectedCountry }) => {
     const { t } = useTranslation();
     const [geoJsonData, setGeoJsonData] = useState(null);
@@ -22,7 +24,7 @@ const MapComponent = ({ onCountrySelect, selectedCountry }) => {
         setShowInsight(true);
         setInsightData(null);
         try {
-            const response = await fetch('http://localhost:8001/insight-territorial', {
+            const response = await fetch(`${config.API_URL}/insight-territorial`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

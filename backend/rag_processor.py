@@ -10,7 +10,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
 
-DB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
+# Configuración de DB_DIR con soporte para variable de entorno (Docker)
+DB_DIR = os.getenv("CHROMA_DB_DIR")
+if not DB_DIR:
+    DB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
 
 class RAGProcessor:
     """Procesa documentos PDF y los almacena en ChromaDB de forma incremental"""

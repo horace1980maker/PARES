@@ -10,7 +10,9 @@ from tqdm import tqdm
 
 # Configuration
 DOCS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "documents"))
-DB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
+DB_DIR = os.getenv("CHROMA_DB_DIR")
+if not DB_DIR:
+    DB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
 METADATA_FILE = os.path.join(DOCS_DIR, "metadata.json")
 
 def get_file_size_mb(file_path):

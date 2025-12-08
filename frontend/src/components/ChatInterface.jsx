@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import config from '../config';
+
 const ChatInterface = ({ selectedOrg, onClose }) => {
     const { t, i18n } = useTranslation();
     const [isMinimized, setIsMinimized] = useState(false);
@@ -19,7 +21,7 @@ const ChatInterface = ({ selectedOrg, onClose }) => {
         setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8001/chat', {
+            const response = await fetch(`${config.API_URL}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
