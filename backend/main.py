@@ -219,66 +219,96 @@ def chat(request: ChatRequest):
                 "respuesta": "El sistema de conocimiento aún no está inicializado. Por favor ingesta documentos primero."
             }
 
-        # Usar búsqueda híbrida si tenemos una organización identificada
+        # Usar búsqueda híbrida por niveles
         if org_folder:
-            # Recuperar documentos de la org y globales
-            docs = rag.search_hybrid(request.mensaje, org_id=org_folder, k_org=8, k_global=3)
+            docs = rag.search_tiered(request.mensaje, org_id=org_folder)
         else:
-            # Fallback a búsqueda general si no se identifica la org
-            retriever = rag.get_retriever()
-            docs = retriever.invoke(request.mensaje)
+            # Fallback a búsqueda general (Tier 2 only effectively)
+            # Podríamos implementar un 'search_global' en rag_processor, 
+            # pero por ahora usaremos search_tiered con un ID dummy o lógica custom.
+            # Simplemente buscaremos en Tier 2.
+            docs = rag.search_tiered(request.mensaje, org_id="GLOBAL_ONLY") # Esto retornará solo Tier 2 si Tier 1 falla o es vacío
         
         if not docs:
             return {
-                "respuesta": f"No encontré información específica sobre '{request.mensaje}' en los documentos de {request.organizacion}."
+                "respuesta": f"No encontré información específica sobre '{request.mensaje}' en los documentos."
             }
         
-        # Construir contexto a partir de los documentos recuperados
-        contexto = "\n\n".join([f"Fragmento {i+1}:\n{doc.page_content}" for i, doc in enumerate(docs)])
-        fuentes = list(set([os.path.basename(doc.metadata.get('source', 'desconocido')) for doc in docs]))
+        # Construir contexto ESTRUCTURADO con etiquetas
+        contexto_parts = []
+        for doc in docs:
+            source = os.path.basename(doc.metadata.get('source', 'unknown'))
+            tier = doc.metadata.get('retrieval_tier', 'Support')
+            # Etiquetado claro para el LLM
+            tag = "ORGANIZATION_DOC (PRIORITY)" if "Tier 1" in tier else "GLOBAL_DOC (SUPPORT)"
+            
+            contexto_parts.append(
+                f"--- SOURCE: {source} [{tag}] ---\n{doc.page_content}\n"
+            )
         
-        # Intentar usar LLM (OpenAI) para síntesis
+        contexto = "\n".join(contexto_parts)
+        
+        # Lista de fuentes para el frontend (HTML)
+        fuentes_unicas = {}
+        for doc in docs:
+            name = os.path.basename(doc.metadata.get('source', 'unknown'))
+            tier = doc.metadata.get('retrieval_tier', 'Unknown')
+            icon = "🏢" if "Tier 1" in tier else "🌍"
+            page = doc.metadata.get('page', '?')
+            fuentes_unicas[name] = f"<li>{icon} {name} (Pág. {page})</li>"
+            
+        html_sources = "<ul>" + "".join(fuentes_unicas.values()) + "</ul>"
+
+        # Intentar usar LLM (OpenAI)
         try:
             from langchain_openai import ChatOpenAI
             from langchain_core.messages import HumanMessage
             
-            # Configurar OpenAI (usar variable de entorno OPENAI_API_KEY)
             api_key = os.getenv("OPENAI_API_KEY")
             
             if api_key:
-                # Inicializar modelo
                 llm = ChatOpenAI(
-                    model="gpt-4o-mini",  # Modelo más económico y rápido
-                    temperature=0.3,  # Controlado pero no demasiado rígido
+                    model="gpt-4o-mini",
+                    temperature=0.0, # Rigor máximo
                     openai_api_key=api_key
                 )
                 
-                # Crear prompt para el LLM
-                # Crear prompt para el LLM
-                prompt = f"""Eres un asistente experto en proyectos de conservación y desarrollo sostenible del proyecto PARES.
+                # Prompt con "Methodological Backbone" y Thinking Block
+                prompt = f"""You are an Expert Consultant for the PARES Project (Conservation & Sustainable Development).
 
-Tu objetivo es responder preguntas sobre la organización {request.organizacion} y sobre prácticas generales de conservación.
+ROLE & METHODOLOGY:
+1. **Understand**: Analyze the User's question and the context.
+2. **Define**: Identify key concepts (e.g., specific Org goals vs. global NbS definitions).
+3. **Check Evidence**: Compare [ORGANIZATION_DOC] vs [GLOBAL_DOC]. 
+   - RULE: [ORGANIZATION_DOC] is the TRUTH for this specific organization.
+   - RULE: Use [GLOBAL_DOC] only to fill gaps or explain technical concepts.
+4. **Synthesize**: Answer the user.
 
-CONTEXTO RECUPERADO:
+CONTEXT:
 {contexto}
 
-PREGUNTA DEL USUARIO: {request.mensaje}
+USER QUESTION: {request.mensaje}
+TARGET ORGANIZATION: {request.organizacion}
 
-INSTRUCCIONES:
-1. Responde basándote PRINCIPALMENTE en el contexto recuperado.
-2. Si la respuesta no está explícita literalmente, puedes inferirla del contexto si hay evidencia suficiente (por ejemplo, deducir la misión a partir de los objetivos descritos).
-3. Si el contexto menciona documentos clave (como "Plan Estratégico"), úsalos como referencia de autoridad.
-4. Si la pregunta es sobre la organización, prioriza sus documentos específicos.
-5. Si la pregunta es técnica, usa el conocimiento global (NbS).
-6. Si la información definitivamente NO está, dilo, pero intenta primero conectar los puntos con la información disponible.
-7. Cita las fuentes cuando sea posible.
+INSTRUCTIONS:
+- You MUST write a <thinking> block first. Inside, explain your Phase analysis and evidence check.
+- Then, write your final response in Spanish (Professional tone).
+- Do NOT write a "Sources" list. I will append it manually.
 
-RESPUESTA:"""
+RESPONSE:"""
 
-                # Generar respuesta
                 messages = [HumanMessage(content=prompt)]
                 response = llm.invoke(messages)
-                respuesta_sintetizada = response.content
+                full_response = response.content
+                
+                # Post-processing: Strip <thinking> block for the user
+                import re
+                clean_response = re.sub(r'<thinking>.*?</thinking>', '', full_response, flags=re.DOTALL).strip()
+                
+                # Append Real Sources
+                respuesta_final = f"{clean_response}\n\n<div class='sources-section'><strong>Fuentes Consultadas:</strong>{html_sources}</div>"
+                
+                return {"respuesta": respuesta_final}
                 
                 # Agregar fuentes
                 respuesta_final = f"{respuesta_sintetizada}\n\n---\n*Información basada en: {', '.join(fuentes)}*"
