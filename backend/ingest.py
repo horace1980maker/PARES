@@ -151,21 +151,10 @@ def ingest_documents():
             # Cleanup existing chunks for this file (to avoid duplicates on re-ingest)
             # Note: Chroma delete by where metadata is efficient
             try:
-                # We need to get ids first? older chroma versions required it.
-                # Newer versions allow delete(where=...)
-                db._client.delete(
-                    collection_name=db._collection.name,
-                    where={"source": filename}
-                )
-                # Note: accessing _client is a bit hacky but delete(where) is standard in API.
-                # Standard wrapper:
-                # db.delete(where={"source": filename}) # Langchain wrapper might not expose 'where' directly in all versions
-                # Let's try standard langchain way if possible, or direct collection access.
-                # Langchain Chroma delete takes 'ids'. 
-                # Optimization: For now, we accept risk of duplicates if filename changed, 
-                # but if filename is same, we should remove.
-                # Actually, simpler: just don't worry about delete for now in this MVP refactor 
-                # unless we are sure about the syntax, to avoid breaking build.
+                # Método compatible con LangChain/Chroma moderno
+                existing_docs = db.get(where={"source": filename})
+                if existing_docs and existing_docs['ids']:
+                     db.delete(existing_docs['ids'])
                 # UPDATE: Let's assume standard behavior: if we re-add, we might duplicate.
                 # Correct way in langchain:
                 # ids_to_del = db.get(where={"source": filename})['ids']
