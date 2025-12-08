@@ -257,7 +257,7 @@ def chat(request: ChatRequest):
                 # Crear prompt para el LLM
                 prompt = f"""Eres un asistente experto en proyectos de conservación y desarrollo sostenible del proyecto PARES.
 
-Tu objetivo es responder preguntas sobre la organización {request.organizacion} y sobre prácticas generales de conservación (NbS, metodologías), basándote EXCLUSIVAMENTE en la información proporcionada en el contexto.
+Tu objetivo es responder preguntas sobre la organización {request.organizacion} y sobre prácticas generales de conservación.
 
 CONTEXTO RECUPERADO:
 {contexto}
@@ -265,13 +265,13 @@ CONTEXTO RECUPERADO:
 PREGUNTA DEL USUARIO: {request.mensaje}
 
 INSTRUCCIONES:
-1. Analiza el contexto recuperado. Puede contener documentos específicos de {request.organizacion} y documentos técnicos globales (NbS, guías).
-2. Si la pregunta es sobre la organización, prioriza la información de sus documentos específicos.
-3. Si la pregunta es sobre consejos técnicos, implementación o "cómo hacer", usa el conocimiento global (NbS, prácticas) para dar una respuesta experta y práctica.
-4. Si combinas información, aclara qué es específico de la organización y qué es una recomendación general o técnica.
-5. Responde de manera clara, profesional y completa en español.
-6. Si el contexto NO tiene relación con la pregunta, di explícitamente: "La información disponible no menciona este tema específico."
-7. Cita las fuentes (nombres de archivos) si es posible para dar credibilidad.
+1. Responde basándote PRINCIPALMENTE en el contexto recuperado.
+2. Si la respuesta no está explícita literalmente, puedes inferirla del contexto si hay evidencia suficiente (por ejemplo, deducir la misión a partir de los objetivos descritos).
+3. Si el contexto menciona documentos clave (como "Plan Estratégico"), úsalos como referencia de autoridad.
+4. Si la pregunta es sobre la organización, prioriza sus documentos específicos.
+5. Si la pregunta es técnica, usa el conocimiento global (NbS).
+6. Si la información definitivamente NO está, dilo, pero intenta primero conectar los puntos con la información disponible.
+7. Cita las fuentes cuando sea posible.
 
 RESPUESTA:"""
 

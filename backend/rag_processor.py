@@ -152,11 +152,13 @@ class RAGProcessor:
         if self.db is None:
             return []
             
-        # 1. Búsqueda específica de la organización
-        docs_org = self.db.similarity_search(
+        # 1. Búsqueda específica de la organización (usando MMR para diversidad/precisión)
+        docs_org = self.db.max_marginal_relevance_search(
             query, 
             k=k_org,
-            filter={"org_id": org_id}
+            fetch_k=k_org * 4, # Analizar más candidatos
+            filter={"org_id": org_id},
+            lambda_mult=0.7 # Balancear relevancia vs diversidad (0.7 favorece relevancia)
         )
         
         # 2. Búsqueda global
