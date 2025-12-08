@@ -4,8 +4,8 @@ services:
   backend:
     build:
       context: ./backend
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     volumes:
       - ./chroma_db:/app/chroma_db
       - ./backend/documents:/app/documents
@@ -17,10 +17,12 @@ services:
   frontend:
     build:
       context: ./frontend
-    ports:
-      - "80:80"
+      args:
+        - VITE_API_URL=/api
+    expose:
+      - "80"
     environment:
-      - VITE_API_URL=http://localhost:8000 # Cambiar esto en producción a la URL pública del backend
+      - VITE_API_URL=/api
     depends_on:
       - backend
     restart: unless-stopped
