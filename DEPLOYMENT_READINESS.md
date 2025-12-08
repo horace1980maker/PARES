@@ -84,3 +84,43 @@ Environment Variables: You MUST set these variables in the Coolify project setti
 OPENAI_API_KEY: Your OpenAI key.
 VITE_API_URL: The public URL of your backend (e.g., https://api.your-domain.com or the internal Coolify URL if using internal networking, though client-side React needs the public URL).
 You are now ready to deploy! 🚀
+
+To configure your custom domain with Coolify using the Docker Compose setup we just created, follow these steps.
+
+I have updated your 
+docker-compose.yml
+, 
+frontend/Dockerfile
+, and 
+nginx.conf
+ to make this significantly easier. You now generally only need one domain (for the frontend), and the backend (API) will be securely proxied internally (via /api).
+
+1. Load the Code in Coolify
+First, you need to populate that empty box in your screenshot:
+
+Click the "Load Compose File" button (encircled in your screenshot) or verify the file content is populated.
+It should now show the 
+docker-compose.yml
+ content I just updated.
+2. Configure the Domain (The "Where")
+Once the file is loaded/saved, Coolify will parse the file and list the services found (
+frontend
+ and backend).
+
+In the Coolify UI, scroll down or look for a "Services" section (or click on the stack details if you aren't already there).
+Click on the frontend service.
+Look for a field called "Domains" or "FQDN" (Fully Qualified Domain Name).
+Enter your custom domain, for example: https://mapas.catie.ac.cr.
+Note: Ensure you include https:// if you want Coolify to handle SSL for you.
+Click Save.
+(Optional) Backend Domain: Since I configured Nginx to proxy /api calls to the backend internally, you do not technically need to assign a public domain to the backend service anymore. It is safer to keep it internal. However, if you want direct access to the API (e.g. for testing docs), you can assign a domain like https://api-mapas.catie.ac.cr to the backend service in the same way.
+
+3. Environment Variables ("The How")
+In the Environment Variables tab (on the left sidebar of your screenshot):
+
+Add OPENAI_API_KEY: Your OpenAI key.
+VITE_API_URL: You do NOT need to set this anymore. I've hardcoded it to default to /api in the Docker build process, so the frontend will automatically talk to the backend via the internal proxy.
+Summary of what I changed to make this work:
+Docker Compose: Removed port conflicts (replaced 80:80 with expose: 80).
+Nginx: Added a rule so that any request to your-site.com/api/... is internally routed to the python backend. This avoids CORS issues and simplifies your domain setup.
+Frontend Build: Added configuration to use this relative /api path by default.
