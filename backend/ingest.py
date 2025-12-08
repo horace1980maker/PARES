@@ -19,7 +19,8 @@ MANIFEST_FILE = os.path.join(DOCS_DIR, "manifest.json")
 METADATA_FILE = os.path.join(DOCS_DIR, "metadata.json")
 
 # Constants
-EMBEDDING_MODEL = "BAAI/bge-m3"
+# Revertimos a un modelo más ligero para evitar "Killed" (OOM) en el servidor
+EMBEDDING_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 CHUNK_SIZE = 1800
 CHUNK_OVERLAP = 300
 

@@ -21,7 +21,7 @@ class RAGProcessor:
     def __init__(self, db_dir: str = DB_DIR):
         self.db_dir = db_dir
         self.embedding_function = SentenceTransformerEmbeddings(
-            model_name="BAAI/bge-m3",
+            model_name="paraphrase-multilingual-MiniLM-L12-v2",
             model_kwargs={'device': 'cpu'}
         )
         
