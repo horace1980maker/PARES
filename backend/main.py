@@ -213,6 +213,7 @@ def chat(request: ChatRequest):
         
         # Obtener org_id (folder name) a partir del nombre
         org_folder = ORG_NAME_TO_FOLDER.get(request.organizacion)
+        print(f"DEBUG: Request Org='{request.organizacion}' -> Folder/ID='{org_folder}'")
         
         if not rag.db:
              return {
@@ -248,16 +249,16 @@ def chat(request: ChatRequest):
         
         contexto = "\n".join(contexto_parts)
         
-        # Lista de fuentes para el frontend (HTML)
+        # Lista de fuentes para el frontend (Markdown)
         fuentes_unicas = {}
         for doc in docs:
             name = os.path.basename(doc.metadata.get('source', 'unknown'))
             tier = doc.metadata.get('retrieval_tier', 'Unknown')
             icon = "🏢" if "Tier 1" in tier else "🌍"
             page = doc.metadata.get('page', '?')
-            fuentes_unicas[name] = f"<li>{icon} {name} (Pág. {page})</li>"
+            fuentes_unicas[name] = f"* {icon} {name} (Pág. {page})"
             
-        html_sources = "<ul>" + "".join(fuentes_unicas.values()) + "</ul>"
+        markdown_sources = "\n".join(fuentes_unicas.values())
 
         # Intentar usar LLM (OpenAI)
         try:
@@ -305,8 +306,8 @@ RESPONSE:"""
                 import re
                 clean_response = re.sub(r'<thinking>.*?</thinking>', '', full_response, flags=re.DOTALL).strip()
                 
-                # Append Real Sources
-                respuesta_final = f"{clean_response}\n\n<div class='sources-section'><strong>Fuentes Consultadas:</strong>{html_sources}</div>"
+                # Append Real Sources (Markdown)
+                respuesta_final = f"{clean_response}\n\n**Fuentes Consultadas:**\n{markdown_sources}"
                 
                 return {"respuesta": respuesta_final}
                 

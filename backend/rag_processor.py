@@ -9,8 +9,7 @@ from typing import List, Optional, Dict, Any
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.retrievers import BM25Retriever
-from langchain.retrievers import EnsembleRetriever
-from langchain.schema import Document
+from langchain_core.documents import Document
 
 # Configuración de DB_DIR
 DB_DIR = os.getenv("CHROMA_DB_DIR")
@@ -78,7 +77,7 @@ class RAGProcessor:
         print(f"🔍 Buscando Tier 1 (Org: {org_id})...")
         tier1_docs = self._hybrid_search(
             query, 
-            k=5, 
+            k=10, 
             filter_dict={"org_id": org_id}
         )
         for d in tier1_docs:
@@ -120,7 +119,7 @@ class RAGProcessor:
         bm25_docs = []
         if self.bm25:
             # Recuperamos más candidatos para tener margen tras filtrar
-            raw_bm25 = self.bm25.get_relevant_documents(query)
+            raw_bm25 = self.bm25.invoke(query)
             
             # Filtrado manual de BM25
             for doc in raw_bm25:
@@ -135,28 +134,35 @@ class RAGProcessor:
             # Cortar a k
             bm25_docs = bm25_docs[:k]
 
-        # 3. Combinación (Reciprocal Rank Fusion simplificado o simple append dedup)
-        # Por simplicidad y efectividad: Intercalar resultados únicos
-        combined = []
-        seen_ids = set()
+        # 3. Reciprocal Rank Fusion (RRF)
+        # RRF_Score(d) = 1 / (rank + k_const) + 1 / (rank + k_const)
+        rrf_k = 60 # Constante estándar para RRF
+        doc_scores = {}
+        doc_map = {} # uid -> Document object
+
+        # Procesar rankings Vectoriales
+        for rank, doc in enumerate(vector_docs):
+            uid = f"{doc.metadata.get('source')}_{hash(doc.page_content)}"
+            doc_map[uid] = doc
+            if uid not in doc_scores:
+                doc_scores[uid] = 0.0
+            doc_scores[uid] += 1.0 / (rank + rrf_k)
+
+        # Procesar rankings BM25
+        for rank, doc in enumerate(bm25_docs):
+            uid = f"{doc.metadata.get('source')}_{hash(doc.page_content)}"
+            # Si el documento no estaba en vector search, añadirlo
+            if uid not in doc_map:
+                doc_map[uid] = doc
+                doc_scores[uid] = 0.0
+            doc_scores[uid] += 1.0 / (rank + rrf_k)
+
+        # Ordenar por puntaje RRF descendente
+        sorted_uids = sorted(doc_scores.keys(), key=lambda x: doc_scores[x], reverse=True)
         
-        # Estrategia: Tomar todos, priorizando vector por su filtro nativo fuerte
-        # Pero si BM25 encuentra algo exacto que vector no, es valioso.
-        max_len = max(len(vector_docs), len(bm25_docs))
-        for i in range(max_len):
-            if i < len(vector_docs):
-                doc = vector_docs[i]
-                # Usar source + content hash como ID único si no hay ID explícito
-                uid = f"{doc.metadata.get('source')}_{hash(doc.page_content)}"
-                if uid not in seen_ids:
-                    combined.append(doc)
-                    seen_ids.add(uid)
-            
-            if i < len(bm25_docs):
-                doc = bm25_docs[i]
-                uid = f"{doc.metadata.get('source')}_{hash(doc.page_content)}"
-                if uid not in seen_ids:
-                    combined.append(doc)
-                    seen_ids.add(uid)
-        
-        return combined[:k] # Retornar top k combinados
+        # Construir resultado final
+        final_results = []
+        for uid in sorted_uids:
+            final_results.append(doc_map[uid])
+
+        return final_results[:k] # Retornar top k combinados
