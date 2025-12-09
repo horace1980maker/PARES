@@ -368,19 +368,171 @@ RESPONSE:"""
 
 
 @app.post("/insight-territorial")
-def obtener_insight_territorial(request: TerritorialInsightRequest):
-    """Genera un insight territorial para coordenadas específicas"""
-    contexto_ubicacion = f"Coordenadas: {request.lat}, {request.lng}"
-    if request.nombre_ubicacion:
-        contexto_ubicacion += f", Ubicación: {request.nombre_ubicacion}"
-    return {
-        "respuesta": (
-            f"**Análisis Territorial** - {contexto_ubicacion}\n\n"
-            "**Amenazas principales:** Deforestación, expansión agrícola no sostenible, cambio climático.\n\n"
-            "**Servicios ecosistémicos clave:** Regulación hídrica, captura de carbono, conservación de biodiversidad.\n\n"
-            "**Medios de vida más afectados:** Agricultura familiar, turismo comunitario, pesca artesanal.\n\n"
-            "**Conflictos presentes:** Uso de suelo, acceso al agua, tenencia de tierra.\n\n"
-            "**Soluciones Basadas en Naturaleza sugeridas:** Agroforestería, restauración de riberas, corredores biológicos.\n\n"
-            "**Por qué importa esta zona:** Corredor biológico crítico para la conectividad de ecosistemas en la región."
-        )
-    }
+def obtener_insight_territorial_organizacion(request: ChatRequest):
+    """Genera un análisis territorial basado en los documentos de una organización específica"""
+    try:
+        # Inicializar procesador RAG
+        rag = RAGProcessor()
+        
+        # Mapeo de nombres de organizaciones a IDs de carpetas
+        ORG_NAME_TO_FOLDER = {
+            # Colombia
+            "Corporación Biocomercio": "Corporación Biocomercio",
+            # Ecuador
+            "Tierra Viva": "TIERRA VIVA",
+            "Corporación Toisán": "Corporación Toisán",
+            # Mexico
+            "CECROPIA": "CECROPIA",
+            "FONCET": "FONCET",
+            # Honduras
+            "Fundación PUCA": "Fundación PUCA",
+            "CODDEFFAGOLF": "CODDEFFAGOLF",
+            "FENAPROCACAHO": "FENAPROCACAHO",
+            # El Salvador
+            "Asociación ADEL LA Unión": "Asociación ADEL LA Unión",
+            # Guatemala
+            "Defensores de la Naturaleza": "Defensores de la Naturaleza",
+            "ASOVERDE": "ASOVERDE",
+            "ECO": "ECO"
+        }
+        
+        # Obtener org_id (folder name) a partir del nombre
+        org_folder = ORG_NAME_TO_FOLDER.get(request.organizacion)
+        
+        if not rag.db:
+            return {
+                "respuesta": "El sistema de conocimiento aún no está inicializado. Por favor ingesta documentos primero."
+            }
+        
+        if not org_folder:
+            return {
+                "respuesta": f"No se encontró información para la organización '{request.organizacion}'."
+            }
+        
+        # Consulta específica para análisis territorial
+        query_territorial = f"""Análisis territorial de {request.organizacion}:
+        - ¿Cuál es el área geográfica de trabajo?
+        - ¿Qué amenazas ambientales enfrentan?
+        - ¿Qué servicios ecosistémicos protegen o restauran?
+        - ¿Qué medios de vida apoyan?
+        - ¿Qué conflictos socioambientales abordan?
+        - ¿Qué soluciones basadas en naturaleza implementan?
+        - ¿Por qué es importante su zona de trabajo?"""
+        
+        # Buscar SOLO en documentos de la organización (Tier 1)
+        # Usar el retriever directamente con filtro de metadata
+        try:
+            # Buscar solo documentos de esta organización
+            docs = rag.db.similarity_search(
+                query_territorial,
+                k=8,  # Obtener más documentos para mejor contexto
+                filter={"org_id": org_folder}
+            )
+            
+            if not docs:
+                return {
+                    "respuesta": f"**Análisis Territorial - {request.organizacion}**\n\n"
+                                f"No se encontró información suficiente en los documentos de esta organización para generar un análisis territorial.\n\n"
+                                f"Por favor, asegúrese de que existan documentos cargados para {request.organizacion}."
+                }
+            
+            # Construir contexto a partir de los documentos
+            contexto_parts = []
+            for doc in docs:
+                source = os.path.basename(doc.metadata.get('source', 'unknown'))
+                contexto_parts.append(
+                    f"--- DOCUMENTO: {source} ---\n{doc.page_content}\n"
+                )
+            
+            contexto = "\n".join(contexto_parts)
+            
+            # Usar OpenAI si está disponible
+            api_key = os.getenv("OPENAI_API_KEY")
+            
+            if api_key:
+                from langchain_openai import ChatOpenAI
+                from langchain_core.messages import HumanMessage
+                
+                llm = ChatOpenAI(
+                    model="gpt-4o-mini",
+                    temperature=0.0,  # Máxima precisión
+                    openai_api_key=api_key
+                )
+                
+                prompt = f"""Eres un analista experto en conservación y desarrollo sostenible para el Proyecto PARES.
+
+Tu tarea es generar un ANÁLISIS TERRITORIAL basado EXCLUSIVAMENTE en los documentos proporcionados de la organización {request.organizacion}.
+
+REGLAS ESTRICTAS:
+1. USA SOLO la información de los documentos proporcionados
+2. Si no hay información sobre algún aspecto, indica "No especificado en los documentos"
+3. NO uses conocimiento general o externo
+4. Sé específico y cita detalles de los documentos
+5. Responde en ESPAÑOL
+
+DOCUMENTOS DE {request.organizacion}:
+{contexto}
+
+FORMATO REQUERIDO (usa exactamente estos encabezados con **):
+
+**Análisis Territorial - {request.organizacion}**
+
+**Área geográfica de trabajo:** [Describe la zona geográfica basándote en los documentos]
+
+**Amenazas principales:** [Lista las amenazas ambientales mencionadas en los documentos]
+
+**Servicios ecosistémicos clave:** [Lista los servicios ecosistémicos mencionados]
+
+**Medios de vida apoyados:** [Describe los medios de vida que la organización apoya según los documentos]
+
+**Conflictos socioambientales:** [Describe los conflictos mencionados en los documentos]
+
+**Soluciones Basadas en Naturaleza implementadas:** [Lista las soluciones NbS que implementa la organización]
+
+**Importancia de la zona:** [Explica por qué es importante esta zona según los documentos]
+
+IMPORTANTE: Si alguna sección no tiene información en los documentos, escribe "No especificado en los documentos disponibles."
+"""
+                
+                messages = [HumanMessage(content=prompt)]
+                response = llm.invoke(messages)
+                
+                return {"respuesta": response.content}
+            
+            else:
+                # Fallback sin LLM - crear resumen estructurado
+                fuentes = list(set([os.path.basename(doc.metadata.get('source', 'unknown')) for doc in docs]))
+                
+                respuesta = f"**Análisis Territorial - {request.organizacion}**\n\n"
+                respuesta += f"**Información encontrada en documentos:**\n\n"
+                
+                # Mostrar extractos relevantes
+                for i, doc in enumerate(docs[:4], 1):  # Limitar a 4 extractos
+                    contenido = doc.page_content.strip()[:300]  # Primeros 300 caracteres
+                    respuesta += f"{i}. {contenido}...\n\n"
+                
+                respuesta += f"\n**Fuentes:** {', '.join(fuentes)}\n\n"
+                respuesta += "⚠️ *Configure OPENAI_API_KEY para obtener un análisis territorial estructurado y sintetizado.*"
+                
+                return {"respuesta": respuesta}
+        
+        except Exception as search_error:
+            print(f"Error en búsqueda de documentos: {search_error}")
+            import traceback
+            traceback.print_exc()
+            
+            return {
+                "respuesta": f"**Análisis Territorial - {request.organizacion}**\n\n"
+                            f"Error al buscar información en los documentos. Por favor intente nuevamente."
+            }
+    
+    except Exception as e:
+        print(f"Error generando análisis territorial: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        return {
+            "respuesta": f"**Análisis Territorial**\n\n"
+                        f"Error generando el análisis. Por favor intente nuevamente."
+        }
+

@@ -5,6 +5,7 @@ import MapComponent from './components/MapComponent';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import LanguageToggle from './components/LanguageToggle';
+import TerritorialInsightCard from './components/TerritorialInsightCard';
 
 import config from './config';
 
@@ -13,6 +14,8 @@ function App() {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedOrg, setSelectedOrg] = useState(null);
   const [organizations, setOrganizations] = useState([]);
+  const [territorialInsight, setTerritorialInsight] = useState(null);
+  const [isInsightLoading, setIsInsightLoading] = useState(false);
 
   React.useEffect(() => {
     if (selectedCountry) {
@@ -29,9 +32,44 @@ function App() {
     }
   }, [selectedCountry]);
 
+  // Fetch territorial insight when organization is selected
+  React.useEffect(() => {
+    if (selectedOrg) {
+      console.log("Obteniendo análisis territorial para:", selectedOrg.nombre);
+      setIsInsightLoading(true);
+      setTerritorialInsight(null);
+
+      fetch(`${config.API_URL}/insight-territorial`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          organizacion: selectedOrg.nombre,
+          mensaje: "" // Not used but required by ChatRequest model
+        }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Análisis territorial obtenido:", data);
+          setTerritorialInsight(data.respuesta);
+        })
+        .catch(err => {
+          console.error("Error obteniendo análisis territorial:", err);
+          setTerritorialInsight("Error obteniendo análisis territorial. Por favor intente nuevamente.");
+        })
+        .finally(() => {
+          setIsInsightLoading(false);
+        });
+    } else {
+      setTerritorialInsight(null);
+    }
+  }, [selectedOrg]);
+
   const handleCountrySelect = (countryName) => {
     setSelectedCountry(countryName);
     setSelectedOrg(null);
+    setTerritorialInsight(null);
   };
 
   const handleOrgSelect = (org) => {
@@ -67,6 +105,18 @@ function App() {
             onCountrySelect={handleCountrySelect}
             selectedCountry={selectedCountry}
           />
+
+          {/* Territorial Insight Card - Positioned over map */}
+          {selectedOrg && (
+            <TerritorialInsightCard
+              data={territorialInsight}
+              isLoading={isInsightLoading}
+              onClose={() => {
+                setSelectedOrg(null);
+                setTerritorialInsight(null);
+              }}
+            />
+          )}
         </div>
 
         {/* Sidebar */}

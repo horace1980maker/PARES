@@ -1,0 +1,33 @@
+✅ What Changed
+1. AI-Powered Real Analysis
+Now uses OpenAI GPT-4o-mini to generate contextual, location-specific territorial insights
+The AI analyzes the coordinates and generates realistic assessments based on:
+Geographic location in Latin America
+Regional ecosystems and environmental threats
+Typical livelihoods and socio-environmental conflicts
+Appropriate Nature-based Solutions (NbS)
+2. Geographic Context Enhancement
+Integrated OpenStreetMap's Nominatim API (free, no API key needed)
+Automatically detects:
+Country
+State/Region
+Municipality
+Area type
+This context is fed to the AI for more accurate analysis
+3. Same Format, Better Content
+Maintains the exact same format you already have
+Uses the same markdown structure with **bold headers**
+Frontend component requires no changes
+Displays beautifully in the existing 
+TerritorialInsightCard
+4. Graceful Fallback
+If OpenAI API key is not configured → shows the original mock data with a note
+If geocoding fails → still generates analysis with just coordinates
+If any error occurs → shows error message in the same format
+🚀 How to Use It
+Since your backend is already running with OPENAI_API_KEY configured (you're using it for chat), the territorial analysis will now automatically generate real, contextual information when you click anywhere on the map!
+
+Test it:
+Click on different locations on the map
+Each location will get a unique, AI-generated analysis specific to that area
+The analysis will consider the actual geography, ecosystems, and challenges of that region
