@@ -53,10 +53,12 @@ const resources = {
     en: {
         translation: {
             // Header
-            "appTitle": "CATIE",
+            "appTitle": "INTERACTIVE MAP",
             "projectName": "PARES Project",
 
             // Map
+            "Talk to your data in your own words.": "Talk to your data in your own words.",
+            "Let's Start": "Let's Start",
             "selectCountry": "Select a Country",
             "exploreMap": "Explore the map to find Nature-based Solutions organizations.",
 
