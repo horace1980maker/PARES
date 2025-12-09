@@ -5,12 +5,14 @@ const resources = {
     es: {
         translation: {
             // Header
-            "appTitle": "CATIE",
+            "appTitle": "MAPA INTERACTIVO",
             "projectName": "Proyecto PARES",
 
             // Map
+            "Talk to your data in your own words.": "Habla con tus datos en tus propias palabras.",
+            "Let's Start": "Comencemos",
             "selectCountry": "Selecciona un País",
-            "exploreMap": "Explora el mapa para encontrar organizaciones de Soluciones Basadas en Naturaleza.",
+            "exploreMap": "Explora el mapa para encontrar organizaciones que implementan Soluciones Basadas en Naturaleza.",
 
             // Sidebar
             "organizations": "Organizaciones",
