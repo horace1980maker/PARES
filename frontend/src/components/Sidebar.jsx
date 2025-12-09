@@ -8,6 +8,16 @@ const Sidebar = ({ selectedCountry, organizations, onOrgSelect }) => {
 
     return (
         <div className="w-80 bg-white border-l border-nature-200 p-6 flex flex-col h-full shadow-xl z-50">
+            {/* Welcome Section */}
+            <div className="mb-6 pb-6 border-b border-nature-200">
+                <p className="text-lg text-nature-700 mb-4">
+                    {t("Talk to your data in your own words.")}
+                </p>
+                <button className="w-full px-4 py-2 bg-nature-600 text-white rounded-lg hover:bg-nature-700 transition-colors font-medium">
+                    {t("Let's Start")}
+                </button>
+            </div>
+
             <h2 className="text-2xl font-bold text-nature-900 mb-6">
                 {selectedCountry ? selectedCountry : t('selectCountry')}
             </h2>
