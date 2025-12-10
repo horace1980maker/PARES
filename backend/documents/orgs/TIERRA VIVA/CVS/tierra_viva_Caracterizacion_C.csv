@@ -1,0 +1,59 @@
+pais,paisaje,grupo,medio_de_vida,codigo_medio_de_vida,codigo_mapa,tamano,unidad,rango,porcentaje
+Ecuador,Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,pequeño,Ha,< 1.5,50
+Ecuador,Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,mediano,Ha,1.6 - 2.5,40
+Ecuador,Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,grande,Ha,2.6 - 5,10
+Ecuador,Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,pequeño,Ha,< 1.5,50
+Ecuador,Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,mediano,Ha,1.6 - 2.5,40
+Ecuador,Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,grande,Ha,2.6 - 5,10
+Ecuador,Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,pequeño,Ha,< 1.5,50
+Ecuador,Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,mediano,Ha,1.6 - 2.5,40
+Ecuador,Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,grande,Ha,2.6 - 5,10
+Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,pequeño,Ha,1 - 3,50
+Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,mediano,Ha,3.1 - 8,25
+Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,grande,Ha,8.1 - 15,25
+Ecuador,Ambuqui,Zona Alta,Borrego,Gn_Br,Br,pequeño,Ha,1 - 3,50
+Ecuador,Ambuqui,Zona Alta,Borrego,Gn_Br,Br,mediano,Ha,3.1 - 8,25
+Ecuador,Ambuqui,Zona Alta,Borrego,Gn_Br,Br,grande,Ha,8.1 - 15,25
+Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Ga,pequeño,m2,< 10,80
+Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Ga,mediano,m2,11 - 100,15
+Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Ga,grande,m2,101 - 200,5
+Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,pequeño,Ha,< 1,70
+Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,mediano,Ha,1 - 2,20
+Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,grande,Ha,2.1 - 3,10
+Ecuador,Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,pequeño,Ha,< 1,70
+Ecuador,Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,mediano,Ha,1 - 2,20
+Ecuador,Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,grande,Ha,2.1 - 3,10
+Ecuador,Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,pequeño,Ha,< 1,50
+Ecuador,Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,mediano,Ha,1.1 - 2,25
+Ecuador,Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,grande,Ha,2.1 - 4,25
+Ecuador,Ambuqui,Zona Media,Limón,Ag_Lm,Lm,pequeño,Ha,< 1,50
+Ecuador,Ambuqui,Zona Media,Limón,Ag_Lm,Lm,mediano,Ha,1.1 - 2,25
+Ecuador,Ambuqui,Zona Media,Limón,Ag_Lm,Lm,grande,Ha,2.1 - 4,25
+Ecuador,Ambuqui,Zona Media,Mango,Mg_Lm,Mg,pequeño,Ha,< 1,50
+Ecuador,Ambuqui,Zona Media,Mango,Mg_Lm,Mg,mediano,Ha,1.1 - 2,25
+Ecuador,Ambuqui,Zona Media,Mango,Mg_Lm,Mg,grande,Ha,2.1 - 4,25
+Ecuador,Ambuqui,Zona Media,Limón,Mg_Lm,Lm,pequeño,Ha,< 1,50
+Ecuador,Ambuqui,Zona Media,Limón,Mg_Lm,Lm,mediano,Ha,1.1 - 2,25
+Ecuador,Ambuqui,Zona Media,Limón,Mg_Lm,Lm,grande,Ha,2.1 - 4,25
+Ecuador,Ambuqui,Zona Media,Gallinas,Ga,Ga,pequeño,Individuos,< 50,60
+Ecuador,Ambuqui,Zona Media,Gallinas,Ga,Ga,mediano,Individuos,51 - 200,30
+Ecuador,Ambuqui,Zona Media,Gallinas,Ga,Ga,grande,Individuos,201 - 500,10
+Ecuador,Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,pequeño,Ha,< 1,30
+Ecuador,Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,mediano,Ha,1.1 - 5,57
+Ecuador,Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,grande,Ha,> 5 ,13
+Ecuador,Ambuqui,Zona Baja,Limón,Mg_Lm,Lm,pequeño,Ha,< 1,30
+Ecuador,Ambuqui,Zona Baja,Limón,Mg_Lm,Lm,mediano,Ha,1.1 - 5,57
+Ecuador,Ambuqui,Zona Baja,Limón,Mg_Lm,Lm,grande,Ha,> 5 ,13
+Ecuador,Ambuqui,Zona Baja,Fréjol,Fr,Fr,pequeño,Ha,< 1,20
+Ecuador,Ambuqui,Zona Baja,Fréjol,Fr,Fr,mediano,Ha,1.1 - 5,30
+Ecuador,Ambuqui,Zona Baja,Fréjol,Fr,Fr,grande,Ha,> 5 ,50
+Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Pi,pequeño,Ha,< 1,20
+Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Pi,mediano,Ha,1.1 - 5,30
+Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Pi,grande,Ha,> 5 ,50
+Ecuador,Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,pequeño,Ha,< 1,50
+Ecuador,Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,mediano,Ha,1.1 - 5,30
+Ecuador,Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,grande,Ha,> 5 ,20
+Ecuador,Ambuqui,Zona Baja,Limón,Ag_Lm,Lm,pequeño,Ha,< 1,50
+Ecuador,Ambuqui,Zona Baja,Limón,Ag_Lm,Lm,mediano,Ha,1.1 - 5,30
+Ecuador,Ambuqui,Zona Baja,Limón,Ag_Lm,Lm,grande,Ha,> 5 ,20
+Ecuador,Ambuqui,Zona Baja,Flor de Jamaica,Ja,Ja,pequeño,Ha,< 1,100

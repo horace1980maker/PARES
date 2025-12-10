@@ -131,6 +131,7 @@ function App() {
       {selectedOrg && (
         <ChatInterface
           selectedOrg={selectedOrg}
+          selectedCountry={selectedCountry}
           onClose={() => setSelectedOrg(null)}
         />
       )}

@@ -1,0 +1,46 @@
+pais,paisaje,grupo,medio_de_vida,codigo_mapa,tenencia,tenencia_descripcion
+Ecuador,Ambuqui,Zona Alta,Maiz,Mz,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Alta,Maiz,Mz,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Alta,Maiz,Mz,Posesión,Usan y habitan tierras sin título legal
+Ecuador,Ambuqui,Zona Alta,Trigo,Tr,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Alta,Trigo,Tr,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Alta,Trigo,Tr,Posesión,Usan y habitan tierras sin título legal
+Ecuador,Ambuqui,Zona Alta,Arveja,Ar,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Alta,Arveja,Ar,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Alta,Arveja,Ar,Posesión,Usan y habitan tierras sin título legal
+Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn,Posesión,Usan y habitan tierras sin título legal
+Ecuador,Ambuqui,Zona Alta,Borregos,Br,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Alta,Borregos,Br,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Alta,Borregos,Br,Posesión,Usan y habitan tierras sin título legal
+Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Posesión,Usan y habitan tierras sin título legal
+Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc,Arriendo,El propietario paga una renta para utilizar el terreno
+Ecuador,Ambuqui,Zona Media,Ovos,Ov,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Media,Ovos,Ov,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Media,Ovos,Ov,Arriendo,El propietario paga una renta para utilizar el terreno
+Ecuador,Ambuqui,Zona Media,Aguacate,Ag,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Media,Aguacate,Ag,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Media,Limón,Lm,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Media,Limón,Lm,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Media,Mango,Mg,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Media,Mango,Mg,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Media,Limón,Lm,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Media,Limón,Lm,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Media,Gallinas,Ga,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Media,Gallinas,Ga,Herencia,Forma de propiedad privada adquirida por sucesión
+Ecuador,Ambuqui,Zona Baja,Mango,Mg,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Baja,Limón,Lm,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Baja,Fréjol,Fr,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Baja,Fréjol,Fr,Al Partir,Se comparte el terreno; gastos a medias y se reparte la utilidad del cultivo
+Ecuador,Ambuqui,Zona Baja,Fréjol,Fr,Arriendo,El propietario paga una renta para utilizar el terreno
+Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Al Partir,Se comparte el terreno; gastos a medias y se reparte la utilidad del cultivo
+Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Arriendo,El propietario paga una renta para utilizar el terreno
+Ecuador,Ambuqui,Zona Baja,Aguacate,Ag,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Baja,Limón,Lm,Propio,Posee título de propiedad
+Ecuador,Ambuqui,Zona Baja,Flor de Jamaica,Ja,Propio,Posee título de propiedad

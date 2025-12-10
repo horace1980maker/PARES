@@ -1,0 +1,41 @@
+pais,paisaje,grupo,tipo_amenaza,amenaza,magnitud,frequencia,tendencia,suma,sitios_afectados,cod_mapa
+Ecuador,Ambuqui,Zona Alta,climática,Sequía,5,2,0,7,Peñaherrera; Rumipamba,Se1; Se2
+Ecuador,Ambuqui,Zona Alta,climática,Lluvias intensas,5,1,0,6,Todas las comunidades zona alta; caminos; cultivos; quebradas; sitios poblados,
+Ecuador,Ambuqui,Zona Alta,no-climática,Quemas,5,1,-1,5,Rumipamba; Chaupi Gurangui; Peñaherrera,Q1; Q2; Q3
+Ecuador,Ambuqui,Zona Media,climática,Crecidas torrenciales,5,1,-1,5,Lavandero; San Clemente; Las Mercedes y Ambuqui,
+Ecuador,Ambuqui,Zona Media,climática,Sequía,5,3,2,10,Lavandero; San Clemente; Las Mercedes y Ambuqui,
+Ecuador,Ambuqui,Zona Media,climática,Heladas,3,2,1,6,Lavandero; San Clemente; Las Mercedes y Ambuqui,
+Ecuador,Ambuqui,Zona Media,no-climática,Deforestación,3,2,1,6,Lavandero; San Clemente; Las Mercedes y Ambuqui,Df
+Ecuador,Ambuqui,Zona Baja,climática,Olas de calor,2,1,1,4,Carpuela; Chota; Juncal; Charguayacu,
+Ecuador,Ambuqui,Zona Baja,no-climática,Relleno sanitario,3,3,2,8,Espadillas; San Alfonso; El Refugio; Bermejal; Ramal; Chota,Acbs
+Ecuador,Ambuqui,Zona Baja,climática,Desbordamiento del río,3,3,0,6,Chalguayacu; Carpuela; El Ramal,Adr
+Ecuador,Ambuqui,Zona Baja,no-climática,Contaminación de agua,3,2,1,6,Carpuela; Chota; Juncal; Charguayacu,
+Ecuador,Ambuqui,Zona Baja,no-climática,Uso inadecuado de agroquímicos,3,3,1,7,Carpuela; Bermejal; Espadillas; El Ramal; San Alfonso,Aagr
+Ecuador,Ambuqui,Zona Baja,climática,Sequía,2,2,1,5,Chalguayacu; La Playa; Carpuela; Espadillas; Bermejal; San Alfonso,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,
+,,,,,,,,0,,

@@ -1,0 +1,134 @@
+paisaje,grupo,medio_de_vida,codigo_medio_de_vida,codigo_mapa,tenencia,tamano,porcentaje
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Propio,pequeño,25%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Herencia,pequeño,25%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Posesión,pequeño,50%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Propio,mediano,50%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Herencia,mediano,35%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Posesión,mediano,15%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Propio,grande,90%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Herencia,grande,5%
+Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Posesión,grande,5%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Propio,pequeño,25%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Herencia,pequeño,25%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Posesión,pequeño,50%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Propio,mediano,50%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Herencia,mediano,35%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Posesión,mediano,15%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Propio,grande,90%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Herencia,grande,5%
+Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Posesión,grande,5%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Propio,pequeño,25%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Herencia,pequeño,25%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Posesión,pequeño,50%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Propio,mediano,50%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Herencia,mediano,35%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Posesión,mediano,15%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Propio,grande,90%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Herencia,grande,5%
+Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Posesión,grande,5%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Propio,pequeño,25%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Herencia,pequeño,25%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Posesión,pequeño,50%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Propio,mediano,50%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Herencia,mediano,35%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Posesión,mediano,15%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Propio,grande,90%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Herencia,grande,5%
+Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Posesión,grande,5%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Propio,pequeño,25%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Herencia,pequeño,25%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Posesión,pequeño,50%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Propio,mediano,50%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Herencia,mediano,35%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Posesión,mediano,15%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Propio,grande,90%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Herencia,grande,5%
+Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Posesión,grande,5%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Propio,pequeño,25%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Herencia,pequeño,25%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Posesión,pequeño,50%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Propio,mediano,50%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Herencia,mediano,35%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Posesión,mediano,15%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Propio,grande,90%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Herencia,grande,5%
+Ambuqui,Zona Alta,Gallinas,Ga,Ga,Posesión,grande,5%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Propio,pequeño,70%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Herencia,pequeño,25%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Arriendo,pequeño,5%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Propio,mediano,50%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Herencia,mediano,45%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Arriendo,mediano,5%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Propio,grande,50%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Herencia,grande,50%
+Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Arriendo,grande,0%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Propio,pequeño,70%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Herencia,pequeño,25%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Arriendo,pequeño,5%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Propio,mediano,50%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Herencia,mediano,45%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Arriendo,mediano,5%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Propio,grande,50%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Herencia,grande,50%
+Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Arriendo,grande,0%
+Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Propio,pequeño,80%
+Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Herencia,pequeño,20%
+Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Propio,mediano,90%
+Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Herencia,mediano,10%
+Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Propio,grande,100%
+Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Herencia,grande,0%
+Ambuqui,Zona Media,Limón,Ag_Lm,Lm,Propio,pequeño,80%
+Ambuqui,Zona Media,Limón,Ag_Lm,Lm,Herencia,pequeño,20%
+Ambuqui,Zona Media,Limón,Ag_Lm,Lm,Propio,mediano,90%
+Ambuqui,Zona Media,Limón,Ag_Lm,Lm,Herencia,mediano,10%
+Ambuqui,Zona Media,Limón,Ag_Lm,Lm,Propio,grande,100%
+Ambuqui,Zona Media,Limón,Ag_Lm,Lm,Herencia,grande,0%
+Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Propio,pequeño,80%
+Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Herencia,pequeño,20%
+Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Propio,mediano,90%
+Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Herencia,mediano,10%
+Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Propio,grande,100%
+Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Herencia,grande,0%
+Ambuqui,Zona Media,Limón,Mg_Lm,Lm,Propio,pequeño,80%
+Ambuqui,Zona Media,Limón,Mg_Lm,Lm,Herencia,pequeño,20%
+Ambuqui,Zona Media,Limón,Mg_Lm,Lm,Propio,mediano,90%
+Ambuqui,Zona Media,Limón,Mg_Lm,Lm,Herencia,mediano,10%
+Ambuqui,Zona Media,Limón,Mg_Lm,Lm,Propio,grande,100%
+Ambuqui,Zona Media,Limón,Mg_Lm,Lm,Herencia,grande,0%
+Ambuqui,Zona Media,Gallinas,Ga,Ga,Propio,pequeño,80%
+Ambuqui,Zona Media,Gallinas,Ga,Ga,Herencia,pequeño,20%
+Ambuqui,Zona Media,Gallinas,Ga,Ga,Propio,mediano,90%
+Ambuqui,Zona Media,Gallinas,Ga,Ga,Herencia,mediano,10%
+Ambuqui,Zona Media,Gallinas,Ga,Ga,Propio,grande,100%
+Ambuqui,Zona Media,Gallinas,Ga,Ga,Herencia,grande,0%
+Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,Propio,pequeño,100%
+Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,Propio,mediano,100%
+Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,Propio,grande,100%
+Ambuqui,Zona Baja,Limón,Mg_Lm,Lm,Propio,pequeño,100%
+Ambuqui,Zona Baja,Limón,Mg_Lm,Lm,Propio,mediano,100%
+Ambuqui,Zona Baja,Limón,Mg_Lm,Lm,Propio,grande,100%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Propio,pequeño,30%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Al Partir,pequeño,20%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Arriendo,pequeño,50%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Propio,mediano,30%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Al Partir,mediano,20%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Arriendo,mediano,50%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Propio,grande,30%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Al Partir,grande,20%
+Ambuqui,Zona Baja,Fréjol,Fr,Fr,Arriendo,grande,50%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Propio,pequeño,10%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Al Partir,pequeño,40%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Arriendo,pequeño,50%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Propio,mediano,10%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Al Partir,mediano,40%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Arriendo,mediano,50%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Propio,grande,10%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Al Partir,grande,40%
+Ambuqui,Zona Baja,Pimiento,Pi,Pi,Arriendo,grande,50%
+Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,Propio,pequeño,100%
+Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,Propio,mediano,100%
+Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,Propio,grande,100%
+Ambuqui,Zona Baja,Limón,Ag_Lm,Lm,Propio,pequeño,100%
+Ambuqui,Zona Baja,Limón,Ag_Lm,Lm,Propio,mediano,100%
+Ambuqui,Zona Baja,Limón,Ag_Lm,Lm,Propio,grande,100%
+Ambuqui,Zona Baja,Flor de Jamaica,Ja,Ja,Propio,pequeño,100%

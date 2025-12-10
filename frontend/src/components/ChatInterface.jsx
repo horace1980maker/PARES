@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm';
 
 import config from '../config';
 
-const ChatInterface = ({ selectedOrg, onClose }) => {
+const ChatInterface = ({ selectedOrg, selectedCountry, onClose }) => {
     const { t, i18n } = useTranslation();
     const [isMinimized, setIsMinimized] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -28,7 +28,8 @@ const ChatInterface = ({ selectedOrg, onClose }) => {
                 },
                 body: JSON.stringify({
                     organizacion: selectedOrg.nombre,
-                    mensaje: inputMessage
+                    mensaje: inputMessage,
+                    pais: selectedCountry  // Send country for Hybrid RAG
                 }),
             });
 

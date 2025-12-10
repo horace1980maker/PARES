@@ -1,0 +1,49 @@
+fecha,admin0,paisaje,grupo,medio_de_vida,codigo_mdv,codigo_mapa,sistema,uso_final,cv_importancia,cv_producto,cv_mercado
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Maiz; trigo y arveja,comercial,3,Maíz en grano o harinas,local
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Maiz; trigo y arveja,comercial,3,Maíz en grano o harinas,regional
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Maiz,Mz_Tr_Ar,Mz,Maiz; trigo y arveja,autoconsumo,3,Maíz en grano o harinas,
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Maiz; trigo y arveja,comercial,3,Trigo pelado; machica o harina de trigo,local
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Maiz; trigo y arveja,comercial,3,Trigo pelado; machica o harina de trigo,regional
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Trigo,Mz_Tr_Ar,Tr,Maiz; trigo y arveja,autoconsumo,3,Trigo pelado; machica o harina de trigo,
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Maiz; trigo y arveja,comercial,3,Arveja tierna y seca.,local
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Maiz; trigo y arveja,comercial,3,Arveja tierna y seca.,regional
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Arveja,Mz_Tr_Ar,Ar,Maiz; trigo y arveja,autoconsumo,3,Arveja tierna y seca.,
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Ganaderia y borregos,comercial,3,Carne,local
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Ganaderia,Gn_Br,Gn,Ganaderia y borregos,comercial,3,Carne,regional
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Ganaderia y borregos,comercial,3,Carne; lana y abono,local
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Ganaderia y borregos,comercial,3,Carne; lana y abono,regional
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Borregos,Gn_Br,Br,Ganaderia y borregos,autoconsumo,3,Carne; lana y abono,
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Ga,Gallinas,comercial,1,Carne; huevos y abono,local
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Ga,Gallinas,comercial,1,Carne; huevos y abono,regional
+12/05/2025,Ecuador,Ambuqui,Zona Alta,Gallinas,Ga,Ga,Gallinas,autoconsumo,1,Carne; huevos y abono,
+12/05/2025,Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Turismo comunitario y ovos,comercial,2,Alimentación; artesanias; productos agrícolas; piscinas; actividades culturales y senderismo,local
+12/05/2025,Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Turismo comunitario y ovos,comercial,2,Alimentación; artesanias; productos agrícolas; piscinas; actividades culturales y senderismo,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Media,Turismo comunitario,Tc_Ov,Tc,Turismo comunitario y ovos,comercial,2,Alimentación; artesanias; productos agrícolas; piscinas; actividades culturales y senderismo,exportación
+12/05/2025,Ecuador,Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Turismo comunitario y ovos,comercial,2,Fruto; helado; vino; mermeladas; pulpas,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Media,Ovos,Tc_Ov,Ov,Turismo comunitario y ovos,autoconsumo,2,Fruto; helado; vino; mermeladas; pulpas,
+12/05/2025,Ecuador,Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Aguacate y limon,comercial,2,Fruto; pulpa; helados y aceite,exportación
+12/05/2025,Ecuador,Ambuqui,Zona Media,Aguacate,Ag_Lm,Ag,Aguacate y limon,autoconsumo,2,Fruto; pulpa; helados y aceite,
+12/05/2025,Ecuador,Ambuqui,Zona Media,Limon,Ag_Lm,Lm,Aguacate y limon,comercial,1,Fruto,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Media,Limon,Ag_Lm,Lm,Aguacate y limon,autoconsumo,1,Fruto,
+12/05/2025,Ecuador,Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Mango y limon,comercial,2,Fruto en mallas; gavetas y cartones; pulpa; helados; mermelada; vino; fruta deshidratada,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Mango y limon,comercial,2,Fruto en mallas; gavetas y cartones; pulpa; helados; mermelada; vino; fruta deshidratada,exportación
+12/05/2025,Ecuador,Ambuqui,Zona Media,Mango,Mg_Lm,Mg,Mango y limon,autoconsumo,2,Fruto en mallas; gavetas y cartones; pulpa; helados; mermelada; vino; fruta deshidratada,
+12/05/2025,Ecuador,Ambuqui,Zona Media,Limon,Mg_Lm,Lm,Mango y limon,comercial,1,Fruto,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Media,Limon,Mg_Lm,Lm,Mango y limon,autoconsumo,1,Fruto,
+12/05/2025,Ecuador,Ambuqui,Zona Media,Gallinas,Ga,Ga,Gallinas,comercial,1,Carne; huevos y abono,local
+12/05/2025,Ecuador,Ambuqui,Zona Media,Gallinas,Ga,Ga,Gallinas,autoconsumo,1,Carne; huevos y abono,
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,Mango y limon,comercial,2,Fruto en mallas y gavetas,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Mango,Mg_Lm,Mg,Mango y limon,autoconsumo,2,Fruto en mallas y gavetas,
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Limon,Mg_Lm,Lm,Mango y limon,comercial,2,Fruto,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Limon,Mg_Lm,Lm,Mango y limon,autoconsumo,2,Fruto,
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Frejol,Fr,Fr,Frejol,comercial,2,Bultos de fréjol tierno y en quintales fréjol seco.,local
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Frejol,Fr,Fr,Frejol,comercial,2,Bultos de fréjol tierno y en quintales fréjol seco.,nacional
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Frejol,Fr,Fr,Frejol,autoconsumo,2,Bultos de fréjol tierno y en quintales fréjol seco.,
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Pi,Pimiento,comercial,2,Verdura a pie de finca,local
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Pimiento,Pi,Pi,Pimiento,autoconsumo,2,Verdura a pie de finca,
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,Aguacate y limon,comercial,2,Fruto en gavetas a pie de finca,local
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Aguacate,Ag_Lm,Ag,Aguacate y limon,autoconsumo,2,Fruto en gavetas a pie de finca,
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Limon,Ag_Lm,Lm,Aguacate y limon,comercial,1,Fruto,local
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Limon,Ag_Lm,Lm,Aguacate y limon,autoconsumo,1,Fruto,
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Flor de Jamaica,Ja,Ja,Flor de jamaica,comercial,2,Venta de flor fresca y seca a pie da finca,local
+12/05/2025,Ecuador,Ambuqui,Zona Baja,Flor de Jamaica,Ja,Ja,Flor de jamaica,autoconsumo,2,Venta de flor fresca y seca a pie da finca,

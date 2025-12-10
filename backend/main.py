@@ -3,9 +3,263 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import os
+import csv
+import glob
 from dotenv import load_dotenv
 from document_manager import DocumentManager
 from rag_processor import RAGProcessor
+
+# Map organization names to folder names
+ORG_NAME_TO_FOLDER = {
+    # Colombia
+    "Corporación Biocomercio": "Corporación Biocomercio",
+    # Ecuador
+    "Tierra Viva": "TIERRA VIVA",
+    "Corporación Toisán": "Corporación Toisán",
+    # Mexico
+    "CECROPIA": "CECROPIA",
+    "FONCET": "FONCET",
+    # Honduras
+    "Fundación PUCA": "Fundación PUCA",
+    "CODDEFFAGOLF": "CODDEFFAGOLF",
+    "FENAPROCACAHO": "FENAPROCACAHO",
+    # El Salvador
+    "Asociación ADEL LA Unión": "Asociación ADEL LA Unión",
+    # Guatemala
+    "Defensores de la Naturaleza": "Defensores de la Naturaleza",
+    "ASOVERDE": "ASOVERDE",
+    "ECO": "ECO"
+}
+
+def load_organization_csvs(org_folder: str) -> str:
+    """
+    Load all CSV files from an organization's CVS folder.
+    Returns formatted text for RAG context.
+    """
+    # Path to organization's CVS folder
+    cvs_path = os.path.join(os.path.dirname(__file__), 'documents', 'orgs', org_folder, 'CVS')
+    
+    if not os.path.exists(cvs_path):
+        print(f"CVS folder not found: {cvs_path}")
+        return ""
+    
+    # Find all CSV files
+    csv_files = glob.glob(os.path.join(cvs_path, '*.csv'))
+    
+    if not csv_files:
+        print(f"No CSV files found in: {cvs_path}")
+        return ""
+    
+    print(f"Found {len(csv_files)} CSV files in {cvs_path}")
+    
+    formatted_parts = []
+    
+    for csv_file in csv_files:
+        filename = os.path.basename(csv_file)
+        
+        # Skip the variables/dictionary file
+        if 'variables' in filename.lower():
+            continue
+        
+        # Determine the type from filename
+        file_type = "DATOS"
+        if 'amenaza' in filename.lower():
+            file_type = "AMENAZAS"
+        elif 'ecosistema' in filename.lower():
+            file_type = "ECOSISTEMAS"
+        elif 'priorizacion' in filename.lower():
+            file_type = "PRIORIZACIÓN DE MEDIOS DE VIDA"
+        elif 'medios_vida' in filename.lower() or 'medio_de_vida' in filename.lower():
+            file_type = "MEDIOS DE VIDA"
+        elif 'servicios_ecosistemicos' in filename.lower():
+            file_type = "SERVICIOS ECOSISTÉMICOS"
+        elif 'caracterizacion' in filename.lower():
+            file_type = "CARACTERIZACIÓN DE MEDIOS DE VIDA"
+        
+        try:
+            with open(csv_file, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+            
+            if not rows:
+                continue
+            
+            # Get column names for context
+            columns = list(rows[0].keys()) if rows else []
+            
+            formatted_parts.append(f"\n\n=== {file_type} (Fuente: {filename}) ===")
+            
+            # Format based on file type
+            if 'amenaza' in filename.lower():
+                formatted_parts.append(format_amenazas(rows))
+            elif 'ecosistema' in filename.lower():
+                formatted_parts.append(format_ecosistemas(rows))
+            elif 'priorizacion' in filename.lower():
+                formatted_parts.append(format_priorizacion(rows))
+            elif 'medios_vida' in filename.lower() and 'servicios' in filename.lower():
+                formatted_parts.append(format_medios_vida_ses(rows))
+            elif 'servicios_ecosistemicos' in filename.lower():
+                formatted_parts.append(format_servicios_ecosistemicos(rows))
+            elif 'caracterizacion' in filename.lower():
+                formatted_parts.append(format_caracterizacion(rows))
+            else:
+                # Generic formatting
+                formatted_parts.append(format_generic(rows, columns))
+        
+        except Exception as e:
+            print(f"Error loading CSV {filename}: {e}")
+            continue
+    
+    return "\n".join(formatted_parts)
+
+
+def format_amenazas(rows: list) -> str:
+    """Format threats/amenazas data"""
+    parts = []
+    # Group by zone
+    by_zone = {}
+    for row in rows:
+        if not row.get('amenaza'):  # Skip empty rows
+            continue
+        zona = row.get('grupo', 'General')
+        if zona not in by_zone:
+            by_zone[zona] = []
+        by_zone[zona].append(row)
+    
+    for zona, items in by_zone.items():
+        parts.append(f"\n[{zona}]")
+        for item in items:
+            tipo = item.get('tipo_amenaza', '')
+            amenaza = item.get('amenaza', '')
+            magnitud = item.get('magnitud', '')
+            sitios = item.get('sitios_afectados', '')
+            parts.append(f"  • {amenaza} ({tipo}): Magnitud {magnitud}, Sitios: {sitios}")
+    
+    return "\n".join(parts)
+
+
+def format_ecosistemas(rows: list) -> str:
+    """Format ecosystems data"""
+    parts = []
+    for row in rows:
+        if not row.get('ecosistema'):
+            continue
+        eco = row.get('ecosistema', '')
+        zona = row.get('grupo', '')
+        salud = row.get('escala_salud', row.get('es_salud', ''))
+        degradacion = row.get('causas_degradacion', row.get('causas_deg', ''))
+        medios = row.get('medio_de_vida_relacionado', '')
+        parts.append(f"  • {eco} ({zona}): Salud={salud}, Medios relacionados: {medios}")
+        if degradacion:
+            parts.append(f"    Causas de degradación: {degradacion}")
+    
+    return "\n".join(parts)
+
+
+def format_priorizacion(rows: list) -> str:
+    """Format livelihood prioritization with scores"""
+    parts = []
+    for row in rows:
+        if not row.get('medio_de_vida'):
+            continue
+        mdv = row.get('medio_de_vida', '')
+        zona = row.get('grupo', '')
+        i_total = row.get('indice_total', row.get('i_total', ''))
+        i_seg = row.get('indice_seguridad_alimentaria', row.get('i_seg_alim', ''))
+        i_amb = row.get('indice_ambiente', row.get('i_ambiente', ''))
+        i_incl = row.get('indice_inlcusion', row.get('i_inclusion', ''))
+        parts.append(f"  • {mdv} ({zona}): Total={i_total}, Seg.Alim={i_seg}, Ambiente={i_amb}, Inclusión={i_incl}")
+    
+    return "\n".join(parts)
+
+
+def format_medios_vida_ses(rows: list) -> str:
+    """Format livelihoods and ecosystem services list"""
+    parts = []
+    by_zone = {}
+    for row in rows:
+        if not row.get('nombre'):
+            continue
+        zona = row.get('grupo', 'General')
+        if zona not in by_zone:
+            by_zone[zona] = {'medio de vida': [], 'ecosistema': []}
+        
+        elemento = row.get('elemento_SES', '')
+        nombre = row.get('nombre', '')
+        uso = row.get('uso_final_medio_de_vida', '')
+        
+        if 'ecosistema' in elemento.lower():
+            by_zone[zona]['ecosistema'].append(nombre)
+        else:
+            by_zone[zona]['medio de vida'].append(f"{nombre} ({uso})")
+    
+    for zona, data in by_zone.items():
+        parts.append(f"\n[{zona}]")
+        if data['medio de vida']:
+            parts.append(f"  Medios de vida: {', '.join(set(data['medio de vida']))}")
+        if data['ecosistema']:
+            parts.append(f"  Ecosistemas: {', '.join(set(data['ecosistema']))}")
+    
+    return "\n".join(parts)
+
+
+def format_servicios_ecosistemicos(rows: list) -> str:
+    """Format detailed ecosystem services"""
+    parts = []
+    for row in rows:
+        if not row.get('medio_de_vida_relacionado'):
+            continue
+        zona = row.get('grupo', '')
+        elemento = row.get('elemento_se', '')
+        mdv = row.get('medio_de_vida_relacionado', '')
+        acceso = row.get('accesso', '')
+        barreras = row.get('barreras', '')
+        inclusion = row.get('inclusion', '')
+        
+        parts.append(f"  • [{zona}] {mdv} - {elemento}: Acceso={acceso}")
+        if barreras and barreras != 'N/A':
+            parts.append(f"    Barreras: {barreras}")
+        if inclusion:
+            parts.append(f"    Beneficiarios: {inclusion}")
+    
+    return "\n".join(parts)
+
+
+def format_caracterizacion(rows: list) -> str:
+    """Format livelihood characterization"""
+    parts = []
+    seen = set()
+    for row in rows:
+        mdv = row.get('medio_de_vida', '')
+        if not mdv or mdv in seen:
+            continue
+        seen.add(mdv)
+        
+        zona = row.get('grupo', '')
+        sistema = row.get('sistema', '')
+        producto = row.get('cv_producto', '')
+        mercado = row.get('cv_mercado', '')
+        importancia = row.get('cv_importancia', '')
+        
+        parts.append(f"  • {mdv} ({zona}): Sistema={sistema}, Producto={producto}, Mercado={mercado}, Importancia={importancia}")
+    
+    return "\n".join(parts)
+
+
+def format_generic(rows: list, columns: list) -> str:
+    """Generic formatting for unknown CSV types"""
+    parts = []
+    # Show first 10 rows max
+    for row in rows[:10]:
+        # Get non-empty values
+        values = [f"{k}={v}" for k, v in row.items() if v and v.strip()]
+        if values:
+            parts.append(f"  • {'; '.join(values[:5])}")
+    
+    if len(rows) > 10:
+        parts.append(f"  ... y {len(rows) - 10} registros más")
+    
+    return "\n".join(parts)
 
 # Cargar variables de entorno desde .env
 load_dotenv()
@@ -150,6 +404,7 @@ ORGANIZACIONES = {
 class ChatRequest(BaseModel):
     organizacion: str
     mensaje: str
+    pais: Optional[str] = None  # Country for Hybrid RAG
 
 class ChatResponse(BaseModel):
     respuesta: str
@@ -182,75 +437,70 @@ def obtener_organizaciones(nombre_pais: str):
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
-    """Endpoint de chat RAG"""
+    """Endpoint de chat RAG Híbrido - combina PDFs + CSVs de organización"""
     try:
         # Inicializar procesador RAG
         rag = RAGProcessor()
         
-        # Mapeo de nombres de organizaciones a IDs de carpetas
-        # El frontend envía nombres como "Corporación Biocomercio", "Tierra Viva", etc.
-        # Las carpetas en backend/documents/orgs/ tienen nombres exactos
-        ORG_NAME_TO_FOLDER = {
-            # Colombia
-            "Corporación Biocomercio": "Corporación Biocomercio",
-            # Ecuador
-            "Tierra Viva": "TIERRA VIVA",
-            "Corporación Toisán": "Corporación Toisán",
-            # Mexico
-            "CECROPIA": "CECROPIA",
-            "FONCET": "FONCET",
-            # Honduras
-            "Fundación PUCA": "Fundación PUCA",
-            "CODDEFFAGOLF": "CODDEFFAGOLF",
-            "FENAPROCACAHO": "FENAPROCACAHO",
-            # El Salvador
-            "Asociación ADEL LA Unión": "Asociación ADEL LA Unión",
-            # Guatemala
-            "Defensores de la Naturaleza": "Defensores de la Naturaleza",
-            "ASOVERDE": "ASOVERDE",
-            "ECO": "ECO"
-        }
-        
-        # Obtener org_id (folder name) a partir del nombre
+        # Obtener org_folder a partir del nombre (usar mapping global)
         org_folder = ORG_NAME_TO_FOLDER.get(request.organizacion)
         print(f"DEBUG: Request Org='{request.organizacion}' -> Folder/ID='{org_folder}'")
+        
+        # === HYBRID RAG: Load CSV data for organization ===
+        csv_context = ""
+        if org_folder:
+            csv_context = load_organization_csvs(org_folder)
+            if csv_context:
+                print(f"DEBUG: Loaded CSV data for {org_folder} ({len(csv_context)} chars)")
+            else:
+                print(f"DEBUG: No CSV data found for {org_folder}")
         
         if not rag.db:
              return {
                 "respuesta": "El sistema de conocimiento aún no está inicializado. Por favor ingesta documentos primero."
             }
 
-        # Usar búsqueda híbrida por niveles
+        # Usar búsqueda híbrida por niveles para PDFs
         if org_folder:
             docs = rag.search_tiered(request.mensaje, org_id=org_folder)
         else:
-            # Fallback a búsqueda general (Tier 2 only effectively)
-            # Podríamos implementar un 'search_global' en rag_processor, 
-            # pero por ahora usaremos search_tiered con un ID dummy o lógica custom.
-            # Simplemente buscaremos en Tier 2.
-            docs = rag.search_tiered(request.mensaje, org_id="GLOBAL_ONLY") # Esto retornará solo Tier 2 si Tier 1 falla o es vacío
-        
-        if not docs:
-            return {
-                "respuesta": f"No encontré información específica sobre '{request.mensaje}' en los documentos."
-            }
+            docs = rag.search_tiered(request.mensaje, org_id="GLOBAL_ONLY")
         
         # Construir contexto ESTRUCTURADO con etiquetas
         contexto_parts = []
+        
+        # === ADD CSV CONTEXT FIRST (Organization survey data) ===
+        if csv_context:
+            contexto_parts.append(
+                f"--- DATOS ESTRUCTURADOS: {request.organizacion} [SURVEY_DATA] ---\n"
+                f"Datos de encuestas y caracterización del territorio incluyendo Medios de Vida, "
+                f"Amenazas, Ecosistemas, Servicios Ecosistémicos, y Priorización:\n{csv_context}\n"
+            )
+        
+        # === ADD PDF DOCUMENTS ===
         for doc in docs:
             source = os.path.basename(doc.metadata.get('source', 'unknown'))
             tier = doc.metadata.get('retrieval_tier', 'Support')
-            # Etiquetado claro para el LLM
             tag = "ORGANIZATION_DOC (PRIORITY)" if "Tier 1" in tier else "GLOBAL_DOC (SUPPORT)"
             
             contexto_parts.append(
                 f"--- SOURCE: {source} [{tag}] ---\n{doc.page_content}\n"
             )
         
+        if not contexto_parts:
+            return {
+                "respuesta": f"No encontré información específica sobre '{request.mensaje}' en los documentos ni datos del país."
+            }
+        
         contexto = "\n".join(contexto_parts)
         
         # Lista de fuentes para el frontend (Markdown)
         fuentes_unicas = {}
+        
+        # Add CSV as source if used
+        if csv_context:
+            fuentes_unicas["org_csv_data"] = f"* 📊 Datos estructurados de {request.organizacion} (CSV)"
+        
         for doc in docs:
             name = os.path.basename(doc.metadata.get('source', 'unknown'))
             tier = doc.metadata.get('retrieval_tier', 'Unknown')
@@ -270,20 +520,31 @@ def chat(request: ChatRequest):
             if api_key:
                 llm = ChatOpenAI(
                     model="gpt-4o-mini",
-                    temperature=0.0, # Rigor máximo
+                    temperature=0.0,
                     openai_api_key=api_key
                 )
                 
-                # Prompt con "Methodological Backbone" y Thinking Block
+                # Updated prompt for Hybrid RAG with Organization CSVs
                 prompt = f"""You are an Expert Consultant for the PARES Project (Conservation & Sustainable Development).
 
 ROLE & METHODOLOGY:
-1. **Understand**: Analyze the User's question and the context.
-2. **Define**: Identify key concepts (e.g., specific Org goals vs. global NbS definitions).
-3. **Check Evidence**: Compare [ORGANIZATION_DOC] vs [GLOBAL_DOC]. 
-   - RULE: [ORGANIZATION_DOC] is the TRUTH for this specific organization.
-   - RULE: Use [GLOBAL_DOC] only to fill gaps or explain technical concepts.
-4. **Synthesize**: Answer the user.
+1. **Understand**: Analyze the User's question and ALL available context.
+2. **Check Evidence Sources**: You have access to THREE types of data:
+   - [SURVEY_DATA]: Structured data from participatory surveys about the organization's territory:
+     * Medios de Vida (livelihoods): crops, livestock, tourism, products, markets
+     * Amenazas (threats): climate and non-climate threats, magnitude, affected sites
+     * Ecosistemas (ecosystems): health status, degradation causes
+     * Servicios Ecosistémicos: provisions, flows, barriers, beneficiaries
+     * Priorización: livelihood priority scores (food security, environment, inclusion)
+   - [ORGANIZATION_DOC]: PDF documents from the organization (HIGHEST PRIORITY for org-specific questions)
+   - [GLOBAL_DOC]: General reference documents (use for context/definitions)
+3. **Synthesize**: Combine insights from ALL relevant sources.
+
+PRIORITY RULES:
+- For QUANTITATIVE questions (what threats, what livelihoods, what ecosystems, scores): Prefer [SURVEY_DATA]
+- For QUALITATIVE questions (what does org do, methodologies, approaches): Prefer [ORGANIZATION_DOC]
+- For DEFINITIONS or GENERAL CONTEXT: Use [GLOBAL_DOC]
+- ALWAYS cite specific data points from survey data when available
 
 CONTEXT:
 {contexto}
@@ -292,8 +553,9 @@ USER QUESTION: {request.mensaje}
 TARGET ORGANIZATION: {request.organizacion}
 
 INSTRUCTIONS:
-- You MUST write a <thinking> block first. Inside, explain your Phase analysis and evidence check.
+- You MUST write a <thinking> block first. Inside, explain which sources are most relevant.
 - Then, write your final response in Spanish (Professional tone).
+- When citing [SURVEY_DATA], be specific: mention zone names, threat names, livelihood names, scores.
 - Do NOT write a "Sources" list. I will append it manually.
 
 RESPONSE:"""
@@ -308,11 +570,6 @@ RESPONSE:"""
                 
                 # Append Real Sources (Markdown)
                 respuesta_final = f"{clean_response}\n\n**Fuentes Consultadas:**\n{markdown_sources}"
-                
-                return {"respuesta": respuesta_final}
-                
-                # Agregar fuentes
-                respuesta_final = f"{respuesta_sintetizada}\n\n---\n*Información basada en: {', '.join(fuentes)}*"
                 
                 return {"respuesta": respuesta_final}
             
