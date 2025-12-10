@@ -631,29 +631,7 @@ def obtener_insight_territorial_organizacion(request: ChatRequest):
         # Inicializar procesador RAG
         rag = RAGProcessor()
         
-        # Mapeo de nombres de organizaciones a IDs de carpetas
-        ORG_NAME_TO_FOLDER = {
-            # Colombia
-            "Corporación Biocomercio": "Corporación Biocomercio",
-            # Ecuador
-            "Tierra Viva": "TIERRA VIVA",
-            "Corporación Toisán": "Corporación Toisán",
-            # Mexico
-            "CECROPIA": "CECROPIA",
-            "FONCET": "FONCET",
-            # Honduras
-            "Fundación PUCA": "Fundación PUCA",
-            "CODDEFFAGOLF": "CODDEFFAGOLF",
-            "FENAPROCACAHO": "FENAPROCACAHO",
-            # El Salvador
-            "Asociación ADEL LA Unión": "Asociación ADEL LA Unión",
-            # Guatemala
-            "Defensores de la Naturaleza": "Defensores de la Naturaleza",
-            "ASOVERDE": "ASOVERDE",
-            "ECO": "ECO"
-        }
-        
-        # Obtener org_id (folder name) a partir del nombre
+        # Obtener org_id (folder name) a partir del nombre (usando mapeo global)
         org_folder = ORG_NAME_TO_FOLDER.get(request.organizacion)
         
         if not rag.db:
@@ -780,7 +758,7 @@ IMPORTANTE: Si alguna sección no tiene información en los documentos, escribe 
             
             return {
                 "respuesta": f"**Análisis Territorial - {request.organizacion}**\n\n"
-                            f"Error al buscar información en los documentos. Por favor intente nuevamente."
+                            f"Error al buscar información en los documentos: {str(search_error)}"
             }
     
     except Exception as e:
@@ -790,6 +768,7 @@ IMPORTANTE: Si alguna sección no tiene información en los documentos, escribe 
         
         return {
             "respuesta": f"**Análisis Territorial**\n\n"
-                        f"Error generando el análisis. Por favor intente nuevamente."
+                        f"Error generando el análisis: {str(e)}\n\n"
+                        f"Posible causa: Dependencias faltantes (langchain-openai) o problemas de configuración."
         }
 
