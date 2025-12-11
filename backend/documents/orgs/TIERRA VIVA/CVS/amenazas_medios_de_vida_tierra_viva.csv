@@ -1,0 +1,14 @@
+﻿FID,id,pais,organizaci,mapa,codigo_MV,amenaza,tipo,s__econom,s__alimen,s__sanit,s__amb,s__perso,s__comuni,s__politi,xcoord,ycoord,x,y
+1,1,Ecuador,Tierra Viva,Tierra Viva,"Mg, Lm, Fr, Ja, Ag, Pi, Tc",Contaminación,No climática,2,2,3,3,3,3,3,1500789.88720645,51463.6384931224,-78.0428212081621,0.459891226899942
+2,2,Ecuador,Tierra Viva,Tierra Viva,"Pi, Ja, Fr",Desbordamiento de ríos,Climática,2,1,1,2,0,2,0,1503722.77728261,53086.0622413309,-78.0167692135824,0.474355317190347
+3,3,Ecuador,Tierra Viva,Tierra Viva,"Pi, Ja, Fr",Desbordamiento de ríos,Climática,2,1,1,2,0,2,0,1506643.48060401,50527.1193155881,-77.9908748709726,0.451457111634971
+4,4,Ecuador,Tierra Viva,Tierra Viva,"Pi, Ja, Fr",Desbordamiento de ríos,Climática,2,1,1,2,0,2,0,1509161.98182516,46374.8639821249,-77.9685671115578,0.414331125869065
+5,5,Ecuador,Tierra Viva,Tierra Viva,"Ag, Lm",Sequía,Climática,2,3,1,3,3,3,2,1504468.65365162,45906.3515543132,-78.0102266551616,0.410192867975175
+6,6,Ecuador,Tierra Viva,Tierra Viva,Mg,Deforestación,No climática,0,0,1,2,1,1,0,1503506.20197623,44904.0426838174,-78.0187792766849,0.401246341262796
+7,7,Ecuador,Tierra Viva,Tierra Viva,"Ag, Lm",Sequía,Climática,2,3,1,3,3,3,2,1504196.22257864,43290.4766592325,-78.0126702613061,0.386821524384565
+8,8,Ecuador,Tierra Viva,Tierra Viva,Mg,Deforestación,No climática,0,0,1,2,1,1,0,1503646.14731346,42782.6608258888,-78.0175574736052,0.382289131460729
+9,9,Ecuador,Tierra Viva,Tierra Viva,"Ga, Br",Quemas,No climática,3,2,2,3,1,1,0,1506712.54080904,43418.3272304021,-77.9903352258255,0.38793981875296
+10,10,Ecuador,Tierra Viva,Tierra Viva,"Ga, Br",Quemas,No climática,3,2,2,3,1,1,0,1502665.91414543,40388.3322087957,-78.0262798840378,0.360903078228871
+11,11,Ecuador,Tierra Viva,Tierra Viva,"Ga, Br",Quemas,No climática,3,2,2,3,1,1,0,1504953.21877764,37583.1092788083,-78.0060018942871,0.335817167542452
+12,12,Ecuador,Tierra Viva,Tierra Viva,"Mz, Tr, Ar",Sequía,Climática,3,3,3,3,1,3,3,1506781.91381717,42911.1339598591,-77.9897243242862,0.383407426424867
+13,13,Ecuador,Tierra Viva,Tierra Viva,"Mz, Tr, Ar",Sequía,Climática,3,3,3,3,1,3,3,1506063.1483177,37828.9484179767,-77.9961486436762,0.338004551233483

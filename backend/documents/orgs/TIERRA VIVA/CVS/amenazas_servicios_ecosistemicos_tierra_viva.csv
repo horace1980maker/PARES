@@ -1,0 +1,23 @@
+﻿FID,id,país,organizaci,mapa,código SE,amenaza,tipo,tipo amena,xcoord,ycoord,x,y
+1,1,Ecuador,Tierra Viva,Tierra Viva,P2,Contaminación del agua,No climática,Amenazas que afectan suelo y agua,1501634.38705878,52310.9544486462,-78.0353153148652,0.467453324709368
+2,2,Ecuador,Tierra Viva,Tierra Viva,P2,Contaminación del agua,No climática,Amenazas que afectan suelo y agua,1501627.74487734,50542.3662429434,-78.0353941408654,0.451649220078498
+3,3,Ecuador,Tierra Viva,Tierra Viva,P2,Contaminación del agua,No climática,Amenazas que afectan suelo y agua,1502877.57529272,52365.4823839462,-78.0242796741944,0.467926264957089
+4,4,Ecuador,Tierra Viva,Tierra Viva,P2,Contaminación del agua,No climática,Amenazas que afectan suelo y agua,1504044.37281539,53143.2680584767,-78.0139140545616,0.47486271820465
+5,5,Ecuador,Tierra Viva,Tierra Viva,P2,Contaminación del agua,No climática,Amenazas que afectan suelo y agua,1507419.06840334,49773.2434099063,-77.9839995856945,0.44471274429392
+6,6,Ecuador,Tierra Viva,Tierra Viva,P3,Sequía,Climática,Exceso de calor,1502238.29517159,52276.4481835635,-78.0299551465398,0.467138031196473
+7,7,Ecuador,Tierra Viva,Tierra Viva,P3,Sequía,Climática,Exceso de calor,1504201.84868402,51546.8018374061,-78.0125345994724,0.460595687601924
+8,8,Ecuador,Tierra Viva,Tierra Viva,P3,Sequía,Climática,Exceso de calor,1509322.72003633,47322.9208753471,-77.9671308206233,0.42279974432446
+9,9,Ecuador,Tierra Viva,Tierra Viva,P3,Sequía,Climática,Exceso de calor,1498445.76197238,52875.7557966727,-78.0636138505641,0.472537430658454
+10,10,Ecuador,Tierra Viva,Tierra Viva,P1,Sequía,Climática,Exceso de calor,1504255.27727439,47806.5811966911,-78.0121010564361,0.427174466977315
+11,11,Ecuador,Tierra Viva,Tierra Viva,P1,Sequía,Climática,Exceso de calor,1504310.04104114,46536.3537872997,-78.0116281004039,0.415823830112377
+12,12,Ecuador,Tierra Viva,Tierra Viva,P1,Sequía,Climática,Exceso de calor,1504480.90194114,48512.5673166676,-78.0100909933141,0.43348036913162
+13,13,Ecuador,Tierra Viva,Tierra Viva,R5,Deforestación,No climática,Amenazas que afectan los ecosistemas en general,1503678.12037302,43787.7768030908,-78.0172641597439,0.391270140259889
+14,14,Ecuador,Tierra Viva,Tierra Viva,R5,Deforestación,No climática,Amenazas que afectan los ecosistemas en general,1502953.47210374,44585.3137735331,-78.023688479139,0.398403723888262
+15,15,Ecuador,Tierra Viva,Tierra Viva,P1,Sequía,Climática,Exceso de calor,1504238.31091779,47127.3092466886,-78.0122587084442,0.421105031266359
+16,16,Ecuador,Tierra Viva,Tierra Viva,P3,Quemas,No climática,Amenazas que afectan los ecosistemas en general,1505225.36795519,37406.9267117422,-78.0035878478874,0.33424067449031
+17,17,Ecuador,Tierra Viva,Tierra Viva,P3,Quemas,No climática,Amenazas que afectan los ecosistemas en general,1503482.30347438,35107.3470975401,-78.0190771578374,0.313706829801389
+18,18,Ecuador,Tierra Viva,Tierra Viva,P1,Quemas,No climática,Amenazas que afectan los ecosistemas en general,1507160.11543494,43262.2151265116,-77.9863643658268,0.386540689205892
+19,19,Ecuador,Tierra Viva,Tierra Viva,P1,Quemas,No climática,Amenazas que afectan los ecosistemas en general,1503086.81720968,40205.7097286449,-78.0225455020596,0.359267471026503
+20,20,Ecuador,Tierra Viva,Tierra Viva,P1,Sequía,Climática,Exceso de calor,1505403.21307797,41725.351216062,-78.0019719147962,0.372825266347361
+21,21,Ecuador,Tierra Viva,Tierra Viva,P1,Sequía,Climática,Exceso de calor,1506887.47977713,40668.231398879,-77.9888079719741,0.363366341541287
+22,22,Ecuador,Tierra Viva,Tierra Viva,P3,Sequía,No climática,Exceso de calor,1505646.88720858,37773.4227986791,-77.999843612656,0.337511897291595

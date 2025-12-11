@@ -1,9 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from 'react-leaflet';
 import { useTranslation } from 'react-i18next';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-const MapComponent = ({ onCountrySelect, selectedCountry }) => {
+// Fix for default marker icon in Leaflet with React
+// Note: In Vite/Webpack, sometimes image paths need specific handling, 
+// but this generic fix usually works for standard setups.
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+L.Marker.prototype.options.icon = DefaultIcon;
+
+const MapComponent = ({ onCountrySelect, selectedCountry, markers = [] }) => {
     const { t } = useTranslation();
     const [geoJsonData, setGeoJsonData] = useState(null);
 
@@ -63,6 +80,16 @@ const MapComponent = ({ onCountrySelect, selectedCountry }) => {
                         onEachFeature={onEachFeature}
                     />
                 )}
+                {markers && markers.map((marker, index) => (
+                    <Marker key={index} position={[marker.lat, marker.lng]}>
+                        <Popup>
+                            <div className="text-sm">
+                                <strong className="block text-nature-800 mb-1">{marker.label}</strong>
+                                {marker.description && <span className="text-gray-600">{marker.description}</span>}
+                            </div>
+                        </Popup>
+                    </Marker>
+                ))}
             </MapContainer>
         </div>
     );

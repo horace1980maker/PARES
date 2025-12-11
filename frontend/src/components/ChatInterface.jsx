@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm';
 
 import config from '../config';
 
-const ChatInterface = ({ selectedOrg, selectedCountry, onClose }) => {
+const ChatInterface = ({ selectedOrg, selectedCountry, onClose, setMapMarkers }) => {
     const { t, i18n } = useTranslation();
     const [isMinimized, setIsMinimized] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -34,7 +34,28 @@ const ChatInterface = ({ selectedOrg, selectedCountry, onClose }) => {
             });
 
             const data = await response.json();
-            const botMessage = { role: 'assistant', content: data.respuesta };
+
+            let finalContent = data.respuesta;
+
+            // Extract map data if present
+            const mapRegex = /```map_data\s*([\s\S]*?)```/;
+            const match = finalContent.match(mapRegex);
+
+            if (match && setMapMarkers) {
+                try {
+                    const mapJson = JSON.parse(match[1]);
+                    if (Array.isArray(mapJson)) {
+                        console.log("Updating map markers:", mapJson);
+                        setMapMarkers(mapJson);
+                        // Remove the JSON block from the message displayed to user
+                        finalContent = finalContent.replace(match[0], '').trim();
+                    }
+                } catch (e) {
+                    console.error("Error parsing map data:", e);
+                }
+            }
+
+            const botMessage = { role: 'assistant', content: finalContent };
             setMessages(prev => [...prev, botMessage]);
         } catch (error) {
             console.error('Error en chat:', error);

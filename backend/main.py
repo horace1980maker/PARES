@@ -3,11 +3,43 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import os
+import sys
 import csv
 import glob
+import logging
 from dotenv import load_dotenv
 from document_manager import DocumentManager
 from rag_processor import RAGProcessor
+
+# Configure logging - force output immediately
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)],
+    force=True  # Override any existing config
+)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Keyword detection for filtering CSV data based on question
+TOPIC_KEYWORDS = {
+    "ecosistemas": ["ecosistema", "ecosistemas", "ecosystem", "bosque", "bosques", "manglar", "humedal", "páramo"],
+    "amenazas": ["amenaza", "amenazas", "threat", "riesgo", "peligro", "cambio climático", "deforestación", "sequía", "inundación"],
+    "servicios": ["servicio ecosistémico", "servicios ecosistémicos", "SE", "provisión", "regulación", "cultural"],
+    "medios_vida": ["medio de vida", "medios de vida", "livelihood", "agricultura", "ganadería", "turismo", "artesanía", "pesca"],
+    "conflictos": ["conflicto", "conflictos", "conflict", "tensión", "disputa"]
+}
+
+def detect_question_topics(question: str) -> list:
+    """Detect which topics the question is about based on keywords"""
+    question_lower = question.lower()
+    detected = []
+    for topic, keywords in TOPIC_KEYWORDS.items():
+        for kw in keywords:
+            if kw in question_lower:
+                detected.append(topic)
+                break
+    return detected if detected else ["all"]  # Default to all if no specific topic
 
 # Map organization names to folder names
 ORG_NAME_TO_FOLDER = {
@@ -31,26 +63,33 @@ ORG_NAME_TO_FOLDER = {
     "ECO": "ECO"
 }
 
-def load_organization_csvs(org_folder: str) -> str:
+def load_organization_csvs(org_folder: str, topic_filter: list = None) -> str:
     """
-    Load all CSV files from an organization's CVS folder.
-    Returns formatted text for RAG context.
+    Load CSV files from an organization's CVS folder.
+    Optionally filter by topic to only include relevant data for map markers.
+    
+    Args:
+        org_folder: Name of the organization folder
+        topic_filter: List of topics to include ("ecosistemas", "amenazas", "servicios", "medios_vida", "conflictos")
+                     If None or ["all"], includes all data
     """
     # Path to organization's CVS folder
     cvs_path = os.path.join(os.path.dirname(__file__), 'documents', 'orgs', org_folder, 'CVS')
     
     if not os.path.exists(cvs_path):
-        print(f"CVS folder not found: {cvs_path}")
+        logger.warning(f"CVS folder not found: {cvs_path}")
         return ""
     
     # Find all CSV files
     csv_files = glob.glob(os.path.join(cvs_path, '*.csv'))
     
     if not csv_files:
-        print(f"No CSV files found in: {cvs_path}")
+        logger.warning(f"No CSV files found in: {cvs_path}")
         return ""
     
-    print(f"Found {len(csv_files)} CSV files in {cvs_path}")
+    logger.info(f"Found {len(csv_files)} CSV files in {cvs_path}")
+    if topic_filter and "all" not in topic_filter:
+        logger.info(f"Filtering for topics: {topic_filter}")
     
     formatted_parts = []
     
@@ -60,22 +99,7 @@ def load_organization_csvs(org_folder: str) -> str:
         # Skip the variables/dictionary file
         if 'variables' in filename.lower():
             continue
-        
-        # Determine the type from filename
-        file_type = "DATOS"
-        if 'amenaza' in filename.lower():
-            file_type = "AMENAZAS"
-        elif 'ecosistema' in filename.lower():
-            file_type = "ECOSISTEMAS"
-        elif 'priorizacion' in filename.lower():
-            file_type = "PRIORIZACIÓN DE MEDIOS DE VIDA"
-        elif 'medios_vida' in filename.lower() or 'medio_de_vida' in filename.lower():
-            file_type = "MEDIOS DE VIDA"
-        elif 'servicios_ecosistemicos' in filename.lower():
-            file_type = "SERVICIOS ECOSISTÉMICOS"
-        elif 'caracterizacion' in filename.lower():
-            file_type = "CARACTERIZACIÓN DE MEDIOS DE VIDA"
-        
+            
         try:
             with open(csv_file, 'r', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
@@ -86,31 +110,105 @@ def load_organization_csvs(org_folder: str) -> str:
             
             # Get column names for context
             columns = list(rows[0].keys()) if rows else []
+            keys = set(columns)
+            
+            # Determine type and formatter based on columns
+            file_type = "DATOS"
+            formatter = None
+            file_topic = None  # Track which topic this file belongs to
+            
+            if 'tipo_amenaza' in keys:
+                file_type = "AMENAZAS"
+                formatter = format_amenazas
+                file_topic = "amenazas"
+            elif 'xcoord' in keys or 'ycoord' in keys or ('x' in keys and 'y' in keys):
+                # SE file with coordinates - check filename for topic
+                file_type = "SERVICIOS ECOSISTEMICOS CON UBICACION"
+                formatter = format_se_con_coords
+                fname_lower = filename.lower()
+                if 'ecosistema' in fname_lower:
+                    file_topic = "ecosistemas"
+                elif 'amenaza' in fname_lower:
+                    file_topic = "amenazas"
+                elif 'conflicto' in fname_lower:
+                    file_topic = "conflictos"
+                elif 'medio' in fname_lower or 'vida' in fname_lower:
+                    file_topic = "medios_vida"
+                else:
+                    file_topic = "servicios"
+            elif 'ecosistema' in keys:
+                file_type = "ECOSISTEMAS"
+                formatter = format_ecosistemas
+                file_topic = "ecosistemas"
+            elif 'indice_total' in keys or 'producto_principal' in keys:
+                file_type = "PRIORIZACION DE MEDIOS DE VIDA"
+                formatter = format_priorizacion
+                file_topic = "medios_vida"
+            elif 'elemento_SES' in keys:
+                file_type = "MEDIOS DE VIDA Y SERVICIOS"
+                formatter = format_medios_vida_ses
+                file_topic = "servicios"
+            elif 'elemento_se' in keys:
+                file_type = "SERVICIOS ECOSISTEMICOS DETALLADOS"
+                formatter = format_servicios_ecosistemicos
+                file_topic = "servicios"
+            elif 'cv_producto' in keys or 'codigo_mdv' in keys:
+                 file_type = "CARACTERIZACION DE MEDIOS DE VIDA"
+                 formatter = format_caracterizacion
+                 file_topic = "medios_vida"
+            else:
+                 # Fallback to filename if columns are ambiguous
+                 if 'amenaza' in filename.lower(): 
+                     file_type = "AMENAZAS"
+                     formatter = format_amenazas
+                     file_topic = "amenazas"
+                 elif 'conflicto' in filename.lower():
+                     file_type = "CONFLICTOS"
+                     formatter = lambda r: format_generic(r, columns)
+                     file_topic = "conflictos"
+                 else:
+                     file_type = "OTROS DATOS"
+                     formatter = lambda r: format_generic(r, columns)
+            
+            # Filter by topic if specified
+            if topic_filter and "all" not in topic_filter:
+                if file_topic and file_topic not in topic_filter:
+                    continue  # Skip files that don't match the filter
             
             formatted_parts.append(f"\n\n=== {file_type} (Fuente: {filename}) ===")
             
-            # Format based on file type
-            if 'amenaza' in filename.lower():
-                formatted_parts.append(format_amenazas(rows))
-            elif 'ecosistema' in filename.lower():
-                formatted_parts.append(format_ecosistemas(rows))
-            elif 'priorizacion' in filename.lower():
-                formatted_parts.append(format_priorizacion(rows))
-            elif 'medios_vida' in filename.lower() and 'servicios' in filename.lower():
-                formatted_parts.append(format_medios_vida_ses(rows))
-            elif 'servicios_ecosistemicos' in filename.lower():
-                formatted_parts.append(format_servicios_ecosistemicos(rows))
-            elif 'caracterizacion' in filename.lower():
-                formatted_parts.append(format_caracterizacion(rows))
+            if formatter:
+                formatted_parts.append(formatter(rows))
             else:
-                # Generic formatting
                 formatted_parts.append(format_generic(rows, columns))
-        
+                
         except Exception as e:
-            print(f"Error loading CSV {filename}: {e}")
-            continue
-    
+            print(f"Error reading {filename}: {e}")
+            
     return "\n".join(formatted_parts)
+
+
+def format_se_con_coords(rows: list) -> str:
+    """Format ecosystem services with coordinates (xcoord, ycoord)"""
+    parts = []
+    for row in rows:
+        se = row.get('SE', row.get('código SE', ''))
+        mdv = row.get('MdV', '')
+        provision = row.get('provisión', row.get('provision', ''))
+        flujo = row.get('flujo', '')
+        usuarios = row.get('usuarios', '')
+        mapa = row.get('mapa', '')
+        
+        # Get coordinates - prioritize x/y (WGS84) over xcoord/ycoord (projected UTM)
+        lat = row.get('y') or row.get('lat') or row.get('latitud')  # y is latitude in WGS84
+        lon = row.get('x') or row.get('lon') or row.get('longitud') or row.get('lng')  # x is longitude
+        
+        coord_str = f" (COORD: {lat}, {lon})" if lat and lon else ""
+        
+        if se or mdv:
+            parts.append(f"  * {se} - MdV: {mdv}, Provision: {provision}, Flujo: {flujo}, Usuarios: {usuarios}, Mapa: {mapa}{coord_str}")
+    
+    return "\n".join(parts)
 
 
 def format_amenazas(rows: list) -> str:
@@ -139,17 +237,23 @@ def format_amenazas(rows: list) -> str:
 
 
 def format_ecosistemas(rows: list) -> str:
-    """Format ecosystems data"""
+    """Format ecosystem data"""
     parts = []
     for row in rows:
-        if not row.get('ecosistema'):
-            continue
         eco = row.get('ecosistema', '')
+        if not eco:
+            continue
         zona = row.get('grupo', '')
-        salud = row.get('escala_salud', row.get('es_salud', ''))
+        salud = row.get('escala_salud', '')
         degradacion = row.get('causas_degradacion', row.get('causas_deg', ''))
         medios = row.get('medio_de_vida_relacionado', '')
-        parts.append(f"  • {eco} ({zona}): Salud={salud}, Medios relacionados: {medios}")
+        
+        # Check for coordinates
+        lat = row.get('latitud') or row.get('lat')
+        lon = row.get('longitud') or row.get('long') or row.get('lon') or row.get('lng')
+        coord_str = f" (COORD: {lat}, {lon})" if lat and lon else ""
+        
+        parts.append(f"  • {eco} ({zona}): Salud={salud}, Medios relacionados: {medios}{coord_str}")
         if degradacion:
             parts.append(f"    Causas de degradación: {degradacion}")
     
@@ -168,7 +272,13 @@ def format_priorizacion(rows: list) -> str:
         i_seg = row.get('indice_seguridad_alimentaria', row.get('i_seg_alim', ''))
         i_amb = row.get('indice_ambiente', row.get('i_ambiente', ''))
         i_incl = row.get('indice_inlcusion', row.get('i_inclusion', ''))
-        parts.append(f"  • {mdv} ({zona}): Total={i_total}, Seg.Alim={i_seg}, Ambiente={i_amb}, Inclusión={i_incl}")
+        
+        # Check for coordinates
+        lat = row.get('latitud') or row.get('lat')
+        lon = row.get('longitud') or row.get('long') or row.get('lon') or row.get('lng')
+        coord_str = f" (COORD: {lat}, {lon})" if lat and lon else ""
+        
+        parts.append(f"  • {mdv} ({zona}): Total={i_total}, Seg.Alim={i_seg}, Ambiente={i_amb}, Inclusión={i_incl}{coord_str}")
     
     return "\n".join(parts)
 
@@ -188,10 +298,17 @@ def format_medios_vida_ses(rows: list) -> str:
         nombre = row.get('nombre', '')
         uso = row.get('uso_final_medio_de_vida', '')
         
+        # Check for coordinates
+        lat = row.get('latitud') or row.get('lat')
+        lon = row.get('longitud') or row.get('long') or row.get('lon') or row.get('lng')
+        coord_str = f" (COORD: {lat}, {lon})" if lat and lon else ""
+        
+        entry = f"{nombre} ({uso}){coord_str}"
+        
         if 'ecosistema' in elemento.lower():
-            by_zone[zona]['ecosistema'].append(nombre)
+            by_zone[zona]['ecosistema'].append(entry)
         else:
-            by_zone[zona]['medio de vida'].append(f"{nombre} ({uso})")
+            by_zone[zona]['medio de vida'].append(entry)
     
     for zona, data in by_zone.items():
         parts.append(f"\n[{zona}]")
@@ -216,7 +333,12 @@ def format_servicios_ecosistemicos(rows: list) -> str:
         barreras = row.get('barreras', '')
         inclusion = row.get('inclusion', '')
         
-        parts.append(f"  • [{zona}] {mdv} - {elemento}: Acceso={acceso}")
+        # Check for coordinates
+        lat = row.get('latitud') or row.get('lat')
+        lon = row.get('longitud') or row.get('long') or row.get('lon') or row.get('lng')
+        coord_str = f" (COORD: {lat}, {lon})" if lat and lon else ""
+        
+        parts.append(f"  • [{zona}] {mdv} - {elemento}: Acceso={acceso}{coord_str}")
         if barreras and barreras != 'N/A':
             parts.append(f"    Barreras: {barreras}")
         if inclusion:
@@ -228,12 +350,19 @@ def format_servicios_ecosistemicos(rows: list) -> str:
 def format_caracterizacion(rows: list) -> str:
     """Format livelihood characterization"""
     parts = []
+    # Avoid dupes
     seen = set()
     for row in rows:
         mdv = row.get('medio_de_vida', '')
-        if not mdv or mdv in seen:
+        lat = row.get('latitud') or row.get('lat')
+        lon = row.get('longitud') or row.get('long') or row.get('lon') or row.get('lng')
+        
+        # Use simple key for dupes, but if coords exist, maybe don't dedup aggressively?
+        # Let's include coords in key if present
+        key = f"{mdv}_{lat}_{lon}"
+        if not mdv or key in seen:
             continue
-        seen.add(mdv)
+        seen.add(key)
         
         zona = row.get('grupo', '')
         sistema = row.get('sistema', '')
@@ -241,7 +370,9 @@ def format_caracterizacion(rows: list) -> str:
         mercado = row.get('cv_mercado', '')
         importancia = row.get('cv_importancia', '')
         
-        parts.append(f"  • {mdv} ({zona}): Sistema={sistema}, Producto={producto}, Mercado={mercado}, Importancia={importancia}")
+        coord_str = f" (COORD: {lat}, {lon})" if lat and lon else ""
+        
+        parts.append(f"  • {mdv} ({zona}): Sistema={sistema}, Producto={producto}, Mercado={mercado}, Importancia={importancia}{coord_str}")
     
     return "\n".join(parts)
 
@@ -444,16 +575,21 @@ def chat(request: ChatRequest):
         
         # Obtener org_folder a partir del nombre (usar mapping global)
         org_folder = ORG_NAME_TO_FOLDER.get(request.organizacion)
-        print(f"DEBUG: Request Org='{request.organizacion}' -> Folder/ID='{org_folder}'")
+        logger.info(f"CHAT: Request Org='{request.organizacion}' -> Folder/ID='{org_folder}'")
+        
+        # Detect topics from the question for filtering map data
+        detected_topics = detect_question_topics(request.mensaje)
+        logger.info(f"CHAT: Detected topics: {detected_topics}")
         
         # === HYBRID RAG: Load CSV data for organization ===
         csv_context = ""
         if org_folder:
-            csv_context = load_organization_csvs(org_folder)
+            # Pass detected topics to filter relevant CSV data
+            csv_context = load_organization_csvs(org_folder, topic_filter=detected_topics)
             if csv_context:
-                print(f"DEBUG: Loaded CSV data for {org_folder} ({len(csv_context)} chars)")
+                logger.info(f"CHAT: Loaded filtered CSV data for {org_folder} ({len(csv_context)} chars)")
             else:
-                print(f"DEBUG: No CSV data found for {org_folder}")
+                logger.info(f"CHAT: No CSV data found for {org_folder}")
         
         if not rag.db:
              return {
@@ -499,14 +635,14 @@ def chat(request: ChatRequest):
         
         # Add CSV as source if used
         if csv_context:
-            fuentes_unicas["org_csv_data"] = f"* 📊 Datos estructurados de {request.organizacion} (CSV)"
+            fuentes_unicas["org_csv_data"] = f"* [CSV] Datos estructurados de {request.organizacion}"
         
         for doc in docs:
             name = os.path.basename(doc.metadata.get('source', 'unknown'))
             tier = doc.metadata.get('retrieval_tier', 'Unknown')
-            icon = "🏢" if "Tier 1" in tier else "🌍"
+            icon = "[ORG]" if "Tier 1" in tier else "[REF]"
             page = doc.metadata.get('page', '?')
-            fuentes_unicas[name] = f"* {icon} {name} (Pág. {page})"
+            fuentes_unicas[name] = f"* {icon} {name} (Pag. {page})"
             
         markdown_sources = "\n".join(fuentes_unicas.values())
 
@@ -518,6 +654,9 @@ def chat(request: ChatRequest):
             api_key = os.getenv("OPENAI_API_KEY")
             
             if api_key:
+                logger.info(f"CHAT: API Key detected, initializing LLM...")
+                logger.info(f"CHAT: Context size: {len(contexto)} chars, Sources: {len(fuentes_unicas)}")
+                
                 llm = ChatOpenAI(
                     model="gpt-4o-mini",
                     temperature=0.0,
@@ -558,11 +697,23 @@ INSTRUCTIONS:
 - When citing [SURVEY_DATA], be specific: mention zone names, threat names, livelihood names, scores.
 - Do NOT write a "Sources" list. I will append it manually.
 
+MAP VISUALIZATION:
+- If the [SURVEY_DATA] contains coordinates marked as (COORD: lat, lon) that are RELEVANT to the question (e.g. locations of services, threats, or ecosystems), you MUST output a JSON block at the very end of your response.
+- Use this EXACT format:
+```map_data
+[
+  {{"lat": 12.345, "lng": -84.567, "label": "Brief Name", "description": "Short details"}}
+]
+```
+- Do not invent coordinates. Only use those found in the text context.
+
 RESPONSE:"""
 
+                logger.info(f"CHAT: Sending prompt to LLM ({len(prompt)} chars)...")
                 messages = [HumanMessage(content=prompt)]
                 response = llm.invoke(messages)
                 full_response = response.content
+                logger.info(f"CHAT: LLM Response received ({len(full_response)} chars)")
                 
                 # Post-processing: Strip <thinking> block for the user
                 import re
@@ -571,12 +722,15 @@ RESPONSE:"""
                 # Append Real Sources (Markdown)
                 respuesta_final = f"{clean_response}\n\n**Fuentes Consultadas:**\n{markdown_sources}"
                 
+                logger.info(f"CHAT: Response ready, returning to user")
                 return {"respuesta": respuesta_final}
             
         except Exception as llm_error:
-            print(f"Error usando LLM: {llm_error}")
             import traceback
-            traceback.print_exc()
+            error_msg = f"LLM Error: {llm_error}\n{traceback.format_exc()}"
+            with open("chat_llm_error.log", "w", encoding="utf-8") as f:
+                f.write(error_msg)
+            print(f"[CHAT] LLM ERROR: {llm_error}", flush=True)
             # Continuar con fallback
         
         # FALLBACK: Si no hay LLM disponible, crear un resumen mejorado
@@ -596,7 +750,7 @@ RESPONSE:"""
         unique_contents = unique_contents[:3]
         
         respuesta_parts = [
-            f"📄 **Información de {request.organizacion}**\n",
+            f"**Información de {request.organizacion}**\n",
             f"*Pregunta: {request.mensaje}*\n",
             "---\n"
         ]
@@ -609,8 +763,13 @@ RESPONSE:"""
                 contenido_limpio = contenido_limpio[:400] + "..."
             respuesta_parts.append(f"**{i}.** {contenido_limpio}\n")
         
+        # Collect sources for fallback
+        fuentes = sorted(list(set(os.path.basename(doc.metadata.get('source', 'unknown')) for doc in docs)))
+        if csv_context:
+            fuentes.insert(0, f"Datos de {request.organizacion} (CSV)")
+
         respuesta_parts.append(f"\n---\n*Fuentes: {', '.join(fuentes)}*")
-        respuesta_parts.append(f"\n\n⚠️ *Nota: Configure OPENAI_API_KEY para obtener respuestas sintetizadas por IA*")
+        respuesta_parts.append(f"\n\n*Nota: Configure OPENAI_API_KEY para obtener respuestas sintetizadas por IA*")
         
         respuesta_sintetizada = "\n".join(respuesta_parts)
         
@@ -618,8 +777,10 @@ RESPONSE:"""
 
     except Exception as e:
         print(f"Error en chat: {e}")
+        import traceback
+        traceback.print_exc()
         return {
-            "respuesta": "Lo siento, hubo un error procesando tu consulta."
+            "respuesta": f"Lo siento, hubo un error técnico procesando tu consulta: {str(e)}"
         }
 
 
@@ -628,18 +789,24 @@ RESPONSE:"""
 def obtener_insight_territorial_organizacion(request: ChatRequest):
     """Genera un análisis territorial basado en los documentos de una organización específica"""
     try:
+        print(f"\n[INSIGHT] === Starting Territorial Analysis ===")
+        print(f"[INSIGHT] Organization: {request.organizacion}")
+        
         # Inicializar procesador RAG
         rag = RAGProcessor()
         
         # Obtener org_id (folder name) a partir del nombre (usando mapeo global)
         org_folder = ORG_NAME_TO_FOLDER.get(request.organizacion)
+        print(f"[INSIGHT] Org folder mapping: {org_folder}")
         
         if not rag.db:
+            print(f"[INSIGHT] ERROR: RAG DB not initialized")
             return {
                 "respuesta": "El sistema de conocimiento aún no está inicializado. Por favor ingesta documentos primero."
             }
         
         if not org_folder:
+            print(f"[INSIGHT] ERROR: No folder found for org")
             return {
                 "respuesta": f"No se encontró información para la organización '{request.organizacion}'."
             }
@@ -684,9 +851,14 @@ def obtener_insight_territorial_organizacion(request: ChatRequest):
             # Usar OpenAI si está disponible
             api_key = os.getenv("OPENAI_API_KEY")
             
+            print(f"[INSIGHT] API Key present: {bool(api_key)}")
+            print(f"[INSIGHT] Documents found: {len(docs)}")
+            
             if api_key:
                 from langchain_openai import ChatOpenAI
                 from langchain_core.messages import HumanMessage
+                
+                print(f"[INSIGHT] Initializing LLM (gpt-4o-mini)...")
                 
                 llm = ChatOpenAI(
                     model="gpt-4o-mini",
@@ -729,12 +901,16 @@ FORMATO REQUERIDO (usa exactamente estos encabezados con **):
 IMPORTANTE: Si alguna sección no tiene información en los documentos, escribe "No especificado en los documentos disponibles."
 """
                 
+                print(f"[INSIGHT] Sending prompt to LLM ({len(prompt)} chars)...")
                 messages = [HumanMessage(content=prompt)]
                 response = llm.invoke(messages)
+                print(f"[INSIGHT] LLM Response received ({len(response.content)} chars)")
+                print(f"[INSIGHT] === Analysis Complete ===\n")
                 
                 return {"respuesta": response.content}
             
             else:
+                print(f"[INSIGHT] No API Key, using fallback mode")
                 # Fallback sin LLM - crear resumen estructurado
                 fuentes = list(set([os.path.basename(doc.metadata.get('source', 'unknown')) for doc in docs]))
                 
@@ -747,7 +923,7 @@ IMPORTANTE: Si alguna sección no tiene información en los documentos, escribe 
                     respuesta += f"{i}. {contenido}...\n\n"
                 
                 respuesta += f"\n**Fuentes:** {', '.join(fuentes)}\n\n"
-                respuesta += "⚠️ *Configure OPENAI_API_KEY para obtener un análisis territorial estructurado y sintetizado.*"
+                respuesta += "*Configure OPENAI_API_KEY para obtener un análisis territorial estructurado y sintetizado.*"
                 
                 return {"respuesta": respuesta}
         
@@ -762,9 +938,10 @@ IMPORTANTE: Si alguna sección no tiene información en los documentos, escribe 
             }
     
     except Exception as e:
-        print(f"Error generando análisis territorial: {e}")
         import traceback
-        traceback.print_exc()
+        error_msg = traceback.format_exc()
+        with open("insight_error.log", "w", encoding="utf-8") as f:
+            f.write(error_msg)
         
         return {
             "respuesta": f"**Análisis Territorial**\n\n"

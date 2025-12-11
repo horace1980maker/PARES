@@ -5,11 +5,14 @@ y estrategia de recuperación por niveles (Org > Global).
 """
 import os
 import time
+import logging
 from typing import List, Optional, Dict, Any
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.retrievers import BM25Retriever
 from langchain_core.documents import Document
+
+logger = logging.getLogger(__name__)
 
 # Configuración de DB_DIR
 DB_DIR = os.getenv("CHROMA_DB_DIR")
@@ -19,10 +22,20 @@ if not DB_DIR:
 class RAGProcessor:
     def __init__(self, db_dir: str = DB_DIR):
         self.db_dir = db_dir
-        self.embedding_function = SentenceTransformerEmbeddings(
-            model_name="paraphrase-multilingual-MiniLM-L12-v2",
-            model_kwargs={'device': 'cpu'}
-        )
+        # Use HuggingFaceEmbeddings with explicit settings to avoid meta tensor error
+        try:
+            from langchain_huggingface import HuggingFaceEmbeddings
+            self.embedding_function = HuggingFaceEmbeddings(
+                model_name="paraphrase-multilingual-MiniLM-L12-v2",
+                model_kwargs={'device': 'cpu'},
+                encode_kwargs={'normalize_embeddings': True}
+            )
+        except ImportError:
+            # Fallback to community version
+            self.embedding_function = SentenceTransformerEmbeddings(
+                model_name="paraphrase-multilingual-MiniLM-L12-v2",
+                model_kwargs={'device': 'cpu'}
+            )
         
         # Inicializar ChromaDB (Vector Store)
         if os.path.exists(db_dir):
@@ -30,17 +43,17 @@ class RAGProcessor:
                 persist_directory=db_dir,
                 embedding_function=self.embedding_function
             )
-            print("📦 ChromaDB cargado correctamente.")
+            print("[OK] ChromaDB cargado correctamente.")
             self._init_bm25()
         else:
             self.db = None
             self.bm25 = None
-            print("⚠️ Base de datos no encontrada. Ejecute ingest.py primero.")
+            print("[WARN] Base de datos no encontrada. Ejecute ingest.py primero.")
 
     def _init_bm25(self):
         """Inicializa BM25 cargando documentos de Chroma (en memoria)"""
         try:
-            print("🔄 Inicializando índice BM25 (esto puede tardar unos segundos)...")
+            print("[INFO] Inicializando indice BM25 (esto puede tardar unos segundos)...")
             # Recuperar TODOS los documentos para crear índice invertido
             # NOTA: En producción con millones de docs esto no escala.
             # Para esete proyecto (<10k chunks) es aceptable.
@@ -54,12 +67,12 @@ class RAGProcessor:
             if docs_objects:
                 self.bm25 = BM25Retriever.from_documents(docs_objects)
                 self.bm25.k = 10  # Base retrieval count
-                print(f"✅ BM25 inicializado con {len(docs_objects)} fragmentos.")
+                print(f"[OK] BM25 inicializado con {len(docs_objects)} fragmentos.")
             else:
                 self.bm25 = None
-                print("⚠️ No hay documentos para BM25.")
+                print("[WARN] No hay documentos para BM25.")
         except Exception as e:
-            print(f"❌ Error inicializando BM25: {e}")
+            print(f"[ERROR] Error inicializando BM25: {e}")
             self.bm25 = None
 
     def search_tiered(self, query: str, org_id: str) -> List[Document]:
@@ -74,7 +87,7 @@ class RAGProcessor:
         results = []
         
         # --- TIER 1: Organización (Priority) ---
-        print(f"🔍 Buscando Tier 1 (Org: {org_id})...")
+        logger.info(f"RAG: Searching Tier 1 (Org: {org_id})...")
         tier1_docs = self._hybrid_search(
             query, 
             k=10, 
@@ -85,7 +98,7 @@ class RAGProcessor:
         results.extend(tier1_docs)
 
         # --- TIER 2: Global (Support) ---
-        print(f"🔍 Buscando Tier 2 (Global)...")
+        logger.info(f"RAG: Searching Tier 2 (Global)...")
         tier2_docs = self._hybrid_search(
             query, 
             k=3, 

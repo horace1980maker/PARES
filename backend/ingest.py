@@ -66,7 +66,7 @@ def determine_scope_and_org(file_path):
     return "global", "UNKNOWN" # Fallback
 
 def ingest_documents():
-    print(f"🚀 Starting Ingestion Pipeline")
+    print(f"[START] Starting Ingestion Pipeline")
     print(f"   - Embedding Model: {EMBEDDING_MODEL}")
     print(f"   - Chunk Size: {CHUNK_SIZE} / Overlap: {CHUNK_OVERLAP}")
     print(f"   - DB Path: {DB_DIR}")
@@ -98,14 +98,14 @@ def ingest_documents():
                 found_files.append(os.path.join(global_dir, file))
 
     if not found_files:
-        print("⚠️ No PDF documents found.")
+        print("[WARN] No PDF documents found.")
         return
 
     # 3. Incremental Logic
     manifest = load_manifest()
     files_to_process = []
     
-    print(f"🔍 Scanning {len(found_files)} files for changes...")
+    print(f"[SCAN] Scanning {len(found_files)} files for changes...")
     
     for file_path in found_files:
         current_hash = calculate_file_hash(file_path)
@@ -117,10 +117,10 @@ def ingest_documents():
             # Ideally save incrementally or at end. For now, we update the dict and save after processing.
 
     if not files_to_process:
-        print("✅ All files are up to date. No new ingestion needed.")
+        print("[OK] All files are up to date. No new ingestion needed.")
         return
 
-    print(f"📦 Processing {len(files_to_process)} new/modified files...")
+    print(f"[PROCESS] Processing {len(files_to_process)} new/modified files...")
 
     # 4. Initialize Components
     embedding_function = SentenceTransformerEmbeddings(
@@ -165,7 +165,7 @@ def ingest_documents():
                      db.delete(existing['ids'])
                      
             except Exception as e:
-                print(f"   ⚠️ Warning cleaning up old chunks for {filename}: {e}")
+                print(f"   [WARN] Warning cleaning up old chunks for {filename}: {e}")
 
             # Load & Split
             loader = PyMuPDFLoader(file_path)
@@ -174,7 +174,7 @@ def ingest_documents():
             chunks = text_splitter.split_documents(docs)
             
             if not chunks:
-                print(f"   ⚠️ Skipped {filename} (empty)")
+                print(f"   [WARN] Skipped {filename} (empty)")
                 continue
 
             # Enrich Metadata
@@ -191,14 +191,14 @@ def ingest_documents():
             db.add_documents(chunks)
             
         except Exception as e:
-            print(f"❌ Error processing {file_path}: {e}")
+            print(f"[ERROR] Error processing {file_path}: {e}")
             # Revert manifest change for this file so we try again next time?
             # For simplicity, we won't resort complex revert logic here 
             # but in production we should.
             
     # 6. Save Manifest
     save_manifest(manifest)
-    print(f"\n✅ Ingestion Complete. Manifest updated.")
+    print(f"\n[OK] Ingestion Complete. Manifest updated.")
 
 if __name__ == "__main__":
     ingest_documents()
