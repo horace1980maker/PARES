@@ -1,19 +1,20 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Instalar dependencias del sistema para PyMuPDF y otros
+# Instalar dependencias del sistema esenciales y para compilación
+# build-essential: gcc/g++ para compilar extensiones
+# curl: útil para debugging
 RUN apt-get update && apt-get install -y \
     build-essential \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar requirements desde la raíz (el contexto de build debe ser la raíz o backend necesita su propio req)
-# Asumiremos que el contexto de build será la carpeta backend o la raíz
-# Si es la raíz, la ruta es ./requirements.txt. Si es backend, es ./requirements.txt
-# Vamos a asumir que el archivo requirements.txt está en la carpeta backend para el build context de backend
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Actualizar pip y wheel para asegurar instalación binaria (wheels) y evitar compilación innecesaria
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copiar el código fuente
 COPY . .
