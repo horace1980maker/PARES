@@ -630,6 +630,32 @@ def obtener_organizaciones(nombre_pais: str):
     logger.warning(f"DEBUG: '{nombre_pais}' not found in ORGANIZACIONES (Normalized)")
     return []
 
+    logger.warning(f"DEBUG: '{nombre_pais}' not found in ORGANIZACIONES (Normalized)")
+    return []
+
+# Debug Endpoints
+@app.get("/admin/debug-ingest")
+def debug_ingest():
+    """Check ingestion status and errors"""
+    db_path = os.path.join(str(RAG_DB_DIR), "chroma.sqlite3") if RAG_DB_DIR else "N/A"
+    return {
+        "ingest_module_loaded": ingest_documents is not None,
+        "import_errors": IMPORT_ERRORS,
+        "db_dir": RAG_DB_DIR,
+        "db_file_path": db_path,
+        "db_exists": os.path.exists(db_path) if RAG_DB_DIR else False
+    }
+
+@app.post("/admin/force-ingest")
+def force_ingest():
+    """Manually trigger ingestion"""
+    if not ingest_documents:
+        raise HTTPException(500, detail=f"Ingest module missing. Errors: {IMPORT_ERRORS}")
+    
+    logger.info("MANUAL: Triggering ingestion via endpoint")
+    threading.Thread(target=ingest_documents, daemon=True).start()
+    return {"status": "Ingestion triggered manually. Check logs for progress."}
+
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
     """Endpoint de chat RAG Híbrido - combina PDFs + CSVs de organización"""
