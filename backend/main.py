@@ -7,11 +7,29 @@ import os
 import sys
 import csv
 import glob
-import logging
 from dotenv import load_dotenv
-from document_manager import DocumentManager
-from rag_processor import RAGProcessor
-from docx_utils import create_docx_from_markdown
+import logging
+
+# Defensive Imports to prevent crash on startup
+IMPORT_ERRORS = []
+
+try:
+    from document_manager import DocumentManager
+except ImportError as e:
+    IMPORT_ERRORS.append(str(e))
+    DocumentManager = None
+
+try:
+    from rag_processor import RAGProcessor
+except ImportError as e:
+    IMPORT_ERRORS.append(str(e))
+    RAGProcessor = None
+
+try:
+    from docx_utils import create_docx_from_markdown
+except ImportError as e:
+    IMPORT_ERRORS.append(str(e))
+    create_docx_from_markdown = None
 
 # Configure logging - force output immediately
 logging.basicConfig(
@@ -32,31 +50,6 @@ TOPIC_KEYWORDS = {
     "conflictos": ["conflicto", "conflictos", "conflict", "tensión", "disputa"]
 }
 
-# Auto-ingestion on startup
-import threading
-try:
-    from ingest import ingest_documents, DB_DIR as RAG_DB_DIR
-except ImportError as e:
-    logger.error(f"STARTUP ERROR: Could not import ingest module: {e}")
-    ingest_documents = None
-    RAG_DB_DIR = None
-
-@app.on_event("startup")
-def startup_event():
-    """Run ingestion in background if DB is empty"""
-    if not ingest_documents or not RAG_DB_DIR:
-        logger.warning("STARTUP: Skipping auto-ingestion due to import error.")
-        return
-
-    logger.info(f"STARTUP: Checking RAG DB at {RAG_DB_DIR}")
-    
-    # Check if DB seems empty (no sqlite file)
-    db_file = os.path.join(RAG_DB_DIR, "chroma.sqlite3")
-    if not os.path.exists(db_file):
-        logger.info("STARTUP: DB not found. Starting background ingestion...")
-        threading.Thread(target=ingest_documents, daemon=True).start()
-    else:
-        logger.info("STARTUP: DB found. Skipping auto-ingestion.")
 
 def detect_question_topics(question: str) -> list:
     """Detect which topics the question is about based on keywords"""
@@ -446,6 +439,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Auto-ingestion on startup
+import threading
+try:
+    from ingest import ingest_documents, DB_DIR as RAG_DB_DIR
+except ImportError as e:
+    logger.error(f"STARTUP ERROR: Could not import ingest module: {e}")
+    ingest_documents = None
+    RAG_DB_DIR = None
+
+@app.on_event("startup")
+def startup_event():
+    """Run ingestion in background if DB is empty"""
+    if not ingest_documents or not RAG_DB_DIR:
+        logger.warning("STARTUP: Skipping auto-ingestion due to import error.")
+        return
+
+    logger.info(f"STARTUP: Checking RAG DB at {RAG_DB_DIR}")
+    
+    # Check if DB seems empty (no sqlite file)
+    db_file = os.path.join(RAG_DB_DIR, "chroma.sqlite3")
+    if not os.path.exists(db_file):
+        logger.info("STARTUP: DB not found. Starting background ingestion...")
+        threading.Thread(target=ingest_documents, daemon=True).start()
+    else:
+        logger.info("STARTUP: DB found. Skipping auto-ingestion.")
+
 # Mock Data - Organizaciones por país
 # Datos Reales - Organizaciones por país
 ORGANIZACIONES = {
@@ -583,7 +603,9 @@ def raiz():
     return {
         "mensaje": "API CATIE PARES",
         "version": "1.0.0",
-        "documentacion": "/docs"
+        "documentacion": "/docs",
+        "status": "healthy" if not IMPORT_ERRORS else "degraded",
+        "errors": IMPORT_ERRORS
     }
 
 @app.get("/paises")
