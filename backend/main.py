@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse, FileResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import os
@@ -10,6 +11,7 @@ import logging
 from dotenv import load_dotenv
 from document_manager import DocumentManager
 from rag_processor import RAGProcessor
+from docx_utils import create_docx_from_markdown
 
 # Configure logging - force output immediately
 logging.basicConfig(
@@ -545,6 +547,10 @@ class TerritorialInsightRequest(BaseModel):
     lng: float
     nombre_ubicacion: Optional[str] = None
 
+class ExportRequest(BaseModel):
+    content: str
+    filename: str = "document.docx"
+
 # API Endpoints
 @app.get("/")
 def raiz():
@@ -948,4 +954,57 @@ IMPORTANTE: Si alguna sección no tiene información en los documentos, escribe 
                         f"Error generando el análisis: {str(e)}\n\n"
                         f"Posible causa: Dependencias faltantes (langchain-openai) o problemas de configuración."
         }
+
+
+@app.post("/export-docx")
+def export_docx(request: ExportRequest):
+    """Generates a DOCX file from markdown content"""
+    try:
+        buffer = create_docx_from_markdown(request.content)
+        
+        return StreamingResponse(
+            buffer,
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": f"attachment; filename={request.filename}"}
+        )
+    except Exception as e:
+        logger.error(f"Error generating DOCX: {e}")
+        raise HTTPException(status_code=500, detail=f"Error generating document: {str(e)}")
+
+
+@app.get("/get-report/{org_folder}")
+def get_report(org_folder: str):
+    """Serve organization HTML report file"""
+    try:
+        # Build path to report file
+        report_path = os.path.join(
+            os.path.dirname(__file__),
+            'documents',
+            'orgs',
+            org_folder,
+            'REPORTE',
+            f'{org_folder.lower().replace(" ", "_")}_report.HTML'
+        )
+        
+        # Check if file exists
+        if not os.path.exists(report_path):
+            # Try alternative naming convention
+            alt_report_path = os.path.join(
+                os.path.dirname(__file__),
+                'documents',
+                'orgs',
+                org_folder,
+                'REPORTE',
+                'tierra_viva_report.HTML'  # Fallback for known file
+            )
+            if os.path.exists(alt_report_path):
+                report_path = alt_report_path
+            else:
+                raise HTTPException(status_code=404, detail=f"Report not found for {org_folder}")
+        
+        return FileResponse(report_path, media_type="text/html")
+        
+    except Exception as e:
+        logger.error(f"Error serving report: {e}")
+        raise HTTPException(status_code=500, detail=f"Error loading report: {str(e)}")
 

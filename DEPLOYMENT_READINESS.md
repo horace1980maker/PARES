@@ -1,27 +1,21 @@
 # Evaluación de Preparación para Despliegue (Deployment Readiness)
 
 ## Estado Actual
-El sistema **NO** está listo para despliegue inmediato en Hetzner/Coolify. Se han identificado los siguientes bloqueos:
+El sistema **ESTÁ LISTO** para despliegue en Hetzner/Coolify. Se han resuelto los bloqueos previamente identificados:
 
-### 1. URLs Hardcodeadas (Frontend)
-El frontend tiene la URL del backend (`http://localhost:8001`) escrita directamente en el código en múltiples archivos:
-- `src/App.jsx`
-- `src/components/MapComponent.jsx`
-- `src/components/ChatInterface.jsx`
-
-Esto hará que el frontend falle en producción al intentar conectar con `localhost` del usuario visitante.
-
-### 2. Configuración de CORS (Backend)
-El backend (`main.py`) tiene una lista explícita de orígenes permitidos que solo incluye `localhost`. Debe configurarse para aceptar el dominio de producción.
-
-### 3. Ausencia de Dockerización
-No existen archivos `Dockerfile` ni `docker-compose.yml`. Coolify funciona mejor con una especificación clara de contenedor.
-- **Backend**: Necesita un Dockerfile que instale dependencias y ejecute `uvicorn`.
-- **Frontend**: Necesita un Dockerfile que construya la aplicación (build) y sirva los estáticos (ej. con Nginx).
-- **Procesos**: El script `ingest.py` y `run.py` son manuales. Se recomienda que la ingesta sea un comando disparable o un job separado.
-
-### 4. Persistencia de Datos (ChromaDB)
-La base de datos vectorial se guarda localmente en `../chroma_db`. En un entorno Docker, esto debe ser un **volumen persistente** para no perder los embeddings al reiniciar el contenedor.
+### 1. URLs Hardcodeadas (Frontend) ✅
+El frontend ahora usa `config.js` y `VITE_API_URL` para configurar el endpoint del backend dinámicamente.
+ 
+### 2. Configuración de CORS (Backend) ✅
+El backend ahora acepta orígenes configurables vía variable de entorno.
+ 
+### 3. Dockerización ✅
+- **Backend**: Existe `backend/Dockerfile` configurado.
+- **Frontend**: Existe `frontend/Dockerfile` con Nginx.
+- **Orquestación**: Existe `docker-compose.yml` probado.
+ 
+### 4. Persistencia de Datos (ChromaDB) ✅
+Configurado volumen persistente en `docker-compose.yml` (`/app/chroma_db`).
 
 ## Plan de Acción Recomendado (Siguientes Pasos)
 

@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { exportToDocx } from '../exportUtils';
 
 import config from '../config';
 
 const ChatInterface = ({ selectedOrg, selectedCountry, onClose, setMapMarkers }) => {
     const { t, i18n } = useTranslation();
+
+    // Safety check
+    if (!selectedOrg) return null;
+
     const [isMinimized, setIsMinimized] = useState(false);
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    // Draggable state
+    const [position, setPosition] = useState({ x: window.innerWidth - 420, y: 24 });
+    const [isDragging, setIsDragging] = useState(false);
+
+    // Refs for mutable data during drag (avoids re-renders and dependency issues)
+    const chatWindowRef = useRef(null);
+    const dragRef = useRef({ x: window.innerWidth - 420, y: 24 });
+    const dragOffsetRef = useRef({ x: 0, y: 0 });
 
     const sendMessage = async () => {
         if (!inputMessage.trim()) return;
@@ -78,34 +92,93 @@ const ChatInterface = ({ selectedOrg, selectedCountry, onClose, setMapMarkers })
         }
     };
 
+    // Drag handlers
+    const handleMouseDown = (e) => {
+        setIsDragging(true);
+        // Calculate offset and store in ref
+        dragOffsetRef.current = {
+            x: e.clientX - dragRef.current.x,
+            y: e.clientY - dragRef.current.y
+        };
+    };
+
+    const handleMouseMove = useCallback((e) => {
+        if (!chatWindowRef.current) return;
+
+        e.preventDefault();
+
+        const newX = e.clientX - dragOffsetRef.current.x;
+        const newY = e.clientY - dragOffsetRef.current.y;
+
+        // Update ref
+        dragRef.current = { x: newX, y: newY };
+
+        // Direct DOM update
+        chatWindowRef.current.style.left = `${newX}px`;
+        chatWindowRef.current.style.top = `${newY}px`;
+    }, []); // No dependencies! Stable function.
+
+    const handleMouseUp = useCallback(() => {
+        setIsDragging(false);
+        setPosition(dragRef.current); // Sync state
+    }, []);
+
+    // Sync ref when position changes externally
+    useEffect(() => {
+        dragRef.current = position;
+    }, [position]);
+
+    // Global listeners
+    useEffect(() => {
+        if (isDragging) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
+        }
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [isDragging, handleMouseMove, handleMouseUp]);
+
     return (
-        <div className={`fixed bottom-6 right-6 w-96 ${isMinimized ? 'h-auto' : 'h-[500px]'} bg-white rounded-xl shadow-2xl border border-nature-200 flex flex-col z-50 animate-fade-in transition-all duration-300`}>
+        <div
+            ref={chatWindowRef}
+            className={`fixed w-96 ${isMinimized ? 'h-auto' : 'h-[500px]'} bg-white rounded-xl shadow-2xl border border-nature-200 flex flex-col z-50 transition-height duration-300`}
+            style={{
+                left: `${position.x}px`,
+                top: `${position.y}px`,
+                cursor: isDragging ? 'grabbing' : 'default',
+                // Remove transition-all to prevent fighting with drag
+            }}
+        >
             {/* Header */}
             <div
-                className="bg-gradient-to-r from-nature-600 to-nature-500 p-4 rounded-t-xl flex justify-between items-center cursor-pointer"
-                onClick={() => setIsMinimized(!isMinimized)}
+                className="bg-gradient-to-r from-nature-600 to-nature-500 p-3 rounded-t-xl flex justify-between items-center cursor-grab active:cursor-grabbing select-none"
+                onMouseDown={handleMouseDown}
             >
-                <h3 className="text-white font-semibold text-lg">
+                <h3 className="text-white font-semibold text-base select-none">
                     {t('chatWith')} {selectedOrg.nombre}
                 </h3>
                 <div className="flex gap-2 items-center">
                     <button
                         onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
+                        onMouseDown={(e) => e.stopPropagation()}
                         className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"
                         title={isMinimized ? t('maximize') || "Maximize" : t('minimize') || "Minimize"}
                     >
                         {isMinimized ? (
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                         ) : (
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                                <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
                             </svg>
                         )}
                     </button>
                     <button
                         onClick={(e) => { e.stopPropagation(); onClose(); }}
+                        onMouseDown={(e) => e.stopPropagation()}
                         className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"
                         title={t('close') || "Close"}
                     >
@@ -129,7 +202,7 @@ const ChatInterface = ({ selectedOrg, selectedCountry, onClose, setMapMarkers })
                         {messages.map((msg, idx) => (
                             <div
                                 key={idx}
-                                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                             >
                                 <div
                                     className={`max-w-[80%] p-3 rounded-lg ${msg.role === 'user'
@@ -162,6 +235,19 @@ const ChatInterface = ({ selectedOrg, selectedCountry, onClose, setMapMarkers })
                                         </ReactMarkdown>
                                     </div>
                                 </div>
+                                {/* Export button for assistant messages */}
+                                {msg.role === 'assistant' && (
+                                    <button
+                                        onClick={() => exportToDocx(msg.content, `Respuesta_Chat_${idx + 1}.docx`)}
+                                        className="text-xs text-nature-500 hover:text-nature-700 mt-1 flex items-center gap-1 transition-colors"
+                                        title="Exportar a Word"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Exportar
+                                    </button>
+                                )}
                             </div>
                         ))}
                         {isLoading && (

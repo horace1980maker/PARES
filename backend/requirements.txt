@@ -9,3 +9,4 @@ sentence-transformers
 python-multipart
 python-dotenv
 requests
+python-docx

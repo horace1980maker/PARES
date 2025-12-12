@@ -83,10 +83,11 @@ function App() {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-nature-50 overflow-hidden">
-      {/* ... header ... */}
+      {/* Header would go here if you have one */}
+
       {/* Main Content */}
       <div className="flex-1 flex relative">
-        {/* Map Area */}
+        {/* Map Area - Reduced size */}
         <div className="flex-1 p-4 relative z-0">
           <MapComponent
             onCountrySelect={handleCountrySelect}
@@ -116,7 +117,7 @@ function App() {
         />
       </div>
 
-      {/* Chat Interface (Floating) */}
+      {/* Chat Interface (Floating & Draggable) */}
       {selectedOrg && (
         <ChatInterface
           selectedOrg={selectedOrg}
