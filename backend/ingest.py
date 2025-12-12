@@ -15,7 +15,8 @@ DB_DIR = os.getenv("CHROMA_DB_DIR")
 if not DB_DIR:
     DB_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
 
-MANIFEST_FILE = os.path.join(DOCS_DIR, "manifest.json")
+# Save manifest in the DB directory so it persists with the vector store
+MANIFEST_FILE = os.path.join(DB_DIR, "manifest.json")
 METADATA_FILE = os.path.join(DOCS_DIR, "metadata.json")
 
 # Constants

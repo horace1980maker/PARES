@@ -32,6 +32,23 @@ TOPIC_KEYWORDS = {
     "conflictos": ["conflicto", "conflictos", "conflict", "tensión", "disputa"]
 }
 
+# Auto-ingestion on startup
+import threading
+from ingest import ingest_documents, DB_DIR as RAG_DB_DIR
+
+@app.on_event("startup")
+def startup_event():
+    """Run ingestion in background if DB is empty"""
+    logger.info(f"STARTUP: Checking RAG DB at {RAG_DB_DIR}")
+    
+    # Check if DB seems empty (no sqlite file)
+    db_file = os.path.join(RAG_DB_DIR, "chroma.sqlite3")
+    if not os.path.exists(db_file):
+        logger.info("STARTUP: DB not found. Starting background ingestion...")
+        threading.Thread(target=ingest_documents, daemon=True).start()
+    else:
+        logger.info("STARTUP: DB found. Skipping auto-ingestion.")
+
 def detect_question_topics(question: str) -> list:
     """Detect which topics the question is about based on keywords"""
     question_lower = question.lower()
