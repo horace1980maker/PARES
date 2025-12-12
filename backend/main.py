@@ -34,11 +34,20 @@ TOPIC_KEYWORDS = {
 
 # Auto-ingestion on startup
 import threading
-from ingest import ingest_documents, DB_DIR as RAG_DB_DIR
+try:
+    from ingest import ingest_documents, DB_DIR as RAG_DB_DIR
+except ImportError as e:
+    logger.error(f"STARTUP ERROR: Could not import ingest module: {e}")
+    ingest_documents = None
+    RAG_DB_DIR = None
 
 @app.on_event("startup")
 def startup_event():
     """Run ingestion in background if DB is empty"""
+    if not ingest_documents or not RAG_DB_DIR:
+        logger.warning("STARTUP: Skipping auto-ingestion due to import error.")
+        return
+
     logger.info(f"STARTUP: Checking RAG DB at {RAG_DB_DIR}")
     
     # Check if DB seems empty (no sqlite file)
