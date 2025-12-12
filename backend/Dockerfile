@@ -1,19 +1,19 @@
-FROM python:3.11-slim
+FROM python:3.11
 
 WORKDIR /app
 
-# Instalar dependencias del sistema esenciales y para compilación
-# build-essential: gcc/g++ para compilar extensiones
-# curl: útil para debugging
+# Instalar dependencias del sistema mínimas (python:3.11 ya trae muchas)
 RUN apt-get update && apt-get install -y \
-    build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 
-# Actualizar pip y wheel para asegurar instalación binaria (wheels) y evitar compilación innecesaria
+# 1. Actualizar pip
+# 2. Instalar antemano PyTorch CPU (mucho más ligero y estable para build)
+# 3. Instalar resto de requerimientos
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copiar el código fuente
