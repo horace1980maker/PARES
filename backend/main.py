@@ -630,8 +630,7 @@ def obtener_organizaciones(nombre_pais: str):
     logger.warning(f"DEBUG: '{nombre_pais}' not found in ORGANIZACIONES (Normalized)")
     return []
 
-    logger.warning(f"DEBUG: '{nombre_pais}' not found in ORGANIZACIONES (Normalized)")
-    return []
+
 
 # Debug Endpoints
 @app.get("/admin/debug-ingest")
