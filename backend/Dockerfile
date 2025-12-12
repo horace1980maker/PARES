@@ -2,6 +2,9 @@ FROM python:3.11
 
 WORKDIR /app
 
+# Asegurar que logs de python se vean en consola docker
+ENV PYTHONUNBUFFERED=1
+
 # Instalar dependencias del sistema mínimas (python:3.11 ya trae muchas)
 RUN apt-get update && apt-get install -y \
     curl \
