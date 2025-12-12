@@ -615,10 +615,20 @@ def obtener_paises():
 
 @app.get("/organizaciones/{nombre_pais}")
 def obtener_organizaciones(nombre_pais: str):
-    """Obtiene las organizaciones de un país específico"""
-    if nombre_pais not in ORGANIZACIONES:
-        return []
-    return ORGANIZACIONES[nombre_pais]
+    """Obtiene las organizaciones de un país específico (Case Insensitive)"""
+    logger.info(f"DEBUG: Request orgs for '{nombre_pais}'. Available keys: {list(ORGANIZACIONES.keys())}")
+    
+    # Create a mapping of lowercase key -> original key
+    country_map = {k.lower(): k for k in ORGANIZACIONES.keys()}
+    
+    # Lookup using lowercase
+    target_key = country_map.get(nombre_pais.lower())
+    
+    if target_key:
+        return ORGANIZACIONES[target_key]
+    
+    logger.warning(f"DEBUG: '{nombre_pais}' not found in ORGANIZACIONES (Normalized)")
+    return []
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
