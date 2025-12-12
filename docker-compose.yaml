@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    expose:
+      - "8000"
+    volumes:
+      - ./chroma_db:/app/chroma_db
+      # - ./backend/documents:/app/documents # Usar documentos dentro de la imagen para evitar problemas de volumen
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CHROMA_DB_DIR=/app/chroma_db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=/api
+    expose:
+      - "80"
+    environment:
+      - VITE_API_URL=/api
+    depends_on:
+      - backend
+    restart: unless-stopped
