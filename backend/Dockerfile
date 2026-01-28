@@ -25,8 +25,12 @@ COPY . .
 # Crear directorio para la DB si no existe (el volumen se montará aquí)
 RUN mkdir -p /app/chroma_db
 
+# Copiar y dar permisos al script de inicio
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # Exponer el puerto
 EXPOSE 8000
 
-# Comando para arrancar la aplicación
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Comando para arrancar la aplicación (usa script que hace ingest primero)
+CMD ["/app/start.sh"]
