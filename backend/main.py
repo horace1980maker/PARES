@@ -921,11 +921,24 @@ def obtener_insight_territorial_organizacion(request: ChatRequest):
             )
             
             if not docs:
+                print(f"[INSIGHT] WARNING: No documents matched search for {request.organizacion} (folder: {org_folder})")
+                # Debug: check if ANY docs exist for this org
+                try:
+                    all_org_docs = rag.db.get(where={"org_id": org_folder}, limit=1)
+                    if not all_org_docs['ids']:
+                        print(f"[INSIGHT] DB ERROR: No documents found at all for org_id='{org_folder}' in ChromaDB")
+                    else:
+                        print(f"[INSIGHT] DB OK: Documents exist for {org_folder}, but search query didn't match any.")
+                except Exception as e:
+                    print(f"[INSIGHT] DB QUERY ERROR: {e}")
+                    
                 return {
                     "respuesta": f"**Análisis Territorial - {request.organizacion}**\n\n"
                                 f"No se encontró información suficiente en los documentos de esta organización para generar un análisis territorial.\n\n"
                                 f"Por favor, asegúrese de que existan documentos cargados para {request.organizacion}."
                 }
+            
+            print(f"[INSIGHT] Found {len(docs)} documents for analysis.")
             
             # Construir contexto a partir de los documentos
             contexto_parts = []

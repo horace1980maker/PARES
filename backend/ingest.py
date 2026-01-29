@@ -210,7 +210,12 @@ def ingest_documents(clear_manifest=False):
                 })
 
             # Add to DB
-            db.add_documents(chunks)
+            if chunks:
+                print(f"   [INFO] Adding {len(chunks)} chunks for {filename} (Org: {org_id})")
+                db.add_documents(chunks)
+                print(f"   [OK] {filename} stored successfully")
+            else:
+                print(f"   [WARN] No chunks generated for {filename}")
             
             # 6. Mark as processed on success
             manifest[file_path] = calculate_file_hash(file_path)
