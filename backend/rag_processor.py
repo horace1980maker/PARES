@@ -30,12 +30,14 @@ class RAGProcessor:
                 model_kwargs={'device': 'cpu'},
                 encode_kwargs={'normalize_embeddings': True}
             )
+            print("[INFO] RAG: Using HuggingFaceEmbeddings")
         except ImportError:
             from langchain_community.embeddings import SentenceTransformerEmbeddings
             self.embedding_function = SentenceTransformerEmbeddings(
                 model_name="paraphrase-multilingual-MiniLM-L12-v2",
                 model_kwargs={'device': 'cpu'}
             )
+            print("[WARN] RAG: Using Fallback SentenceTransformerEmbeddings")
         
         # Inicializar ChromaDB (Vector Store)
         if os.path.exists(db_dir):

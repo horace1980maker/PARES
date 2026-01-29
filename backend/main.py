@@ -465,6 +465,18 @@ def startup_event():
         threading.Thread(target=ingest_documents, daemon=True).start()
     else:
         logger.info("STARTUP: DB found. Skipping auto-ingestion.")
+        # Diagnostic: List Orgs in DB
+        try:
+            rag = RAGProcessor()
+            if rag.db:
+                all_data = rag.db.get()
+                if all_data['metadatas']:
+                    orgs_in_db = set(m.get('org_id') for m in all_data['metadatas'] if m.get('org_id'))
+                    logger.info(f"STARTUP: Database contains data for organizations: {orgs_in_db}")
+                else:
+                    logger.warning("STARTUP: Database exists but appears to be EMPTY.")
+        except Exception as e:
+            logger.error(f"STARTUP: Error during DB diagnostic: {e}")
 
 # Mock Data - Organizaciones por país
 # Datos Reales - Organizaciones por país
@@ -914,10 +926,14 @@ def obtener_insight_territorial_organizacion(request: ChatRequest):
         # Usar el retriever directamente con filtro de metadata
         try:
             # Buscar solo documentos de esta organización
+            # Strip org_folder just in case of whitespace
+            search_filter = {"org_id": org_folder.strip()}
+            print(f"[INSIGHT] Searching with filter: {search_filter}")
+            
             docs = rag.db.similarity_search(
                 query_territorial,
-                k=8,  # Obtener más documentos para mejor contexto
-                filter={"org_id": org_folder}
+                k=15,  # Increased k for better coverage
+                filter=search_filter
             )
             
             if not docs:

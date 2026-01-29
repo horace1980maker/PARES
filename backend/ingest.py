@@ -83,11 +83,30 @@ def determine_scope_and_org(file_path):
 def ingest_documents(clear_manifest=False):
     print(f"[START] Starting Ingestion Pipeline")
     if clear_manifest:
-        print(f"   - [RESET] Clearing existing manifest as requested")
+        print(f"   - [RESET] Clearing existing manifest and DATABASE as requested")
         if os.path.exists(MANIFEST_FILE):
             os.remove(MANIFEST_FILE)
+        if os.path.exists(DB_DIR):
+            import shutil
+            shutil.rmtree(DB_DIR)
+            os.makedirs(DB_DIR)
             
-    print(f"   - Embedding Model: {EMBEDDING_MODEL}")
+    # Try to use HuggingFaceEmbeddings
+    try:
+        from langchain_huggingface import HuggingFaceEmbeddings
+        embedding_function = HuggingFaceEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'},
+            encode_kwargs={'normalize_embeddings': True}
+        )
+        print(f"   - [INFO] Using HuggingFaceEmbeddings (Normalized: True)")
+    except ImportError:
+        from langchain_community.embeddings import SentenceTransformerEmbeddings
+        embedding_function = SentenceTransformerEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'}
+        )
+        print(f"   - [WARN] Using Fallback SentenceTransformerEmbeddings")
     print(f"   - Chunk Size: {CHUNK_SIZE} / Overlap: {CHUNK_OVERLAP}")
     print(f"   - DB Path: {DB_DIR}")
     print("=" * 60)
