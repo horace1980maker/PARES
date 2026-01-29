@@ -130,8 +130,7 @@ def ingest_documents():
         
         if current_hash != stored_hash:
             files_to_process.append(file_path)
-            manifest[file_path] = current_hash # Update manifest (we'll save at end only if success?) 
-            # Ideally save incrementally or at end. For now, we update the dict and save after processing.
+            # manifest[file_path] = current_hash # MOVED: Only update on success
 
     if not files_to_process:
         print("[OK] All files are up to date. No new ingestion needed.")
@@ -207,13 +206,17 @@ def ingest_documents():
             # Add to DB
             db.add_documents(chunks)
             
+            # 6. Mark as processed on success
+            manifest[file_path] = calculate_file_hash(file_path)
+            save_manifest(manifest) # Save incrementally for safety
+            
         except Exception as e:
             print(f"[ERROR] Error processing {file_path}: {e}")
             # Revert manifest change for this file so we try again next time?
             # For simplicity, we won't resort complex revert logic here 
             # but in production we should.
             
-    # 6. Save Manifest
+    # 7. Final Manifest Save
     save_manifest(manifest)
     print(f"\n[OK] Ingestion Complete. Manifest updated.")
 
