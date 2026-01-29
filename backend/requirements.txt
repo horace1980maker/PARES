@@ -13,3 +13,5 @@ requests
 python-docx
 docx2txt
 tqdm
+rank_bm25
+langchain-chroma

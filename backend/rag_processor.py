@@ -7,8 +7,10 @@ import os
 import time
 import logging
 from typing import List, Optional, Dict, Any
-from langchain_community.embeddings import SentenceTransformerEmbeddings
-from langchain_community.vectorstores import Chroma
+try:
+    from langchain_chroma import Chroma
+except ImportError:
+    from langchain_community.vectorstores import Chroma
 from langchain_community.retrievers import BM25Retriever
 from langchain_core.documents import Document
 
@@ -55,26 +57,29 @@ class RAGProcessor:
     def _init_bm25(self):
         """Inicializa BM25 cargando documentos de Chroma (en memoria)"""
         try:
-            print("[INFO] Inicializando indice BM25 (esto puede tardar unos segundos)...")
-            # Recuperar TODOS los documentos para crear índice invertido
-            # NOTA: En producción con millones de docs esto no escala.
-            # Para esete proyecto (<10k chunks) es aceptable.
-            all_docs = self.db.get()['documents']
-            all_metadatas = self.db.get()['metadatas']
-            
+            import rank_bm25
+            print("[INFO] Inicializando indice BM25 (esto puede tardar unos segundos)...", flush=True)
+            # Recuperar fragmentos de Chroma para alimentar BM25
+            all_data = self.db.get()
             docs_objects = []
-            for text, meta in zip(all_docs, all_metadatas):
-                docs_objects.append(Document(page_content=text, metadata=meta))
-                
+            for i in range(len(all_data['documents'])):
+                docs_objects.append(Document(
+                    page_content=all_data['documents'][i],
+                    metadata=all_data['metadatas'][i]
+                ))
+            
             if docs_objects:
                 self.bm25 = BM25Retriever.from_documents(docs_objects)
                 self.bm25.k = 10  # Base retrieval count
-                print(f"[OK] BM25 inicializado con {len(docs_objects)} fragmentos.")
+                print(f"[OK] BM25 inicializado con {len(docs_objects)} fragmentos.", flush=True)
             else:
                 self.bm25 = None
-                print("[WARN] No hay documentos para BM25.")
+                print("[WARN] No hay documentos para BM25.", flush=True)
+        except ImportError:
+            print("[WARN] No se pudo inicializar BM25: rank_bm25 no instalado.", flush=True)
+            self.bm25 = None
         except Exception as e:
-            print(f"[ERROR] Error inicializando BM25: {e}")
+            print(f"[ERROR] Error inicializando BM25: {e}", flush=True)
             self.bm25 = None
 
     def search_tiered(self, query: str, org_id: str) -> List[Document]:

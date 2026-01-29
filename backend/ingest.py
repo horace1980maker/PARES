@@ -7,7 +7,10 @@ from datetime import datetime
 from langchain_community.document_loaders import PyMuPDFLoader, Docx2txtLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
-from langchain_community.vectorstores import Chroma
+try:
+    from langchain_chroma import Chroma
+except ImportError:
+    from langchain_community.vectorstores import Chroma
 from tqdm import tqdm
 
 # Supported file extensions
