@@ -145,10 +145,19 @@ def ingest_documents(clear_manifest=False):
     print(f"[PROCESS] Processing {len(files_to_process)} new/modified files...")
 
     # 4. Initialize Components
-    embedding_function = SentenceTransformerEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        model_kwargs={'device': 'cpu'} # Force CPU if no CUDA, usually safe default
-    )
+    try:
+        from langchain_huggingface import HuggingFaceEmbeddings
+        embedding_function = HuggingFaceEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'},
+            encode_kwargs={'normalize_embeddings': True}
+        )
+    except ImportError:
+        from langchain_community.embeddings import SentenceTransformerEmbeddings
+        embedding_function = SentenceTransformerEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'}
+        )
     
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE,
