@@ -418,6 +418,17 @@ load_dotenv()
 
 app = FastAPI(title="CATIE PARES API", version="1.0.0")
 
+@app.get("/ping-debug")
+def ping_debug():
+    """Endpoint para verificar que esta es la versión con logs [INSIGHT]"""
+    return {
+        "status": "ok",
+        "version": "1.0.5-insight-logs",
+        "db_path": os.getenv("CHROMA_DB_DIR", "default"),
+        "orgs_mapped": list(ORG_NAME_TO_FOLDER.keys())
+    }
+
+
 # CORS Configuration
 origins = [
     "http://localhost:5173",
