@@ -10,4 +10,5 @@ python-multipart
 python-dotenv
 requests
 python-docx
+docx2txt
 tqdm

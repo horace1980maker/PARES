@@ -68,7 +68,7 @@ ORG_NAME_TO_FOLDER = {
     "Corporación Biocomercio": "Corporación Biocomercio",
     # Ecuador
     "Tierra Viva": "TIERRA VIVA",
-    "Corporación Toisán": "Corporación Toisán",
+    "Corporación Toisán": "TOISAN",
     # Mexico
     "CECROPIA": "CECROPIA",
     "FONCET": "FONCET",

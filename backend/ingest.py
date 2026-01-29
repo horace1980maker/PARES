@@ -3,11 +3,24 @@ import json
 import time
 import hashlib
 from datetime import datetime
-from langchain_community.document_loaders import PyMuPDFLoader
+from langchain_community.document_loaders import PyMuPDFLoader, Docx2txtLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
 from tqdm import tqdm
+
+# Supported file extensions
+SUPPORTED_EXTENSIONS = (".pdf", ".docx")
+
+def get_loader(file_path: str):
+    """Returns the appropriate document loader based on file extension"""
+    ext = os.path.splitext(file_path)[1].lower()
+    if ext == ".pdf":
+        return PyMuPDFLoader(file_path)
+    elif ext == ".docx":
+        return Docx2txtLoader(file_path)
+    else:
+        raise ValueError(f"Unsupported file type: {ext}")
 
 # Configuration
 DOCS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "documents"))
@@ -83,23 +96,26 @@ def ingest_documents():
     # 2. Scan Files
     found_files = []
     
-    # Scan Orgs
+    # Scan Orgs - recursively search all subdirectories
     if os.path.exists(orgs_dir):
         for org_id in os.listdir(orgs_dir):
             org_path = os.path.join(orgs_dir, org_id)
             if os.path.isdir(org_path):
-                for file in os.listdir(org_path):
-                    if file.lower().endswith(".pdf"):
-                        found_files.append(os.path.join(org_path, file))
+                # Use os.walk to recursively find all supported documents
+                for root, dirs, files in os.walk(org_path):
+                    for file in files:
+                        if file.lower().endswith(SUPPORTED_EXTENSIONS):
+                            found_files.append(os.path.join(root, file))
+
 
     # Scan Global
     if os.path.exists(global_dir):
         for file in os.listdir(global_dir):
-            if file.lower().endswith(".pdf"):
+            if file.lower().endswith(SUPPORTED_EXTENSIONS):
                 found_files.append(os.path.join(global_dir, file))
 
     if not found_files:
-        print("[WARN] No PDF documents found.")
+        print("[WARN] No supported documents found (PDF, DOCX).")
         return
 
     # 3. Incremental Logic
@@ -168,8 +184,8 @@ def ingest_documents():
             except Exception as e:
                 print(f"   [WARN] Warning cleaning up old chunks for {filename}: {e}")
 
-            # Load & Split
-            loader = PyMuPDFLoader(file_path)
+            # Load & Split - use appropriate loader based on file type
+            loader = get_loader(file_path)
             docs = loader.load()
             
             chunks = text_splitter.split_documents(docs)
