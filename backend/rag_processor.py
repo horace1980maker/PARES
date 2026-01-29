@@ -45,7 +45,7 @@ class RAGProcessor:
                 persist_directory=db_dir,
                 embedding_function=self.embedding_function
             )
-            print("[OK] ChromaDB cargado correctamente.")
+            print("[OK] ChromaDB cargado correctamente.", flush=True)
             self._init_bm25()
         else:
             self.db = None

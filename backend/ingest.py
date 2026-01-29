@@ -88,8 +88,17 @@ def ingest_documents(clear_manifest=False):
             os.remove(MANIFEST_FILE)
         if os.path.exists(DB_DIR):
             import shutil
-            shutil.rmtree(DB_DIR)
-            os.makedirs(DB_DIR)
+            print(f"   - [INFO] Emptying database directory: {DB_DIR}")
+            for filename in os.listdir(DB_DIR):
+                file_path = os.path.join(DB_DIR, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)
+                except Exception as e:
+                    print(f"   - [WARN] Failed to delete {file_path}. Reason: {e}")
+            print(f"   - [INFO] Database directory emptied.")
             
     # Try to use HuggingFaceEmbeddings
     try:
@@ -99,17 +108,18 @@ def ingest_documents(clear_manifest=False):
             model_kwargs={'device': 'cpu'},
             encode_kwargs={'normalize_embeddings': True}
         )
-        print(f"   - [INFO] Using HuggingFaceEmbeddings (Normalized: True)")
+        print(f"   - [INFO] Using HuggingFaceEmbeddings (Normalized: True)", flush=True)
     except ImportError:
         from langchain_community.embeddings import SentenceTransformerEmbeddings
         embedding_function = SentenceTransformerEmbeddings(
             model_name=EMBEDDING_MODEL,
             model_kwargs={'device': 'cpu'}
         )
-        print(f"   - [WARN] Using Fallback SentenceTransformerEmbeddings")
-    print(f"   - Chunk Size: {CHUNK_SIZE} / Overlap: {CHUNK_OVERLAP}")
-    print(f"   - DB Path: {DB_DIR}")
-    print("=" * 60)
+        print(f"   - [WARN] Using Fallback SentenceTransformerEmbeddings", flush=True)
+    
+    print(f"   - Chunk Size: {CHUNK_SIZE} / Overlap: {CHUNK_OVERLAP}", flush=True)
+    print(f"   - DB Path: {DB_DIR}", flush=True)
+    print("=" * 60, flush=True)
 
     # 1. Setup Directories
     if not os.path.exists(DOCS_DIR):
