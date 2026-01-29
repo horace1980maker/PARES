@@ -1,4 +1,5 @@
 import os
+import argparse
 import json
 import time
 import hashlib
@@ -79,8 +80,13 @@ def determine_scope_and_org(file_path):
         
     return "global", "UNKNOWN" # Fallback
 
-def ingest_documents():
+def ingest_documents(clear_manifest=False):
     print(f"[START] Starting Ingestion Pipeline")
+    if clear_manifest:
+        print(f"   - [RESET] Clearing existing manifest as requested")
+        if os.path.exists(MANIFEST_FILE):
+            os.remove(MANIFEST_FILE)
+            
     print(f"   - Embedding Model: {EMBEDDING_MODEL}")
     print(f"   - Chunk Size: {CHUNK_SIZE} / Overlap: {CHUNK_OVERLAP}")
     print(f"   - DB Path: {DB_DIR}")
@@ -221,4 +227,8 @@ def ingest_documents():
     print(f"\n[OK] Ingestion Complete. Manifest updated.")
 
 if __name__ == "__main__":
-    ingest_documents()
+    parser = argparse.ArgumentParser(description="Ingest documents into ChromaDB")
+    parser.add_argument("--clear", "--reset", action="store_true", help="Clear manifest and re-ingest all files")
+    args = parser.parse_args()
+    
+    ingest_documents(clear_manifest=args.clear)
