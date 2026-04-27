@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard territorial FDN | PARES/CEAP</title>
+  <meta name="description" content="Dashboard socio-ecológico territorial generado desde FINAL_FDN_analysis_ready.xlsx">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&family=Oswald:wght@200;300;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neutral: #001F89;
+      --primary: #009EE2;
+      --accent: #B71373;
+      --accent2: #751851;
+      --paper: #F7F9FF;
+      --paper2: #EDF7FC;
+      --ink: #15213D;
+      --muted: #667085;
+      --line: rgba(0,31,137,.13);
+      --white: #FFFFFF;
+      --soft: rgba(0,158,226,.10);
+      --shadow: 0 18px 50px rgba(0,31,137,.12);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(0,158,226,.20), transparent 32rem),
+        radial-gradient(circle at 94% 7%, rgba(183,19,115,.20), transparent 29rem),
+        linear-gradient(180deg, #F8FBFF 0%, #EFF5FE 42%, #FFFFFF 100%);
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .page { width: min(1200px, calc(100% - 34px)); margin: 0 auto; }
+    .skip-link {
+      position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
+    }
+    .skip-link:focus { left: 1rem; top: 1rem; width: auto; height: auto; background: white; padding: .7rem 1rem; z-index: 99; }
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(247,249,255,.85);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner { display:flex; align-items:center; gap: 1rem; min-height: 64px; }
+    .brand {
+      font-family: 'Oswald', sans-serif; font-weight: 600; letter-spacing:.05em; color: var(--neutral);
+      text-transform: uppercase; display:flex; gap:.65rem; align-items:center; white-space: nowrap;
+    }
+    .brand-mark {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: conic-gradient(from 140deg, var(--neutral), var(--primary), var(--accent), var(--accent2), var(--neutral));
+      box-shadow: 0 8px 24px rgba(0,31,137,.24);
+    }
+    .nav-links {
+      margin-left: auto; display:flex; flex-wrap: wrap; gap: .35rem;
+    }
+    .nav-links a {
+      text-decoration:none; font-size:.78rem; padding:.55rem .7rem; border-radius:999px; color: var(--neutral);
+      border:1px solid transparent;
+    }
+    .nav-links a:hover, .nav-links a.active { border-color: var(--line); background: rgba(255,255,255,.85); }
+    .hero {
+      padding: 72px 0 42px;
+      position: relative;
+    }
+    .hero-grid { display:grid; grid-template-columns: 1.02fr .98fr; gap: 24px; align-items: stretch; }
+    .hero-panel {
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(0,31,137,.98), rgba(0,158,226,.88));
+      color: white;
+      padding: clamp(28px, 4vw, 54px);
+      min-height: 520px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .hero-panel::before {
+      content:""; position:absolute; inset:-30% -15% auto auto; width: 420px; height:420px; border-radius:50%;
+      background: radial-gradient(circle, rgba(183,19,115,.62), transparent 66%);
+    }
+    .hero-panel::after {
+      content:""; position:absolute; left:-110px; bottom:-130px; width: 360px; height:360px; border-radius:46%;
+      background: radial-gradient(circle, rgba(117,24,81,.42), transparent 64%);
+    }
+    .kicker {
+      font-family:'Oswald'; font-weight:300; letter-spacing:.18em; text-transform:uppercase;
+      font-size:.86rem; opacity:.9; position:relative; z-index:2;
+    }
+    h1, h2, h3 {
+      font-family: 'Oswald', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .035em;
+      line-height: 1.02;
+      margin: 0;
+    }
+    h1 {
+      font-size: clamp(3.3rem, 8.5vw, 8.8rem);
+      font-weight: 600;
+      position:relative; z-index:2;
+      margin-top: .5rem;
+    }
+    .hero-title-sub {
+      font-family:'Oswald'; font-weight: 300; font-size: clamp(1.25rem, 2.3vw, 2.1rem);
+      text-transform: uppercase; letter-spacing:.06em; max-width: 820px; position:relative; z-index:2;
+    }
+    .hero-copy {
+      position:relative; z-index:2; max-width: 720px; font-size:1.02rem; opacity:.94; margin-top: 1.3rem;
+    }
+    .hero-note {
+      margin-top: 1.6rem; position:relative; z-index:2;
+      background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.24);
+      border-radius: 20px; padding: 1rem 1.1rem; font-size:.92rem;
+    }
+    .hero-aside {
+      display:grid; grid-template-rows: 1fr auto; gap: 18px;
+    }
+    .stat-mosaic {
+      display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,.86);
+      border:1px solid var(--line);
+      border-radius: 24px;
+      padding: 1rem;
+      box-shadow: 0 12px 36px rgba(0,31,137,.08);
+      min-height: 138px;
+      display:flex; flex-direction:column; justify-content:space-between;
+      overflow:hidden;
+      position:relative;
+    }
+    .stat-card.big { grid-column: span 2; min-height: 160px; background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(237,247,252,.92)); }
+    .stat-number {
+      font-family:'Oswald'; font-size: clamp(2.3rem, 5.4vw, 4.8rem); font-weight:600; line-height:.9; color:var(--neutral);
+    }
+    .stat-card.big .stat-number { font-size: clamp(4rem, 8vw, 8rem); color: var(--accent); }
+    .stat-label { font-family:'Oswald'; text-transform:uppercase; letter-spacing:.08em; font-weight:300; color: var(--neutral); }
+    .stat-detail { color:var(--muted); font-size:.88rem; }
+    .section {
+      margin: 58px 0;
+      scroll-margin-top: 86px;
+    }
+    .section-head {
+      display:grid; grid-template-columns: .8fr 1.2fr; gap: 24px; margin-bottom: 22px; align-items:end;
+    }
+    .section-head h2 {
+      font-size: clamp(2rem, 4.4vw, 4.8rem);
+      color: var(--neutral);
+    }
+    .section-lead {
+      border-left: 4px solid var(--primary);
+      padding-left: 1rem;
+      color: #34405E;
+    }
+    .callout {
+      background: linear-gradient(135deg, rgba(0,31,137,.07), rgba(0,158,226,.10));
+      border: 1px solid var(--line);
+      padding: 1rem 1.1rem;
+      border-radius: 22px;
+    }
+    .grid-2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .grid-3 { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+    .grid-4 { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+    .panel {
+      background: rgba(255,255,255,.88);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: 0 10px 34px rgba(0,31,137,.07);
+    }
+    .panel.dark {
+      color:white; background: linear-gradient(135deg, var(--neutral), #0530A6 52%, var(--accent2));
+      border:0;
+    }
+    .panel h3 {
+      color: var(--neutral); font-size: 1.35rem; margin-bottom: .65rem;
+    }
+    .panel.dark h3 { color:white; }
+    .mini-label {
+      font-family:'Oswald'; text-transform:uppercase; letter-spacing:.13em; font-weight:300; font-size:.78rem; color:var(--muted);
+    }
+    .chip-row { display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.7rem; }
+    .chip {
+      display:inline-flex; align-items:center; gap:.35rem;
+      border-radius: 999px; padding:.42rem .68rem;
+      font-size:.78rem; background: var(--soft); color: var(--neutral);
+      border:1px solid rgba(0,158,226,.22);
+      line-height:1.15;
+    }
+    .chip.accent { background: rgba(183,19,115,.09); color:var(--accent2); border-color: rgba(183,19,115,.20); }
+    .chip.neutral { background: rgba(0,31,137,.08); color:var(--neutral); border-color: rgba(0,31,137,.12); }
+    .territory {
+      display:grid; grid-template-columns: .88fr 1.12fr; gap:18px;
+    }
+    .map-card {
+      min-height: 420px; position:relative; overflow:hidden; padding:0;
+      background: radial-gradient(circle at 20% 20%, rgba(0,158,226,.20), transparent 24rem), linear-gradient(150deg,#ffffff,#edf7fc);
+    }
+    .map-blob {
+      position:absolute; width: 300px; height: 370px; left: 50%; top: 46%;
+      transform: translate(-50%, -50%) rotate(-8deg);
+      background: linear-gradient(145deg, var(--neutral), var(--primary) 58%, var(--accent));
+      clip-path: polygon(42% 1%, 69% 10%, 74% 31%, 91% 40%, 76% 57%, 88% 78%, 62% 92%, 44% 84%, 22% 96%, 8% 73%, 20% 53%, 5% 33%, 25% 18%);
+      filter: drop-shadow(0 28px 35px rgba(0,31,137,.28));
+      opacity:.96;
+    }
+    .map-rings {
+      position:absolute; inset: 38px; border-radius: 32px; border:1px dashed rgba(0,31,137,.24);
+    }
+    .map-pin {
+      position:absolute; left: 53%; top: 42%; transform: translate(-50%,-50%);
+      width: 26px; height: 26px; background:white; border:7px solid var(--accent); border-radius:50%;
+      box-shadow: 0 0 0 12px rgba(183,19,115,.18), 0 12px 25px rgba(0,0,0,.18);
+    }
+    .map-caption {
+      position:absolute; left: 22px; right:22px; bottom:22px; background: rgba(255,255,255,.86);
+      border:1px solid var(--line); border-radius: 20px; padding:1rem;
+    }
+    .data-universe-card {
+      min-height: 170px; display:flex; flex-direction:column; justify-content:space-between;
+      position:relative; overflow:hidden;
+    }
+    .data-universe-card::after {
+      content:""; position:absolute; right:-36px; top:-36px; width:110px; height:110px; border-radius:50%;
+      background: rgba(0,158,226,.16);
+    }
+    .data-universe-card .n { font-family:'Oswald'; font-size:3.3rem; line-height:1; color:var(--accent); }
+    .toolbar {
+      display:flex; flex-wrap:wrap; gap:.7rem; align-items:center; margin: 0 0 16px;
+      background: rgba(255,255,255,.76); border:1px solid var(--line); border-radius: 20px; padding:.75rem;
+    }
+    input, select, button {
+      font-family: inherit; font-size:.94rem;
+    }
+    input, select {
+      border:1px solid var(--line); border-radius: 999px; padding:.72rem .9rem; background:white; color:var(--ink);
+      min-width: 190px;
+    }
+    button {
+      border:0; border-radius:999px; padding:.78rem 1rem; cursor:pointer; background:var(--neutral); color:white;
+      font-weight:700;
+    }
+    button.secondary { background: rgba(0,31,137,.08); color: var(--neutral); border:1px solid var(--line); }
+    .cards-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:18px; }
+    .livelihood-card {
+      position:relative; overflow:hidden; min-height: 300px;
+    }
+    .livelihood-card::before {
+      content:""; position:absolute; inset:0 0 auto 0; height:7px;
+      background: linear-gradient(90deg, var(--neutral), var(--primary), var(--accent));
+    }
+    .rank {
+      font-family:'Oswald'; font-size: 3.6rem; font-weight:600; color: rgba(0,31,137,.13); position:absolute; right:18px; top:12px;
+    }
+    .score {
+      display:inline-flex; align-items: baseline; gap:.25rem; color:var(--accent);
+      font-family:'Oswald'; font-weight:600; font-size:2.2rem; line-height:1;
+    }
+    .score small { font-size:.9rem; color:var(--muted); font-weight:300; }
+    .criteria-grid { display:grid; grid-template-columns: repeat(5,1fr); gap:.3rem; margin-top:.8rem; }
+    .criterion {
+      border-radius: 12px; background: rgba(0,31,137,.06); min-height: 54px; padding:.45rem .3rem; text-align:center;
+    }
+    .criterion b { display:block; font-family:'Oswald'; font-size:1.35rem; color:var(--neutral); }
+    .criterion span { display:block; font-size:.63rem; color:var(--muted); }
+    .link-list { list-style:none; padding:0; margin:.7rem 0 0; display:flex; flex-wrap:wrap; gap:.35rem; }
+    .link-list li { background:#F3F7FF; border:1px solid var(--line); border-radius: 12px; padding:.34rem .5rem; font-size:.77rem; }
+    .ecosystem-card { display:grid; grid-template-rows:auto auto 1fr; min-height: 330px; }
+    .service-badges { display:flex; flex-wrap:wrap; gap:.35rem; margin:.65rem 0; }
+    .service-badge { font-family:'Oswald'; letter-spacing:.04em; border-radius:10px; padding:.25rem .45rem; background:var(--neutral); color:white; font-size:.8rem; }
+    .health {
+      display:flex; gap:.32rem; align-items:center; margin:.35rem 0 .5rem;
+    }
+    .health-dot { width:13px; height:13px; border-radius:50%; background:rgba(0,31,137,.14); }
+    .health-dot.on { background: var(--primary); }
+    .threat-grid { display:grid; grid-template-columns: repeat(5, minmax(190px,1fr)); gap:16px; overflow-x:auto; padding-bottom:4px; }
+    .threat-card {
+      min-width: 190px; position:relative; overflow:hidden;
+    }
+    .threat-score {
+      display:grid; grid-template-columns: repeat(3,1fr); gap:.4rem; margin: .9rem 0;
+    }
+    .threat-score div { border-radius: 14px; padding:.55rem .35rem; text-align:center; background: rgba(0,158,226,.10); }
+    .threat-score b { display:block; font-family:'Oswald'; font-size:1.55rem; color:var(--neutral); }
+    .intensity {
+      font-family:'Oswald'; text-transform:uppercase; letter-spacing:.08em; font-size:.75rem;
+      display:inline-block; padding:.3rem .55rem; border-radius:999px; background:rgba(117,24,81,.10); color:var(--accent2);
+    }
+    .matrix-wrap { overflow:auto; border-radius: 24px; border:1px solid var(--line); background:white; }
+    .matrix {
+      display:grid; min-width: 760px;
+    }
+    .matrix.header, .matrix-row { display:grid; grid-template-columns: 250px repeat(var(--cols), minmax(92px,1fr)); }
+    .matrix-cell, .matrix-head {
+      border-right:1px solid var(--line); border-bottom:1px solid var(--line);
+      padding:.58rem; min-height: 66px; display:flex; align-items:center; justify-content:center; text-align:center;
+      font-size:.76rem;
+    }
+    .matrix-head { background: rgba(0,31,137,.08); color:var(--neutral); font-family:'Oswald'; text-transform:uppercase; letter-spacing:.05em; }
+    .row-title { justify-content:flex-start; text-align:left; font-weight:700; background:rgba(0,31,137,.04); }
+    .matrix-cell.active { color:white; cursor:pointer; font-weight:700; border-color:rgba(255,255,255,.35); }
+    .heat-1 { background: rgba(0,158,226,.55); }
+    .heat-2 { background: rgba(183,19,115,.72); }
+    .heat-3 { background: rgba(117,24,81,.90); }
+    .matrix-detail {
+      margin-top: 12px; min-height:70px;
+      background: linear-gradient(135deg, rgba(0,31,137,.06), rgba(0,158,226,.08));
+      border:1px solid var(--line); border-radius: 20px; padding: 1rem;
+    }
+    .quadrant {
+      display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px;
+    }
+    .quad {
+      min-height: 230px; border:1px dashed rgba(0,31,137,.24); border-radius: 24px; padding: 1rem; background: rgba(255,255,255,.68);
+    }
+    .quad h4 { margin:.1rem 0 .7rem; font-family:'Oswald'; text-transform:uppercase; color:var(--neutral); letter-spacing:.05em; }
+    .actor-chip {
+      margin:.35rem 0; padding:.6rem .7rem; border-radius:14px; background:white; border:1px solid var(--line);
+      box-shadow:0 8px 18px rgba(0,31,137,.05);
+    }
+    .actor-chip b { display:block; font-size:.86rem; }
+    .actor-chip span { color:var(--muted); font-size:.76rem; }
+    .capacity-grid { display:grid; grid-template-columns: .8fr 1.2fr; gap:18px; }
+    .ladder { display:grid; gap:.65rem; }
+    .ladder-item { display:grid; grid-template-columns: 80px 1fr auto; gap:.75rem; align-items:center; background:white; border:1px solid var(--line); border-radius:18px; padding:.7rem; }
+    .block-scale { display:flex; gap:.18rem; }
+    .block-scale span { height:20px; flex:1; border-radius:6px; background: rgba(0,31,137,.10); }
+    .block-scale span.on1 { background: rgba(0,158,226,.50); }
+    .block-scale span.on2 { background: rgba(183,19,115,.60); }
+    .block-scale span.on3 { background: rgba(117,24,81,.80); }
+    .timeline { position:relative; padding-left: 26px; }
+    .timeline::before { content:""; position:absolute; left:8px; top: 4px; bottom: 4px; width:2px; background: linear-gradient(var(--primary), var(--accent)); }
+    .event { position:relative; margin-bottom: 1rem; }
+    .event::before { content:""; position:absolute; left:-24px; top:.4rem; width:14px; height:14px; border-radius:50%; background:var(--accent); border:3px solid white; box-shadow:0 0 0 4px rgba(183,19,115,.15); }
+    .synthesis-grid { display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:16px; }
+    .insight {
+      background: white; border:1px solid var(--line); border-radius:24px; padding:1.2rem; min-height: 250px;
+      position:relative; overflow:hidden;
+    }
+    .insight .num { font-family:'Oswald'; font-size:4rem; color:rgba(183,19,115,.15); position:absolute; right:16px; top:8px; }
+    .insight h3 { color:var(--neutral); max-width:80%; }
+    details {
+      background:white; border:1px solid var(--line); border-radius: 22px; padding: 1rem 1.1rem; margin:.8rem 0;
+    }
+    summary {
+      cursor:pointer; font-family:'Oswald'; text-transform:uppercase; letter-spacing:.05em; color:var(--neutral);
+    }
+    .small-table { width:100%; border-collapse: collapse; font-size:.86rem; margin-top:.8rem; }
+    .small-table th, .small-table td { text-align:left; border-bottom:1px solid var(--line); padding:.55rem; vertical-align:top; }
+    .small-table th { font-family:'Oswald'; text-transform:uppercase; color:var(--neutral); letter-spacing:.04em; }
+    footer { padding: 50px 0 80px; color:var(--muted); }
+    @media (max-width: 980px) {
+      .hero-grid, .section-head, .territory, .grid-2, .grid-3, .grid-4, .capacity-grid, .synthesis-grid { grid-template-columns: 1fr; }
+      .cards-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .nav-links { display:none; }
+      .hero-panel { min-height: auto; }
+    }
+    @media (max-width: 680px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .stat-mosaic { grid-template-columns: 1fr; }
+      .stat-card.big { grid-column: span 1; }
+      .quadrant { grid-template-columns: 1fr; }
+      .threat-grid { grid-template-columns: 1fr; }
+      .page { width: min(100% - 22px, 1200px); }
+      .hero { padding-top: 38px; }
+      input, select { width:100%; }
+    }
+    @media print {
+      body { background:white; color:#111; }
+      .nav, .toolbar, button { display:none !important; }
+      .section { break-inside: avoid; page-break-inside: avoid; margin: 28px 0; }
+      .panel, .stat-card, .insight { box-shadow:none; }
+      .hero-panel { background:#001F89 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#main">Saltar al contenido principal</a>
+<nav class="nav">
+  <div class="page nav-inner">
+    <div class="brand"><span class="brand-mark"></span><span>Dashboard territorial FDN</span></div>
+    <div class="nav-links" id="navLinks">
+      <a href="#territorio">Territorio</a>
+      <a href="#datos">Datos</a>
+      <a href="#medios">Medios de vida</a>
+      <a href="#ecosistemas">Ecosistemas</a>
+      <a href="#amenazas">Amenazas</a>
+      <a href="#capacidad">Capacidad</a>
+      <a href="#gobernanza">Gobernanza</a>
+      <a href="#sintesis">Síntesis</a>
+      <a href="#calidad">Calidad</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <section class="hero page" id="inicio">
+    <div class="hero-grid">
+      <div class="hero-panel">
+        <div class="kicker">PARES / CEAP · lectura socio-ecológica</div>
+        <h1>FDN</h1>
+        <div class="hero-title-sub">Tierras bajas e inundables de la Sierra de las Minas y la cuenca del Polochic, El Estor.</div>
+        <p class="hero-copy">Este tablero transforma el archivo de análisis en una lectura territorial: medios de vida, ecosistemas, servicios ecosistémicos codificados, amenazas, actores, espacios de diálogo, conflictos y señales de capacidad adaptativa. La visualización es esquemática y se basa únicamente en los registros del Excel.</p>
+        <div class="hero-note"><strong>Nota de trazabilidad:</strong> el campo explícito de organización no aparece en las hojas analizadas; se usa “FDN” como identificador tomado del nombre del archivo.</div>
+      </div>
+      <aside class="hero-aside">
+        <div class="stat-mosaic" id="headlineStats"></div>
+        <div class="panel dark">
+          <div class="mini-label" style="color:rgba(255,255,255,.75)">Lectura inicial</div>
+          <h3>Un territorio con base productiva diversa y amenazas concentradas.</h3>
+          <p>Los registros muestran 10 medios de vida priorizados, 4 ecosistemas caracterizados y 5 amenazas en el diccionario. Entre las amenazas caracterizadas, incendios forestales alcanza la mayor suma; sequía e inundaciones aparecen vinculadas a competencia por recursos naturales en los registros de impacto.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section page" id="territorio">
+    <div class="section-head">
+      <h2>Identidad territorial</h2>
+      <p class="section-lead">El archivo ubica el análisis en Guatemala y en un único paisaje. No contiene coordenadas, por lo que la lectura espacial se presenta como esquema territorial, no como mapa georreferenciado.</p>
+    </div>
+    <div class="territory">
+      <div class="panel map-card">
+        <div class="map-rings"></div>
+        <div class="map-blob"></div>
+        <div class="map-pin" aria-label="Punto territorial esquemático"></div>
+        <div class="map-caption">
+          <div class="mini-label">Esquema país · paisaje</div>
+          <h3 style="margin:.25rem 0;color:var(--neutral)">Guatemala</h3>
+          <p style="margin:0">Paisaje: Tierras bajas e inundables de la Sierra de las Minas y la cuenca del Polochic, El Estor.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="mini-label">País</div>
+          <h3>Guatemala</h3>
+          <p>El campo <strong>admin0</strong> aparece de forma consistente en los registros principales.</p>
+          <div class="chip-row"><span class="chip">Grupos: A, B</span><span class="chip accent">Fecha de taller: 2025-06-10</span></div>
+        </div>
+        <div class="panel">
+          <div class="mini-label">Paisaje</div>
+          <h3>Cuenca del Polochic · El Estor</h3>
+          <p>El nombre territorial registrado conecta tierras bajas e inundables con la Sierra de las Minas y la cuenca del Polochic.</p>
+          <div class="chip-row"><span class="chip neutral">1 paisaje</span><span class="chip">sin coordenadas exactas</span></div>
+        </div>
+        <div class="panel">
+          <div class="mini-label">Grupos de trabajo</div>
+          <h3>A y B</h3>
+          <p>Los grupos aparecen asociados a registros de medios de vida, ecosistemas, amenazas, actores y espacios de diálogo.</p>
+        </div>
+        <div class="panel">
+          <div class="mini-label">Alcance del tablero</div>
+          <h3>Lectura integrada</h3>
+          <p>El dashboard no sustituye la base original; organiza señales para análisis técnico, priorización territorial y conversación con actores.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section page" id="datos">
+    <div class="section-head">
+      <h2>Universo de datos</h2>
+      <p class="section-lead">El archivo combina hojas de captura, catálogos LOOKUP, tablas TIDY y controles QA. El tablero usa las tablas limpias cuando están disponibles y conserva notas de calidad donde hay vacíos, códigos o duplicados.</p>
+    </div>
+    <div class="grid-4" id="dataUniverse"></div>
+  </section>
+
+  <section class="section page" id="medios">
+    <div class="section-head">
+      <h2>Medios de vida</h2>
+      <p class="section-lead">La priorización usa cinco criterios registrados en el archivo: seguridad alimentaria, área, desarrollo local, ambiente e inclusión. La puntuación total se presenta como señal de prioridad, no como valor absoluto externo.</p>
+    </div>
+    <div class="toolbar">
+      <input id="livelihoodSearch" placeholder="Buscar medio de vida">
+      <select id="livelihoodUse"><option value="">Todos los usos</option></select>
+      <select id="livelihoodGroup"><option value="">Todos los grupos</option></select>
+      <button class="secondary" id="resetLivelihoods">Restablecer filtros</button>
+    </div>
+    <div class="cards-grid" id="livelihoodCards"></div>
+  </section>
+
+  <section class="section page" id="ecosistemas">
+    <div class="section-head">
+      <h2>Ecosistemas y servicios</h2>
+      <p class="section-lead">La relación ecosistema → servicio ecosistémico → medio de vida se muestra con tarjetas y matrices CSS. El archivo no incluye nombres completos para todos los códigos de servicios ecosistémicos; por transparencia se muestran los códigos disponibles.</p>
+    </div>
+    <div class="cards-grid" id="ecosystemCards"></div>
+    <div class="section" style="margin-top:24px">
+      <div class="panel">
+        <h3>Matriz ecosistemas × servicios ecosistémicos codificados</h3>
+        <p class="mini-label">Celdas activas = relación registrada en TIDY_3_4_ECO_SE</p>
+        <div class="matrix-wrap" id="ecoMatrix"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section page" id="amenazas">
+    <div class="section-head">
+      <h2>Amenazas e impactos</h2>
+      <p class="section-lead">Las amenazas se leen en dos niveles: caracterización territorial 4.1 y relaciones de impacto 4.2. Las filas vacías de amenazas fueron excluidas del conteo visual para evitar sobreestimación.</p>
+    </div>
+    <div class="threat-grid" id="threatCards"></div>
+    <div class="section" style="margin-top:24px">
+      <div class="panel">
+        <h3>Matriz amenazas × medios de vida</h3>
+        <p>La intensidad representa el promedio de impactos registrados en seguridad económica, alimentaria, sanitaria, ambiental, personal, comunitaria y política cuando hay datos disponibles.</p>
+        <div class="matrix-wrap" id="threatMatrix"></div>
+        <div class="matrix-detail" id="matrixDetail">Haz clic en una celda activa para ver el detalle de impacto, familias y conflicto asociado.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section page" id="capacidad">
+    <div class="section-head">
+      <h2>Capacidad adaptativa</h2>
+      <p class="section-lead">La hoja 7.1 contiene resultados agregados por medio de vida, dimensión e indicador. Se interpretan como señales internas del archivo, no como encuesta individual porque no se reporta tamaño de muestra de personas.</p>
+    </div>
+    <div class="capacity-grid">
+      <div class="panel">
+        <h3>Dimensiones</h3>
+        <div id="capacityDimensions"></div>
+      </div>
+      <div class="panel">
+        <h3>Indicadores: fortalezas y brechas</h3>
+        <div class="grid-2">
+          <div>
+            <div class="mini-label">Señales más fuertes</div>
+            <div id="capacityHigh" class="ladder"></div>
+          </div>
+          <div>
+            <div class="mini-label">Señales más débiles</div>
+            <div id="capacityLow" class="ladder"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-3" id="capacityMdv" style="margin-top:18px"></div>
+  </section>
+
+  <section class="section page" id="gobernanza">
+    <div class="section-head">
+      <h2>Actores y gobernanza</h2>
+      <p class="section-lead">La constelación de actores usa los valores de poder e interés disponibles. Cuando falta interés, el actor se ubica en una categoría específica de dato incompleto.</p>
+    </div>
+    <div class="panel">
+      <h3>Mapa poder-interés</h3>
+      <div class="quadrant" id="actorQuadrants"></div>
+    </div>
+    <div class="section" id="dialogo" style="margin-top:28px">
+      <div class="section-head">
+        <h2>Espacios de diálogo</h2>
+        <p class="section-lead">Los espacios se registran principalmente como formales, con incidencia alta. Las debilidades reportadas se concentran en recursos, personal, seguimiento de acuerdos, interés y liderazgo.</p>
+      </div>
+      <div class="cards-grid" id="dialogueCards"></div>
+    </div>
+  </section>
+
+  <section class="section page" id="conflictos">
+    <div class="section-head">
+      <h2>Conflictos</h2>
+      <p class="section-lead">El archivo contiene dos eventos de conflicto y dos registros de actores vinculados. Se presentan con lenguaje descriptivo, sin ampliar más allá de lo registrado.</p>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Línea temporal registrada</h3>
+        <div class="timeline" id="conflictTimeline"></div>
+      </div>
+      <div class="panel">
+        <h3>Actores y efectos del conflicto</h3>
+        <div id="conflictActors"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section page" id="sintesis">
+    <div class="section-head">
+      <h2>Síntesis territorial integrada</h2>
+      <p class="section-lead">Esta sección convierte los datos en una lectura estratégica para toma de decisiones. Cada insight se deriva de relaciones registradas en el archivo.</p>
+    </div>
+    <div class="synthesis-grid">
+      <div class="insight"><div class="num">01</div><h3>Base productiva diversa</h3><p>El archivo prioriza 10 medios de vida. Sistemas agroforestales alcanza la puntuación más alta registrada, seguido por cardamomo, piña y cúrcuma, y aprovechamiento forestal.</p></div>
+      <div class="insight"><div class="num">02</div><h3>Ecosistema agroforestal como nodo</h3><p>El ecosistema agroforestal concentra la mayor cantidad de servicios codificados y medios de vida relacionados. Es el punto con más conexiones registradas dentro de la base.</p></div>
+      <div class="insight"><div class="num">03</div><h3>Amenazas con señales diferenciadas</h3><p>Incendios forestales tiene la mayor suma en 4.1 y afecta varios medios de vida. Sequía muestra el mayor promedio de impacto en los registros 4.2 vinculados a cultivos y agua para consumo.</p></div>
+      <div class="insight"><div class="num">04</div><h3>Gobernanza con actores activos</h3><p>La mayoría de los actores con datos completos se ubican en alto interés y varios en alta influencia. Los espacios de diálogo tienen incidencia alta, pero reportan limitaciones operativas.</p></div>
+      <div class="insight"><div class="num">05</div><h3>Capacidad adaptativa desigual</h3><p>Innovación aparece como la dimensión con mayor promedio, mientras necesidades básicas registra el menor. Las señales más débiles se ubican en seguridad política, comunitaria y económica.</p></div>
+      <div class="insight"><div class="num">06</div><h3>Conflicto y recursos</h3><p>Los vínculos conflicto-amenaza disponibles asocian inundaciones y sequía con competencia por recursos naturales. También aparece sobrepoblación vinculada a marginalización o tensión comunitaria.</p></div>
+    </div>
+  </section>
+
+  <section class="section page" id="calidad">
+    <div class="section-head">
+      <h2>Calidad y límites</h2>
+      <p class="section-lead">Las limitaciones se integran como parte del análisis para evitar conclusiones sobredimensionadas. Esta sección resume qué se usó, qué faltó y qué supuestos mínimos se aplicaron.</p>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Notas principales</h3>
+        <div id="qualityNotes"></div>
+      </div>
+      <div class="panel">
+        <h3>Hojas analizadas</h3>
+        <details open><summary>Ver resumen de hojas</summary><div id="sheetList"></div></details>
+        <details><summary>Duplicados y faltantes QA</summary><div id="qaTables"></div></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="page">
+  <p><strong>Dashboard autónomo:</strong> generado desde FINAL_FDN_analysis_ready.xlsx. Todos los estilos y scripts están incluidos en este archivo HTML. No usa librerías de gráficos externas.</p>
+</footer>
+
+<script>
+const DATA = {"meta": {"organizacion": "FDN", "organizacion_nota": "El nombre de la organización no aparece como campo explícito en las hojas analizadas; se usa el identificador del archivo: FDN.", "pais": "Guatemala", "paisaje": "Tierras bajas e inundables de la Sierra de las Minas y la cuenca del Polochic, El Estor.", "grupos": ["A", "B"], "fechas": ["10/62025", "2025-06-10", "2025-06-11"], "fuente": "FINAL_FDN_analysis_ready.xlsx"}, "counts": {"paisajes": 1, "grupos": 2, "medios_vida": 10, "ecosistemas": 4, "servicios_ecosistemicos_codigos": 14, "amenazas_lookup": 5, "amenazas_caracterizadas": 4, "actores": 9, "espacios_dialogo": 9, "eventos_conflicto": 2, "filas_capacidad_adaptativa": 60}, "livelihoods": [{"id": "eb2c23bafa11ac11", "nombre": "Sistemas agroforestales", "grupo": "A", "producto": "Cacao", "prioridad": 12.0, "criterios": {"Seguridad alimentaria": 0.0, "Área": 3.0, "Desarrollo local": 3.0, "Ambiente": 3.0, "Inclusión": 3.0}, "codigo": "CA", "uso_final": "autoconsumo", "sistema": "Sistema Agroforestal (cacao, árboles de sombra: Madrecacao, Cuje etc.., plantas frutales: ej. Platano)", "cv_importancia": 3.0}, {"id": "765837708eeadfb9", "nombre": "Cardamomo", "grupo": "B", "producto": "Cardamomo", "prioridad": 9.0, "criterios": {"Seguridad alimentaria": 0.0, "Área": 3.0, "Desarrollo local": 3.0, "Ambiente": 0.0, "Inclusión": 3.0}, "codigo": "CAR", "uso_final": "comercial", "sistema": "Cardamomo", "cv_importancia": 2.0}, {"id": "5a8c3a9c2a1d1c77", "nombre": "Piña y curcuma", "grupo": "A", "producto": "Piña y curcuma", "prioridad": 9.0, "criterios": {"Seguridad alimentaria": 1.0, "Área": 1.0, "Desarrollo local": 3.0, "Ambiente": 1.0, "Inclusión": 3.0}, "codigo": "PIC", "uso_final": "autoconsumo", "sistema": "Piña", "cv_importancia": 2.0}, {"id": "1d49c708a690089a", "nombre": "Aprofechamiento forestal", "grupo": "B", "producto": "Incentivos forestales", "prioridad": 9.0, "criterios": {"Seguridad alimentaria": 0.0, "Área": 3.0, "Desarrollo local": 2.0, "Ambiente": 1.0, "Inclusión": 3.0}, "codigo": "AF", "uso_final": "comercial", "sistema": "Manejo forestal con icentivos", "cv_importancia": 2.0}, {"id": "6e542e70dbca7706", "nombre": "Aprovechamiento pesquero", "grupo": "A", "producto": "Piscicultura y pesca", "prioridad": 8.0, "criterios": {"Seguridad alimentaria": 1.0, "Área": 2.0, "Desarrollo local": 2.0, "Ambiente": 1.0, "Inclusión": 2.0}, "codigo": "AP", "uso_final": "autoconsumo", "sistema": "Pesca artesanal", "cv_importancia": 3.0}, {"id": "a86ed2885025c2e4", "nombre": "Huertos familiares", "grupo": "B", "producto": "Huertos", "prioridad": 7.0, "criterios": {"Seguridad alimentaria": 2.0, "Área": 0.0, "Desarrollo local": 1.0, "Ambiente": 3.0, "Inclusión": 1.0}, "codigo": "HF", "uso_final": "autoconsumo", "sistema": "Huertos", "cv_importancia": 3.0}, {"id": "3c627c34b89af8db", "nombre": "Hule", "grupo": "B", "producto": "Hule", "prioridad": 7.0, "criterios": {"Seguridad alimentaria": 0.0, "Área": 2.0, "Desarrollo local": 2.0, "Ambiente": 1.0, "Inclusión": 2.0}, "codigo": "HU", "uso_final": "comercial", "sistema": "Hule", "cv_importancia": 1.0}, {"id": "dd59bc077621e5d0", "nombre": "Achiote", "grupo": "A", "producto": "Achiote", "prioridad": 6.0, "criterios": {"Seguridad alimentaria": 0.0, "Área": 0.0, "Desarrollo local": 2.0, "Ambiente": 3.0, "Inclusión": 1.0}, "codigo": "ACH", "uso_final": "autoconsumo", "sistema": "Achiote", "cv_importancia": 3.0}, {"id": "39d06e62be71c83b", "nombre": "Medios de vida pecuarios", "grupo": "A", "producto": "Aves, vacas, cerdos y apicultura", "prioridad": 6.0, "criterios": {"Seguridad alimentaria": 2.0, "Área": 1.0, "Desarrollo local": 0.0, "Ambiente": 2.0, "Inclusión": 1.0}, "codigo": "VP", "uso_final": "autoconsumo", "sistema": "Aves, ganado, cerdos y apicultura", "cv_importancia": 3.0}, {"id": "b2cead53d40c0274", "nombre": "Granos basicos", "grupo": "A", "producto": "Maiz y frijol", "prioridad": 1.0, "criterios": {"Seguridad alimentaria": 1.0, "Área": 0.0, "Desarrollo local": 0.0, "Ambiente": 0.0, "Inclusión": 0.0}, "codigo": "GB", "uso_final": "autoconsumo", "sistema": "Maiz y frijol", "cv_importancia": 2.0}], "ecosystems": [{"id": "da55de417931635a", "nombre": "Ecosistema agroforestal", "codigo": "ESA", "tipo": "Agroforestal", "grupo": "A", "salud": 1.0, "causas": "Los sistemas agroforestales mejoraron muchas areas degradadas.", "servicios": ["A1", "A2", "P1", "P2P4", "R1", "R4", "R5", "R6", "R7"], "medios_vida_relacionados": ["Cacao", "caoba", "cedro", "cuje", "guarumo", "limon", "madre cacao", "paterna", "piña (por barreras vivas)", "platano", "yuca"], "n_servicios": 9, "n_medios": 11}, {"id": "2cc14339f079a796", "nombre": "Sistema pecuario", "codigo": "ESP", "tipo": "Pecuario", "grupo": "B", "salud": 2.0, "causas": "Incendios forestales, olas de calor, usos de insecticida", "servicios": ["Apicultura R6", "P1", "P3", "P4", "R1", "R6", "Traspatio y huertos familiares P1"], "medios_vida_relacionados": ["Medios de vida pecuarios y huertos familiares"], "n_servicios": 7, "n_medios": 1}, {"id": "f73d93e8e1f34c0b", "nombre": "Cuerpos de agua", "codigo": "ES-CARL", "tipo": "Rio y Lago", "grupo": "A", "salud": 2.0, "causas": "Contaminacion, inundaciones", "servicios": ["A1", "P2", "P3", "R1"], "medios_vida_relacionados": ["Pesca", "agua para consumo", "arena para construccion", "transporte", "turismo"], "n_servicios": 4, "n_medios": 5}, {"id": "a40a6562f85e3752", "nombre": "Bosque natural", "codigo": "ESB", "tipo": "Bosque natural", "grupo": "B", "salud": 1.0, "causas": "Incendios forestales", "servicios": ["A1", "P2", "P3", "R1"], "medios_vida_relacionados": ["Manejo forestal"], "n_servicios": 4, "n_medios": 1}], "threats": [{"nombre": "Incendios forestales (derivados de rosas o malas prácticas agrícolas, mal uso del fuego por falta de consciencia)", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 8.0, "sitios": "Sierra las Minas, Mirador, Nueva Jerusalem, Guaritas, Balandra, S.R. Balandra, Chapin Arriba, cultivos de pacayas, cardamomo,maiz, cacao, bosque o parches, bosque natural, viviendas, palma africana (monocultivo de empresa privada)", "codigo_mapa": "IF", "grupo": "B", "relaciones_mdv": 6, "medios_vida": ["Achiote", "Aprofechamiento forestal", "Cardamomo", "Hule", "Piña y curcuma", "Sistemas agroforestales"], "impacto_promedio": 1.75, "familias_max": 100.0, "conflictos": []}, {"nombre": "Inundaciones", "tipo": "climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 7.0, "sitios": "Guaritas, S.R. Balandra, Balandra, El Mirador y Buena vista", "codigo_mapa": "I/LI", "grupo": "A", "relaciones_mdv": 2, "medios_vida": ["Cultivos", "viviendas y agua para consumo"], "impacto_promedio": 1.17, "familias_max": 60.0, "conflictos": ["Competencia por recursos naturales"]}, {"nombre": "Sequia", "tipo": "climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 7.0, "sitios": "Comunidades, parcelas, rios, habitat, cultivos", "codigo_mapa": "SQ", "grupo": "A", "relaciones_mdv": 2, "medios_vida": ["Cultivos", "viviendas y agua para consumo"], "impacto_promedio": 2.0, "familias_max": 100.0, "conflictos": ["Competencia por recursos naturales"]}, {"nombre": "Deforestacion", "tipo": "no-climática", "magnitud": 2.0, "frecuencia": 1.0, "tendencia": 1.0, "suma": 4.0, "sitios": "En los cerros alrededor de las comunidades, para los cultivos de cardamomo en Mirador, cerca de S.R.Balandra para poner maíz o piña. Para construir casas cerca de Chapin Arriba y arriba de La Union", "codigo_mapa": "DE", "grupo": "B", "relaciones_mdv": 0, "medios_vida": [], "impacto_promedio": null, "familias_max": null, "conflictos": []}, {"nombre": "Sobrepoblacion", "tipo": "no-climática", "magnitud": null, "frecuencia": null, "tendencia": null, "suma": null, "sitios": null, "codigo_mapa": null, "grupo": null, "relaciones_mdv": 1, "medios_vida": ["Todos los medios de vida"], "impacto_promedio": 1.6, "familias_max": 100.0, "conflictos": ["Marginalización, tensión comunitaria o disturbios sociales"]}], "threatMatrix": {"columns": ["Achiote", "Aprofechamiento forestal", "Cardamomo", "Cultivos", "Hule", "Piña y curcuma", "Sistemas agroforestales", "Todos los medios de vida", "viviendas y agua para consumo"], "rows": [{"amenaza": "Incendios forestales (derivados de rosas o malas prácticas agrícolas, mal uso del fuego por falta de consciencia)", "cells": {"Achiote": {"impacto": 1.75, "familias": 100.0, "conflicto": null, "nivel": null, "tipo": "no-climática"}, "Aprofechamiento forestal": {"impacto": 1.75, "familias": 100.0, "conflicto": null, "nivel": null, "tipo": "no-climática"}, "Cardamomo": {"impacto": 1.75, "familias": 100.0, "conflicto": null, "nivel": null, "tipo": "no-climática"}, "Hule": {"impacto": 1.75, "familias": 100.0, "conflicto": null, "nivel": null, "tipo": "no-climática"}, "Piña y curcuma": {"impacto": 1.75, "familias": 100.0, "conflicto": null, "nivel": null, "tipo": "no-climática"}, "Sistemas agroforestales": {"impacto": 1.75, "familias": 100.0, "conflicto": null, "nivel": null, "tipo": "no-climática"}}}, {"amenaza": "Inundaciones", "cells": {"Cultivos": {"impacto": 1.17, "familias": 60.0, "conflicto": "Competencia por recursos naturales", "nivel": "leve", "tipo": "climática"}, "viviendas y agua para consumo": {"impacto": 1.17, "familias": 60.0, "conflicto": "Competencia por recursos naturales", "nivel": "leve", "tipo": "climática"}}}, {"amenaza": "Sequia", "cells": {"Cultivos": {"impacto": 2.0, "familias": 100.0, "conflicto": "Competencia por recursos naturales", "nivel": "leve", "tipo": "climática"}, "viviendas y agua para consumo": {"impacto": 2.0, "familias": 100.0, "conflicto": "Competencia por recursos naturales", "nivel": "leve", "tipo": "climática"}}}, {"amenaza": "Sobrepoblacion", "cells": {"Todos los medios de vida": {"impacto": 1.6, "familias": 100.0, "conflicto": "Marginalización, tensión comunitaria o disturbios sociales", "nivel": null, "tipo": "no-climática"}}}]}, "ecoMatrix": {"columns": ["A1", "A2", "Apicultura R6", "P1", "P2", "P2P4", "P3", "P4", "R1", "R4", "R5", "R6", "R7", "Traspatio y huertos familiares P1"], "rows": [{"ecosistema": "Ecosistema agroforestal", "servicios": {"A1": true, "A2": true, "Apicultura R6": false, "P1": true, "P2": false, "P2P4": true, "P3": false, "P4": false, "R1": true, "R4": true, "R5": true, "R6": true, "R7": true, "Traspatio y huertos familiares P1": false}}, {"ecosistema": "Sistema pecuario", "servicios": {"A1": false, "A2": false, "Apicultura R6": true, "P1": true, "P2": false, "P2P4": false, "P3": true, "P4": true, "R1": true, "R4": false, "R5": false, "R6": true, "R7": false, "Traspatio y huertos familiares P1": true}}, {"ecosistema": "Cuerpos de agua", "servicios": {"A1": true, "A2": false, "Apicultura R6": false, "P1": false, "P2": true, "P2P4": false, "P3": true, "P4": false, "R1": true, "R4": false, "R5": false, "R6": false, "R7": false, "Traspatio y huertos familiares P1": false}}, {"ecosistema": "Bosque natural", "servicios": {"A1": true, "A2": false, "Apicultura R6": false, "P1": false, "P2": true, "P2P4": false, "P3": true, "P4": false, "R1": true, "R4": false, "R5": false, "R6": false, "R7": false, "Traspatio y huertos familiares P1": false}}]}, "seMdv": [{"se_mdv_id": "e4b644cd3745e2d6", "context_id": "7125a13e718cea2b", "ecosistema_id": null, "se_id": "05427c6e97989a29", "cod_es_se": "ES-CARL +A1+P1", "cod_es": null, "cod_se": "ES-CARL +A1+P1", "elemento_se_id": "877cecac423ec39f", "elemento_se": "provisión", "mdv_id": "0c3cf8faab2e9d9d", "mdv_name": "Pesca y consumo domestico", "accesso": null, "barreras": "mas jaladores", "nr_usuarios": 280.0, "impactos_cruzados": null, "incl_descripcion": "Todos estan involucrados"}, {"se_mdv_id": "c64c7407c3171c82", "context_id": "7125a13e718cea2b", "ecosistema_id": null, "se_id": "7fa2dd34b59d353f", "cod_es_se": "ESA +P1", "cod_es": null, "cod_se": "ESA +P1", "elemento_se_id": "877cecac423ec39f", "elemento_se": "provisión", "mdv_id": "e89731fe99d48700", "mdv_name": "Cacao", "accesso": null, "barreras": "sequia", "nr_usuarios": 160.0, "impactos_cruzados": null, "incl_descripcion": "Todos estan involucrados"}, {"se_mdv_id": "0b75da2ded522ca3", "context_id": "090cd28ba29939d0", "ecosistema_id": null, "se_id": "a48e8be4bcc8b900", "cod_es_se": "ESB +P3", "cod_es": null, "cod_se": "ESB +P3", "elemento_se_id": "877cecac423ec39f", "elemento_se": "provisión", "mdv_id": "8300e428bcd40764", "mdv_name": "Incentivo forestal", "accesso": null, "barreras": "condiciones climaticas", "nr_usuarios": 35.0, "impactos_cruzados": null, "incl_descripcion": "Todos estan involucrados"}, {"se_mdv_id": "55318b90260860ee", "context_id": "090cd28ba29939d0", "ecosistema_id": null, "se_id": "4e5260bac1a479eb", "cod_es_se": "ESP + P3 + P1", "cod_es": null, "cod_se": "ESP + P3 + P1", "elemento_se_id": "877cecac423ec39f", "elemento_se": "provisión", "mdv_id": "366e55a66d6a15e2", "mdv_name": "VP", "accesso": null, "barreras": "sequia", "nr_usuarios": 55.0, "impactos_cruzados": null, "incl_descripcion": "Todos estan involucrados"}], "amenazaSe": [{"amenaza_se_id": "bc6a83c78306ed60", "context_id": "3def7d281a450342", "amenaza_id": "ffd7dccbd56390dd", "tipo_amenaza": "climática", "amenaza": "Inundaciones", "se_id": "9d87b84891abbd69", "cod_se": "Cuerpos de agua: Lago-P1", "i_economia": 1.0, "i_econ_coment": null, "i_alimentaria": 2.0, "i_aliment_coment": null, "i_sanitaria": 2.0, "i_sanit_coment": null, "i_ambiental": 1.0, "i_amb_coment": null, "i_personal": 1.0, "i_pers_coment": null, "i_comunitaria": 1.0, "i_comun_coment": null, "i_politica": 1.0, "i_polit_coment": null, "nr_familias": 100.0, "tipo_conflicto": "Competencia por recursos naturales", "nivel_conflicto": "leve", "mapeo_conflicto": "Sq"}, {"amenaza_se_id": "6e51a319831eecea", "context_id": "3def7d281a450342", "amenaza_id": "39d789daa476857a", "tipo_amenaza": "climática", "amenaza": "Sequia", "se_id": "5852761fbd554319", "cod_se": "Agua para consumo-P3", "i_economia": 1.0, "i_econ_coment": null, "i_alimentaria": 1.0, "i_aliment_coment": null, "i_sanitaria": 2.0, "i_sanit_coment": null, "i_ambiental": 1.0, "i_amb_coment": null, "i_personal": 1.0, "i_pers_coment": null, "i_comunitaria": 1.0, "i_comun_coment": null, "i_politica": 1.0, "i_polit_coment": null, "nr_familias": 100.0, "tipo_conflicto": "Competencia por recursos naturales", "nivel_conflicto": "leve"}], "actors": [{"nombre": "ASOCIACION PARA EL DESARROLLO RURAL INTEGRAL ADRIS", "tipo": "ONG Local-Nacional", "rol": "Agricultura y área forestal.", "poder": 4.0, "interes": 5.0, "cuadrante": "Baja influencia / alto interés", "grupo": "A"}, {"nombre": "MERCY CORPS INTERNATIONAL", "tipo": "ONG Local-Nacional", "rol": "Programas de desarrollo local, comunitario, fortalecimiento y desarrollo.", "poder": 0.0, "interes": 8.0, "cuadrante": "Baja influencia / alto interés", "grupo": "A"}, {"nombre": "NATURACEITES", "tipo": "Empresa Privada", "rol": "Cultivo de palma africana", "poder": 3.0, "interes": 7.0, "cuadrante": "Baja influencia / alto interés", "grupo": "A"}, {"nombre": "FONDO DE TIERRAS", "tipo": "Gubernamental", "rol": "Restauración y programas de desarrollo local (incentivos). Asistencia técnica, acceso a la tierra", "poder": 5.0, "interes": 9.0, "cuadrante": "Alta influencia / alto interés", "grupo": "A"}, {"nombre": "MAGA", "tipo": "Gubernamental", "rol": "Desarrollo comunitario,CADER( huertos ,cambios de comportamientos)", "poder": 6.0, "interes": 9.0, "cuadrante": "Alta influencia / alto interés", "grupo": "B"}, {"nombre": "INAB", "tipo": "Gubernamental", "rol": "Incentivar régimen de bosques/profores pintor, aprovechamiento forestal,", "poder": 8.0, "interes": 10.0, "cuadrante": "Alta influencia / alto interés", "grupo": "B"}, {"nombre": "MUNICIPALIDAD/DMM", "tipo": "Gubernamental", "rol": "Fortalecimiento a mujeres.", "poder": 7.0, "interes": null, "cuadrante": "Alta influencia / interés no registrado", "grupo": "B"}, {"nombre": "SAKOMONIL", "tipo": "ONG/Local", "rol": "Proceso legales y acompañamiento, soporte técnico.", "poder": 8.0, "interes": 9.0, "cuadrante": "Alta influencia / alto interés", "grupo": "B"}, {"nombre": "SE-CONRED", "tipo": "GUBERNAMENTAL", "rol": "Fortalecimiento, realizar diagnósticos de vulnerabilidad,", "poder": 6.0, "interes": 10.0, "cuadrante": "Alta influencia / alto interés", "grupo": "B"}], "relations": [{"rel_id": "737c00e4580af772", "context_id": "3def7d281a450342", "actor_id": "7164fe994c69adba", "other_actor_id": "5c624e673bfd9f6b", "other_actor_name": "No hay.", "rel_type": "conflicto"}, {"rel_id": "6ec20ffc4faea80d", "context_id": "3def7d281a450342", "actor_id": "7164fe994c69adba", "other_actor_id": "0ce1b7b4a15cc8e5", "other_actor_name": "Alianzas estratégicas con gobierno", "rel_type": "colabora"}, {"rel_id": "0323634618db4a1e", "context_id": "3def7d281a450342", "actor_id": "7164fe994c69adba", "other_actor_id": "0b854b7bf067cdb8", "other_actor_name": "empresas privadas y ONG´s para desarrollo de proyectos y actividades en el área", "rel_type": "colabora"}, {"rel_id": "18cc706b0046e439", "context_id": "3def7d281a450342", "actor_id": "7164fe994c69adba", "other_actor_id": "73711d2543ac899e", "other_actor_name": "con INAB", "rel_type": "colabora"}, {"rel_id": "743c3e4ab92103c9", "context_id": "3def7d281a450342", "actor_id": "7164fe994c69adba", "other_actor_id": "1ff1e2ab7965a2a1", "other_actor_name": "PMA y FONTIERRAS.", "rel_type": "colabora"}, {"rel_id": "e446bbe75766899e", "context_id": "3def7d281a450342", "actor_id": "4c4d4af074120d2e", "other_actor_id": "57f76547d930e7c1", "other_actor_name": "Lideres negativos", "rel_type": "conflicto"}, {"rel_id": "986c77498d9c21cd", "context_id": "3def7d281a450342", "actor_id": "4c4d4af074120d2e", "other_actor_id": "d2b9a63bf518f569", "other_actor_name": "opositores", "rel_type": "conflicto"}, {"rel_id": "146b484e20013044", "context_id": "3def7d281a450342", "actor_id": "4c4d4af074120d2e", "other_actor_id": "5c0878d0a51c2e6f", "other_actor_name": "tema político de influencia en comunidades. (Conflictos agrarios", "rel_type": "conflicto"}, {"rel_id": "455f6b84b00d3886", "context_id": "3def7d281a450342", "actor_id": "4c4d4af074120d2e", "other_actor_id": "76264b35f97d28dd", "other_actor_name": "sociales y ambientales).", "rel_type": "conflicto"}, {"rel_id": "595cc9480e4a4b4b", "context_id": "3def7d281a450342", "actor_id": "4c4d4af074120d2e", "other_actor_id": "24d491d6a4950aa8", "other_actor_name": "CONJUVE", "rel_type": "colabora"}, {"rel_id": "79aa0a80b58897d5", "context_id": "3def7d281a450342", "actor_id": "4c4d4af074120d2e", "other_actor_id": "eb808930924f7923", "other_actor_name": "Secretaría de la presidencia", "rel_type": "colabora"}, {"rel_id": "21c6626f62c3944c", "context_id": "3def7d281a450342", "actor_id": "4c4d4af074120d2e", "other_actor_id": "2ac47944f000bdd7", "other_actor_name": "COPRECOM", "rel_type": "colabora"}, {"rel_id": "271ea42df84372a7", "context_id": "3def7d281a450342", "actor_id": "c71f6ddf2d027786", "other_actor_id": "290cd7210e97a03e", "other_actor_name": "Actor: Comunidades", "rel_type": "conflicto"}, {"rel_id": "825b60a314adb268", "context_id": "3def7d281a450342", "actor_id": "c71f6ddf2d027786", "other_actor_id": "d0f43cab70544336", "other_actor_name": "FDN", "rel_type": "colabora"}, {"rel_id": "caf7072702de0b6d", "context_id": "3def7d281a450342", "actor_id": "c71f6ddf2d027786", "other_actor_id": "c5410edb54597eef", "other_actor_name": "comunidades", "rel_type": "colabora"}, {"rel_id": "4ebc58b6c8d13b8b", "context_id": "3def7d281a450342", "actor_id": "c71f6ddf2d027786", "other_actor_id": "c0abe1dc67fa0cbc", "other_actor_name": "Municipalidad.", "rel_type": "colabora"}, {"rel_id": "68bd6ad8568b63f1", "context_id": "3def7d281a450342", "actor_id": "f76ab93a527305cc", "other_actor_id": "6a9d0b95608e78c0", "other_actor_name": "Tema: pérdida de diversidad biológica", "rel_type": "conflicto"}, {"rel_id": "e411c9120cfdd9a3", "context_id": "3def7d281a450342", "actor_id": "f76ab93a527305cc", "other_actor_id": "7aa9dbf1e618f1c5", "other_actor_name": "disponibilidad laboral", "rel_type": "conflicto"}, {"rel_id": "530bafbf06131ee9", "context_id": "3def7d281a450342", "actor_id": "f76ab93a527305cc", "other_actor_id": "78bfbec633bcc67e", "other_actor_name": "limitación de crecimiento de las poblaciones comunitarias (monopolio de tierra para monocultivo)", "rel_type": "conflicto"}, {"rel_id": "d755565d4743a44e", "context_id": "3def7d281a450342", "actor_id": "f76ab93a527305cc", "other_actor_id": "a5207eca3d6220ca", "other_actor_name": "invasiones en áreas de cultivo de Palma.", "rel_type": "conflicto"}, {"rel_id": "18c0dde107bc5639", "context_id": "3def7d281a450342", "actor_id": "f76ab93a527305cc", "other_actor_id": "75a877b0c4a73ce7", "other_actor_name": "Temas ambientales y sociales.", "rel_type": "colabora"}, {"rel_id": "e898f6c996ff4f63", "context_id": "23d50567ef22c6ce", "actor_id": "1d2022838ad01a6b", "other_actor_id": "6c3f705d51f83267", "other_actor_name": "Procesos legales.", "rel_type": "conflicto"}, {"rel_id": "26e1efe3bdd7a9bb", "context_id": "23d50567ef22c6ce", "actor_id": "1d2022838ad01a6b", "other_actor_id": "d0f43cab70544336", "other_actor_name": "FDN", "rel_type": "colabora"}, {"rel_id": "78ebdc4f69fe292c", "context_id": "23d50567ef22c6ce", "actor_id": "1d2022838ad01a6b", "other_actor_id": "c5410edb54597eef", "other_actor_name": "comunidades", "rel_type": "colabora"}, {"rel_id": "a0d61c768ad4ed76", "context_id": "23d50567ef22c6ce", "actor_id": "1d2022838ad01a6b", "other_actor_id": "5030e8d274825a84", "other_actor_name": "empresa privada", "rel_type": "colabora"}, {"rel_id": "7c4df05a0de94bb9", "context_id": "23d50567ef22c6ce", "actor_id": "1d2022838ad01a6b", "other_actor_id": "142e57a496603f58", "other_actor_name": "CONAP", "rel_type": "colabora"}, {"rel_id": "bcabae147bf94ff3", "context_id": "23d50567ef22c6ce", "actor_id": "1d2022838ad01a6b", "other_actor_id": "f98e16763bd2656c", "other_actor_name": "asistencia técnica", "rel_type": "colabora"}, {"rel_id": "1b9419025b2fbd68", "context_id": "23d50567ef22c6ce", "actor_id": "1d2022838ad01a6b", "other_actor_id": "638be9ce1d65b38d", "other_actor_name": "planes de manejo y comercialización.", "rel_type": "colabora"}, {"rel_id": "47daafaac3826420", "context_id": "23d50567ef22c6ce", "actor_id": "01acec90d731c2c9", "other_actor_id": "290cd7210e97a03e", "other_actor_name": "Actor: comunidades", "rel_type": "conflicto"}, {"rel_id": "c32c20193533cb00", "context_id": "23d50567ef22c6ce", "actor_id": "01acec90d731c2c9", "other_actor_id": "6bacc63ed7f446bb", "other_actor_name": "Municipalidad", "rel_type": "colabora"}, {"rel_id": "183dc3d82aa67e79", "context_id": "23d50567ef22c6ce", "actor_id": "01acec90d731c2c9", "other_actor_id": "c71f6ddf2d027786", "other_actor_name": "Naturaceites", "rel_type": "colabora"}, {"rel_id": "ead6243ea2202cde", "context_id": "23d50567ef22c6ce", "actor_id": "01acec90d731c2c9", "other_actor_id": "aaeed43f4fa2ba55", "other_actor_name": "FDN/ Salud", "rel_type": "colabora"}, {"rel_id": "19e81428f41af539", "context_id": "23d50567ef22c6ce", "actor_id": "8a55f1c9860db632", "other_actor_id": "f00c436d9938d657", "other_actor_name": "Tema: relación con otras ONGS / fortalecimiento y unir esfuerzos para mejorar", "rel_type": "conflicto"}, {"rel_id": "e29f5cbb54582052", "context_id": "23d50567ef22c6ce", "actor_id": "8a55f1c9860db632", "other_actor_id": "e4d33718bf0bba89", "other_actor_name": "Defensores de la Naturaleza", "rel_type": "colabora"}, {"rel_id": "b1d8d6047b6bdb4c", "context_id": "23d50567ef22c6ce", "actor_id": "8a55f1c9860db632", "other_actor_id": "79d1504f9d987e68", "other_actor_name": "asociaciones comunitarias/FONDO DE TIERRA", "rel_type": "colabora"}, {"rel_id": "91edd0a7d051d940", "context_id": "23d50567ef22c6ce", "actor_id": "f2f70b1c330ebd30", "other_actor_id": "290cd7210e97a03e", "other_actor_name": "Actor: Comunidades", "rel_type": "conflicto"}, {"rel_id": "0261c976e6c5f5bb", "context_id": "23d50567ef22c6ce", "actor_id": "f2f70b1c330ebd30", "other_actor_id": "f0e602c4c5d05459", "other_actor_name": "Ministerio público", "rel_type": "colabora"}, {"rel_id": "334f9817897f994c", "context_id": "23d50567ef22c6ce", "actor_id": "f2f70b1c330ebd30", "other_actor_id": "32874076df0611e2", "other_actor_name": "defensoría de mujer indígena", "rel_type": "colabora"}, {"rel_id": "773967e6c60446f6", "context_id": "23d50567ef22c6ce", "actor_id": "f2f70b1c330ebd30", "other_actor_id": "fa9d5d6d8e350c57", "other_actor_name": "SOSEP", "rel_type": "colabora"}, {"rel_id": "e54b67eeb5ede170", "context_id": "23d50567ef22c6ce", "actor_id": "f2f70b1c330ebd30", "other_actor_id": "4bf4d489e88cb66c", "other_actor_name": "ministerio de cultura y deporte", "rel_type": "colabora"}, {"rel_id": "6f43db09c43c96be", "context_id": "23d50567ef22c6ce", "actor_id": "77a6ca07317be369", "other_actor_id": "8e3953796856ee6e", "other_actor_name": "Tema: descontentos entre comunidades por proyectos de incentivos.", "rel_type": "conflicto"}, {"rel_id": "8b3713909253daa4", "context_id": "23d50567ef22c6ce", "actor_id": "77a6ca07317be369", "other_actor_id": "52f01e3e8e4f6cbd", "other_actor_name": "Alianzas consejo de comunidades indígenas", "rel_type": "colabora"}, {"rel_id": "df13156ac0eb2347", "context_id": "23d50567ef22c6ce", "actor_id": "77a6ca07317be369", "other_actor_id": "c07c15069a40f527", "other_actor_name": "participan 4 cargadores por sectores", "rel_type": "colabora"}, {"rel_id": "9fe83cb6b281aba6", "context_id": "23d50567ef22c6ce", "actor_id": "77a6ca07317be369", "other_actor_id": "6bacc63ed7f446bb", "other_actor_name": "municipalidad", "rel_type": "colabora"}], "dialogues": [{"nombre": "ASOCIACION PARA EL DESARROLLO RURAL INTEGRAL ADRIS", "tipo": "formal", "alcance": "Local", "funcion": "Resolución de conflictos y fortalecimiento comunitario.", "incidencia": "alto", "fortalezas": "Organización y coordinación.", "debilidades": "Falta de personal e interese de instituciones que son parte de los temas que se encuentran abordando.", "actores": ["Mesas de dialogo."], "grupo": "A"}, {"nombre": "MERCY CORPS INTERNATIONAL", "tipo": "formal", "alcance": "Local", "funcion": "Resolución de conflictos y fortalecimiento comunitario.", "incidencia": "alto", "fortalezas": "Equipo multidisciplinario.", "debilidades": "Falta de recursos y anuencia.", "actores": ["Empresa privada", "ONG", "sociedad civil y gobierno."], "grupo": "A"}, {"nombre": "NATURACEITES", "tipo": "formal", "alcance": "Local", "funcion": "Gestión de fuego, ordenamiento vial.", "incidencia": "alto", "fortalezas": "Diversidad de actores para cada tema tratado", "debilidades": "Falta de seguimiento de acuerdos por falta de personal/rotación de personal de instituciones de gobierno.", "actores": ["Mesa de dialogo de conflictos sociales y ambientales. Comisión aborda y analiza los casos del área."], "grupo": "A"}, {"nombre": "FONDO DE TIERRAS", "tipo": "formal", "alcance": "Local", "funcion": "Economías campesinas y acompañamiento técnico.", "incidencia": "alto", "fortalezas": "Orden y comisiones establecidas por temas.", "debilidades": "Falta de interés de líderes comunitarios que limita su participación e intervención", "actores": ["Empresa privada", "ONG", "sociedad civil y gobierno."], "grupo": "A"}, {"nombre": "MAGA", "tipo": "formal", "alcance": "Local / nacional", "funcion": "Extensión rural y fortalecimiento de capacidades", "incidencia": "alto", "fortalezas": "Coordinación y organización conocimiento de procesos.", "debilidades": "Debilidad de la gobernanza debido a falta de liderazgo", "actores": ["Mesas de desarrollo local. (Fuego y vial)."], "grupo": "B"}, {"nombre": "INAB", "tipo": "formal", "alcance": "Local y subregión 3-1", "funcion": "Ente rector de bosque de incentivos", "incidencia": "alto", "fortalezas": "Garantizar y legislar los procesos de productos forestales", "debilidades": "Demoras en procesos y coordinación con otras instituciones.", "actores": ["Empresa privada", "ONG", "sociedad civil y gobierno."], "grupo": "B"}, {"nombre": "MUNICIPALIDAD/DMM", "tipo": "formal", "alcance": "Local", "funcion": "Gestión municipal", "incidencia": "alto", "fortalezas": "Coordinación comunitaria en consejo de desarrollo", "debilidades": "Falta de recurso y personal", "actores": ["Mesas para resolución de conflictos", "organización y planes de manejo/asistencia técnica."], "grupo": "B"}, {"nombre": "SAKOMONIL", "tipo": "formal", "alcance": "Local / Nacional", "funcion": "Apoyo , asesoría y acompañamiento", "incidencia": "alto", "fortalezas": "Conocer la situación de la tenencia de la tierra y su proceso", "debilidades": "No tener presencia a nivel municipio.", "actores": ["Empresa privada", "ONG", "sociedad civil y gobierno."], "grupo": "B"}, {"nombre": null, "tipo": "formal", "alcance": null, "funcion": null, "incidencia": "alto", "fortalezas": "Coordinación comunitaria en consejo de desarrollo", "debilidades": "Poca comunicación interna entre las direcciones, la falta de priorización de a nivel nacional para la ejecución de proyectos.", "actores": ["Sistema nacional de extensión rural"], "grupo": "B"}], "conflicts": {"events": [{"event_id": "8dd2f0ab98817606", "context_id": "3def7d281a450342", "conflicto_id": "940e3d6754696f12", "cod_conflict": "H4.2", "evento": "Sobreexplotacion de recurso pesquero por uso de artes de pesca illegal en el lago de Izabal (Haladores)", "ano_evento": 2010.0, "diferencias": 1.0, "dif_factor": "Guaritas no percibio el problema, sin efectos negativos", "cooperacion": -1.0, "coop_factor": -1.0, "suma": 0.0}, {"event_id": "edce3cf0c13d87bd", "context_id": "3def7d281a450342", "conflicto_id": "940e3d6754696f12", "cod_conflict": "H4.2", "evento": "Traslape limites comunidad de Mirador y Manantial (proveniente desde Amates)", "ano_evento": 2010.0, "diferencias": 0.0, "dif_factor": null, "cooperacion": -1.0, "coop_factor": -1.0, "suma": -1.0}], "actors": [{"conflict_actor_id": "b97980e8d19013e0", "context_id": "3def7d281a450342", "conflicto_id": "940e3d6754696f12", "cod_conflict": "H4.2", "actor_id": "d76d51e2fc3aeb56", "actor": "Sobreexplotacion de recurso pesquero por uso de artes de pesca illegal en el lago de Izabal (Haladores)", "i_en_actor": "positivo", "iea_factor": "positivo", "i_en_conflicto": "neutro", "iec_factor": "Se ha contribuido en mesas de dialogo intersectoriales para resolucion de conflictos y solicitu de apoyos pesqueras."}, {"conflict_actor_id": "58acaf18b9519ba8", "context_id": "3def7d281a450342", "conflicto_id": "940e3d6754696f12", "cod_conflict": "H4.2", "actor_id": "f00e4f581a488c70", "actor": "Traslape limites comunidad de Mirador y Manantial (proveniente desde Amates)", "i_en_actor": "positivo", "iea_factor": "positivo", "i_en_conflicto": "neutro", "iec_factor": "Se han generado mesas de dialogo de temas agrarios y tenencias de tierra"}]}, "capacity": {"dimension_scores": [{"dimension": "Innovación", "promedio": 3.59, "min": 1.0, "max": 5.0, "n": 18}, {"dimension": "Acción", "promedio": 3.15, "min": 0.75, "max": 5.0, "n": 12}, {"dimension": "Necesidades básicas", "promedio": 2.73, "min": 0.0, "max": 5.0, "n": 30}], "mdv_scores": [{"mdv": "Piña y curcuma", "promedio": 3.58, "n": 20}, {"mdv": "SAF Sistemas agroforestales (Cacao)", "promedio": 2.94, "n": 20}, {"mdv": "Actividad Pesquera", "promedio": 2.7, "n": 20}], "indicator_scores": [{"dimension": "Acción", "indicador": "Equidad NB", "promedio": 4.0, "n": 3}, {"dimension": "Acción", "indicador": "Insumos", "promedio": 1.96, "n": 3}, {"dimension": "Acción", "indicador": "Organización", "promedio": 4.17, "n": 3}, {"dimension": "Acción", "indicador": "Valor añadido y comercio", "promedio": 2.47, "n": 3}, {"dimension": "Innovación", "indicador": "Agencia", "promedio": 3.66, "n": 3}, {"dimension": "Innovación", "indicador": "Comunicaciones", "promedio": 3.33, "n": 3}, {"dimension": "Innovación", "indicador": "Confianza", "promedio": 4.4, "n": 3}, {"dimension": "Innovación", "indicador": "Disposición al cambio", "promedio": 3.2, "n": 3}, {"dimension": "Innovación", "indicador": "Educación", "promedio": 3.97, "n": 3}, {"dimension": "Innovación", "indicador": "Equidad_AC", "promedio": 3.0, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Energía doméstica", "promedio": 4.07, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Equidad_INN", "promedio": 4.33, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Extensión", "promedio": 2.83, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad alimentaria", "promedio": 3.33, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad comunitaria", "promedio": 1.33, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad económica", "promedio": 1.67, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad en salud", "promedio": 2.63, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad personal", "promedio": 3.07, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad política", "promedio": 0.83, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Vivienda", "promedio": 3.17, "n": 3}], "indicadores_bajos": [{"dimension": "Necesidades básicas", "indicador": "Seguridad política", "promedio": 0.83, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad comunitaria", "promedio": 1.33, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad económica", "promedio": 1.67, "n": 3}, {"dimension": "Acción", "indicador": "Insumos", "promedio": 1.96, "n": 3}, {"dimension": "Acción", "indicador": "Valor añadido y comercio", "promedio": 2.47, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Seguridad en salud", "promedio": 2.63, "n": 3}], "indicadores_altos": [{"dimension": "Innovación", "indicador": "Confianza", "promedio": 4.4, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Equidad_INN", "promedio": 4.33, "n": 3}, {"dimension": "Acción", "indicador": "Organización", "promedio": 4.17, "n": 3}, {"dimension": "Necesidades básicas", "indicador": "Energía doméstica", "promedio": 4.07, "n": 3}, {"dimension": "Acción", "indicador": "Equidad NB", "promedio": 4.0, "n": 3}, {"dimension": "Innovación", "indicador": "Educación", "promedio": 3.97, "n": 3}], "n_rows": 60, "mdv_list": ["Actividad Pesquera", "Piña y curcuma", "SAF Sistemas agroforestales (Cacao)"]}, "dataQuality": {"sheets_total": 62, "sheets": ["variables", "3.1. Lluvia MdV&SE", "3.2. Priorización", "3.3. Car_A", "3.3. Car_B", "3.3. Car_C", "3.3. Car_D", "3.4. Ecosistemas", "3.5. SE y MdV", "4.1. Amenazas", "4.2.1. Amenazas_MdV", "4.2.2. Amenazas_SE", "5.1. Actores", "5.2. Diálogo", "6.1. Evolución_conflict", "6.2. Actores_conflict", "7.1. Encuesta CA", "LOOKUP_GEO", "LOOKUP_CONTEXT", "LOOKUP_SURVEY_CONTEXT", "LOOKUP_MDV", "LOOKUP_ECOSISTEMA", "LOOKUP_SE", "LOOKUP_ELEMENTO_SE", "LOOKUP_AMENAZA", "LOOKUP_ACTOR", "LOOKUP_ESPACIO", "LOOKUP_CONFLICTO", "LOOKUP_CA_QUESTIONS", "TIDY_3_1_BRAINSTORM", "TIDY_3_2_PRIORIZACION", "TIDY_3_3_CAR_A", "TIDY_3_3_CAR_B", "TIDY_3_3_CAR_C", "TIDY_3_3_CAR_D", "TIDY_3_3_CAR_LONG", "TIDY_3_4_ECOSISTEMAS", "TIDY_3_4_ECO_SE", "TIDY_3_4_ECO_MDV", "TIDY_3_5_SE_MDV", "TIDY_3_5_SE_MONTHS", "TIDY_3_5_SE_INCLUSION", "TIDY_4_1_AMENAZAS", "TIDY_4_2_1_AMENAZA_MDV", "TIDY_4_2_1_DIFERENCIADO", "TIDY_4_2_1_MAPEO_CONFLICTO", "TIDY_4_2_2_AMENAZA_SE", "TIDY_4_2_2_DIFERENCIADO", "TIDY_4_2_2_MAPEO_CONFLICTO", "TIDY_5_1_ACTORES", "TIDY_5_1_RELACIONES", "TIDY_5_2_DIALOGO", "TIDY_5_2_DIALOGO_ACTOR", "TIDY_6_1_CONFLICT_EVENTS", "TIDY_6_2_CONFLICTO_ACTOR", "TIDY_7_1_RESPONDENTS", "TIDY_7_1_RESPONSES", "QA_INPUT_SCHEMA", "QA_TABLE_SUMMARY", "QA_PK_DUPLICATES", "QA_MISSING_IDS", "QA_FOREIGN_KEYS"], "qa_tables": [{"table": "3.1. Lluvia MdV&SE", "rows": 10.0, "cols": 8.0}, {"table": "3.2. Priorización", "rows": 10.0, "cols": 12.0}, {"table": "3.3. Car_A", "rows": 11.0, "cols": 12.0}, {"table": "3.3. Car_B", "rows": 10.0, "cols": 8.0}, {"table": "3.3. Car_C", "rows": 19.0, "cols": 11.0}, {"table": "3.3. Car_D", "rows": 20.0, "cols": 10.0}, {"table": "3.4. Ecosistemas", "rows": 4.0, "cols": 11.0}, {"table": "3.5. SE y MdV", "rows": 4.0, "cols": 14.0}, {"table": "4.1. Amenazas", "rows": 40.0, "cols": 12.0}, {"table": "4.2.1. Amenazas_MdV", "rows": 4.0, "cols": 26.0}, {"table": "4.2.2. Amenazas_SE", "rows": 2.0, "cols": 26.0}, {"table": "5.1. Actores", "rows": 9.0, "cols": 11.0}, {"table": "5.2. Diálogo", "rows": 9.0, "cols": 12.0}, {"table": "6.1. Evolución_conflict", "rows": 52.0, "cols": 12.0}, {"table": "6.2. Actores_conflict", "rows": 2.0, "cols": 10.0}, {"table": "7.1. Encuesta CA", "rows": 60.0, "cols": 4.0}, {"table": "LOOKUP_ACTOR", "rows": 57.0, "cols": 2.0}, {"table": "LOOKUP_AMENAZA", "rows": 5.0, "cols": 3.0}, {"table": "LOOKUP_CA_QUESTIONS", "rows": 4.0, "cols": 4.0}, {"table": "LOOKUP_CONFLICTO", "rows": 5.0, "cols": 2.0}, {"table": "LOOKUP_CONTEXT", "rows": 8.0, "cols": 3.0}, {"table": "LOOKUP_ECOSISTEMA", "rows": 4.0, "cols": 3.0}, {"table": "LOOKUP_ELEMENTO_SE", "rows": 1.0, "cols": 2.0}, {"table": "LOOKUP_ESPACIO", "rows": 8.0, "cols": 2.0}, {"table": "LOOKUP_GEO", "rows": 3.0, "cols": 4.0}, {"table": "LOOKUP_MDV", "rows": 40.0, "cols": 2.0}, {"table": "LOOKUP_SE", "rows": 20.0, "cols": 2.0}, {"table": "LOOKUP_SURVEY_CONTEXT", "rows": 1.0, "cols": 4.0}, {"table": "QA_INPUT_SCHEMA", "rows": 17.0, "cols": 3.0}, {"table": "TIDY_3_1_BRAINSTORM", "rows": 10.0, "cols": 7.0}, {"table": "TIDY_3_2_PRIORIZACION", "rows": 10.0, "cols": 11.0}, {"table": "TIDY_3_3_CAR_A", "rows": 11.0, "cols": 11.0}, {"table": "TIDY_3_3_CAR_B", "rows": 10.0, "cols": 7.0}, {"table": "TIDY_3_3_CAR_C", "rows": 19.0, "cols": 10.0}, {"table": "TIDY_3_3_CAR_D", "rows": 20.0, "cols": 9.0}, {"table": "TIDY_3_3_CAR_LONG", "rows": 211.0, "cols": 10.0}, {"table": "TIDY_3_4_ECOSISTEMAS", "rows": 4.0, "cols": 8.0}, {"table": "TIDY_3_4_ECO_MDV", "rows": 18.0, "cols": 4.0}, {"table": "TIDY_3_4_ECO_SE", "rows": 24.0, "cols": 4.0}, {"table": "TIDY_3_5_SE_INCLUSION", "rows": 4.0, "cols": 3.0}, {"table": "TIDY_3_5_SE_MDV", "rows": 4.0, "cols": 16.0}, {"table": "TIDY_3_5_SE_MONTHS", "rows": 17.0, "cols": 5.0}, {"table": "TIDY_4_1_AMENAZAS", "rows": 40.0, "cols": 11.0}, {"table": "TIDY_4_2_1_AMENAZA_MDV", "rows": 11.0, "cols": 25.0}, {"table": "TIDY_4_2_1_DIFERENCIADO", "rows": 11.0, "cols": 3.0}, {"table": "TIDY_4_2_1_MAPEO_CONFLICTO", "rows": 11.0, "cols": 4.0}, {"table": "TIDY_4_2_2_AMENAZA_SE", "rows": 2.0, "cols": 25.0}, {"table": "TIDY_4_2_2_DIFERENCIADO", "rows": 6.0, "cols": 3.0}, {"table": "TIDY_4_2_2_MAPEO_CONFLICTO", "rows": 1.0, "cols": 4.0}, {"table": "TIDY_5_1_ACTORES", "rows": 9.0, "cols": 8.0}, {"table": "TIDY_5_1_RELACIONES", "rows": 44.0, "cols": 6.0}, {"table": "TIDY_5_2_DIALOGO", "rows": 9.0, "cols": 10.0}, {"table": "TIDY_5_2_DIALOGO_ACTOR", "rows": 18.0, "cols": 4.0}, {"table": "TIDY_6_1_CONFLICT_EVENTS", "rows": 2.0, "cols": 11.0}, {"table": "TIDY_6_2_CONFLICTO_ACTOR", "rows": 2.0, "cols": 10.0}, {"table": "TIDY_7_1_RESPONDENTS", "rows": 60.0, "cols": 8.0}, {"table": "TIDY_7_1_RESPONSES", "rows": 240.0, "cols": 6.0}, {"table": "variables", "rows": 131.0, "cols": 18.0}], "duplicates": [{"table": "TIDY_3_3_CAR_D", "pk": "car_d_id", "duplicate_rows": 10.0}, {"table": "TIDY_3_3_CAR_LONG", "pk": "car_long_id", "duplicate_rows": 211.0}, {"table": "TIDY_4_1_AMENAZAS", "pk": "amenaza_obs_id", "duplicate_rows": 36.0}, {"table": "TIDY_7_1_RESPONDENTS", "pk": "respondent_id", "duplicate_rows": 60.0}, {"table": "TIDY_7_1_RESPONSES", "pk": "response_id", "duplicate_rows": 240.0}], "missing_ids": [{"table": "TIDY_3_5_SE_MDV", "col": "ecosistema_id", "missing": 4.0}, {"table": "TIDY_4_1_AMENAZAS", "col": "amenaza_id", "missing": 36.0}, {"table": "TIDY_5_2_DIALOGO", "col": "espacio_id", "missing": 1.0}, {"table": "TIDY_7_1_RESPONDENTS", "col": "mdv_id", "missing": 60.0}], "missing_foreign_keys": [], "empty_threat_rows": 36, "geo_incomplete": [{"geo_id": "c65f37b2cb1ae26c"}], "notes": ["El archivo contiene hojas originales, hojas LOOKUP, hojas TIDY y hojas QA; el dashboard prioriza las hojas TIDY y LOOKUP para evitar depender de celdas fusionadas o estructuras de captura.", "Los códigos de servicios ecosistémicos no tienen en el archivo un diccionario completo con nombres largos; por eso se muestran como códigos registrados y se advierte su limitación.", "La tabla de amenazas 4.1 contiene 36 filas vacías o repetidas con amenaza_id faltante; se excluyeron del análisis visual.", "Las hojas QA reportan duplicados en algunas tablas normalizadas, especialmente TIDY_4_1_AMENAZAS y TIDY_7_1_RESPONSES; se usaron registros válidos y agregados para evitar sobrecontar.", "La capacidad adaptativa se interpreta como promedios por dimensión/indicador a partir de la hoja 7.1; el archivo no indica tamaño de muestra de personas encuestadas, sino 60 filas de resultados agregados."]}};
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const short = (s,n=110) => {
+  s = String(s ?? '');
+  return s.length > n ? s.slice(0,n-1) + '…' : s;
+};
+const uniq = arr => [...new Set(arr.filter(Boolean))];
+const fmt = v => v === null || v === undefined || v === '' ? 's/d' : (Number.isFinite(v) ? (Number.isInteger(v) ? String(v) : v.toFixed(2)) : String(v));
+const pct = (v,max=5) => Math.max(0, Math.min(100, (Number(v)||0)/max*100));
+function scoreLabel(v) {
+  if (v === null || v === undefined) return 'sin puntaje';
+  if (v >= 3.5) return 'señal alta';
+  if (v >= 2) return 'señal media';
+  return 'señal baja';
+}
+function heatClass(v) {
+  if (v >= 2.2) return 'heat-3';
+  if (v >= 1.6) return 'heat-2';
+  return 'heat-1';
+}
+function scaleBlocks(value, max=5) {
+  const n = Math.round((Number(value)||0)/max*5);
+  let html = '<div class="block-scale" aria-label="escala visual">';
+  for(let i=1;i<=5;i++) html += `<span class="${i<=n ? (n>=4?'on3':n>=3?'on2':'on1') : ''}"></span>`;
+  return html + '</div>';
+}
+function criteriaHtml(criteria) {
+  return Object.entries(criteria || {}).map(([k,v]) => `<div class="criterion"><b>${fmt(v)}</b><span>${esc(k)}</span></div>`).join('');
+}
+
+function renderHeadlineStats() {
+  const c = DATA.counts;
+  const stats = [
+    ['big', c.medios_vida, 'medios de vida priorizados', 'Puntuación total por cinco criterios'],
+    ['', c.ecosistemas, 'ecosistemas caracterizados', 'Con salud, causas y relaciones'],
+    ['', c.servicios_ecosistemicos_codigos, 'códigos de servicios', 'Códigos SE registrados'],
+    ['', c.amenazas_lookup, 'amenazas en catálogo', `${c.amenazas_caracterizadas} caracterizadas en 4.1`],
+    ['', c.actores, 'actores', `${c.espacios_dialogo} espacios de diálogo`]
+  ];
+  $('#headlineStats').innerHTML = stats.map(([cls,n,l,d]) => `
+    <div class="stat-card ${cls}">
+      <div class="stat-number">${fmt(n)}</div>
+      <div><div class="stat-label">${esc(l)}</div><div class="stat-detail">${esc(d)}</div></div>
+    </div>`).join('');
+}
+
+function renderDataUniverse() {
+  const items = [
+    ['Medios de vida', DATA.counts.medios_vida, 'Priorización, caracterización y uso final'],
+    ['Ecosistemas', DATA.counts.ecosistemas, 'Salud, causas de degradación y relaciones'],
+    ['Servicios ecosistémicos', DATA.counts.servicios_ecosistemicos_codigos, 'Códigos de servicios registrados'],
+    ['Amenazas', DATA.counts.amenazas_lookup, 'Climáticas y no climáticas'],
+    ['Actores', DATA.counts.actores, 'Poder, interés y rol en el paisaje'],
+    ['Diálogo', DATA.counts.espacios_dialogo, 'Espacios, incidencia, fortalezas y debilidades'],
+    ['Conflictos', DATA.counts.eventos_conflicto, 'Eventos y actores vinculados'],
+    ['Capacidad adaptativa', DATA.counts.filas_capacidad_adaptativa, 'Filas agregadas de encuesta CA']
+  ];
+  $('#dataUniverse').innerHTML = items.map(([name,n,desc]) => `
+    <div class="panel data-universe-card">
+      <div><div class="mini-label">${esc(name)}</div><div class="n">${fmt(n)}</div></div>
+      <p>${esc(desc)}</p>
+    </div>`).join('');
+}
+
+function setupLivelihoodFilters() {
+  const useSelect = $('#livelihoodUse');
+  const groupSelect = $('#livelihoodGroup');
+  uniq(DATA.livelihoods.map(d=>d.uso_final)).forEach(v => useSelect.insertAdjacentHTML('beforeend', `<option>${esc(v)}</option>`));
+  uniq(DATA.livelihoods.map(d=>d.grupo)).forEach(v => groupSelect.insertAdjacentHTML('beforeend', `<option>${esc(v)}</option>`));
+  ['input','change'].forEach(evt => {
+    $('#livelihoodSearch').addEventListener(evt, renderLivelihoods);
+    useSelect.addEventListener(evt, renderLivelihoods);
+    groupSelect.addEventListener(evt, renderLivelihoods);
+  });
+  $('#resetLivelihoods').addEventListener('click', () => {
+    $('#livelihoodSearch').value = ''; useSelect.value=''; groupSelect.value=''; renderLivelihoods();
+  });
+}
+function renderLivelihoods() {
+  const q = ($('#livelihoodSearch').value || '').toLowerCase();
+  const use = $('#livelihoodUse').value;
+  const group = $('#livelihoodGroup').value;
+  const list = DATA.livelihoods.filter(d => {
+    const hay = [d.nombre,d.producto,d.sistema,d.codigo].join(' ').toLowerCase();
+    return (!q || hay.includes(q)) && (!use || d.uso_final === use) && (!group || d.grupo === group);
+  });
+  $('#livelihoodCards').innerHTML = list.map((d,i) => `
+    <article class="panel livelihood-card">
+      <div class="rank">${i+1}</div>
+      <div class="mini-label">Grupo ${esc(d.grupo || 's/d')} · código ${esc(d.codigo || 's/d')}</div>
+      <h3>${esc(d.nombre)}</h3>
+      <div class="score">${fmt(d.prioridad)}<small>/15</small></div>
+      <p><strong>Producto principal:</strong> ${esc(d.producto)}<br><strong>Uso final:</strong> ${esc(d.uso_final || 's/d')}</p>
+      <p>${esc(short(d.sistema, 145))}</p>
+      <div class="criteria-grid">${criteriaHtml(d.criterios)}</div>
+    </article>`).join('') || '<div class="panel">No hay medios de vida que coincidan con el filtro.</div>';
+}
+
+function renderEcosystems() {
+  $('#ecosystemCards').innerHTML = DATA.ecosystems.map(d => `
+    <article class="panel ecosystem-card">
+      <div>
+        <div class="mini-label">Grupo ${esc(d.grupo || 's/d')} · ${esc(d.codigo || 's/d')}</div>
+        <h3>${esc(d.nombre)}</h3>
+        <p><strong>Tipo:</strong> ${esc(d.tipo)} · <strong>Salud:</strong> ${fmt(d.salud)}/3</p>
+        <div class="health">${[1,2,3].map(i=>`<span class="health-dot ${i <= Number(d.salud || 0) ? 'on':''}"></span>`).join('')} <span class="mini-label">escala registrada</span></div>
+        <p><strong>Causas/degradación:</strong> ${esc(d.causas)}</p>
+      </div>
+      <div>
+        <div class="mini-label">${d.n_servicios} servicios codificados</div>
+        <div class="service-badges">${d.servicios.map(s=>`<span class="service-badge">${esc(s)}</span>`).join('')}</div>
+      </div>
+      <div>
+        <div class="mini-label">${d.n_medios} medios/elementos relacionados</div>
+        <ul class="link-list">${d.medios_vida_relacionados.slice(0,14).map(m=>`<li>${esc(m)}</li>`).join('')}</ul>
+      </div>
+    </article>`).join('');
+  renderEcoMatrix();
+}
+function renderEcoMatrix() {
+  const cols = DATA.ecoMatrix.columns;
+  let html = `<div class="matrix header" style="--cols:${cols.length}"><div class="matrix-head row-title">Ecosistema</div>${cols.map(c=>`<div class="matrix-head">${esc(c)}</div>`).join('')}</div>`;
+  DATA.ecoMatrix.rows.forEach(row => {
+    html += `<div class="matrix-row" style="--cols:${cols.length}"><div class="matrix-cell row-title">${esc(row.ecosistema)}</div>`;
+    cols.forEach(c => html += `<div class="matrix-cell ${row.servicios[c] ? 'active heat-1':''}" title="${esc(row.ecosistema)} × ${esc(c)}">${row.servicios[c] ? '●' : ''}</div>`);
+    html += `</div>`;
+  });
+  $('#ecoMatrix').innerHTML = html;
+}
+
+function renderThreats() {
+  $('#threatCards').innerHTML = DATA.threats.map(d => `
+    <article class="panel threat-card">
+      <div class="mini-label">${esc(d.tipo || 'tipo no registrado')} · grupo ${esc(d.grupo || 's/d')}</div>
+      <h3>${esc(short(d.nombre, 90))}</h3>
+      <span class="intensity">suma 4.1: ${fmt(d.suma)}</span>
+      <div class="threat-score">
+        <div><b>${fmt(d.magnitud)}</b><span>magnitud</span></div>
+        <div><b>${fmt(d.frecuencia)}</b><span>frecuencia</span></div>
+        <div><b>${fmt(d.tendencia)}</b><span>tendencia</span></div>
+      </div>
+      <p>${esc(short(d.sitios || 'No hay sitios afectados registrados en 4.1 para esta amenaza.', 160))}</p>
+      <div class="chip-row">
+        <span class="chip">${d.relaciones_mdv} relaciones MdV</span>
+        <span class="chip accent">impacto prom.: ${fmt(d.impacto_promedio)}</span>
+      </div>
+    </article>`).join('');
+  renderThreatMatrix();
+}
+function renderThreatMatrix() {
+  const cols = DATA.threatMatrix.columns;
+  let html = `<div class="matrix header" style="--cols:${cols.length}"><div class="matrix-head row-title">Amenaza</div>${cols.map(c=>`<div class="matrix-head">${esc(short(c,26))}</div>`).join('')}</div>`;
+  DATA.threatMatrix.rows.forEach(row => {
+    html += `<div class="matrix-row" style="--cols:${cols.length}"><div class="matrix-cell row-title">${esc(short(row.amenaza,90))}</div>`;
+    cols.forEach(c => {
+      const cell = row.cells[c];
+      if(cell) {
+        const detail = encodeURIComponent(JSON.stringify({amenaza: row.amenaza, mdv:c, ...cell}));
+        html += `<div class="matrix-cell active ${heatClass(cell.impacto)}" data-detail="${detail}" title="Clic para ver detalle">${fmt(cell.impacto)}</div>`;
+      } else {
+        html += `<div class="matrix-cell"></div>`;
+      }
+    });
+    html += `</div>`;
+  });
+  $('#threatMatrix').innerHTML = html;
+  $$('#threatMatrix .matrix-cell.active').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const d = JSON.parse(decodeURIComponent(cell.dataset.detail));
+      $('#matrixDetail').innerHTML = `<strong>${esc(d.amenaza)}</strong><br>
+        Medio de vida: <strong>${esc(d.mdv)}</strong> · impacto promedio: <strong>${fmt(d.impacto)}</strong> · familias: <strong>${fmt(d.familias)}</strong><br>
+        Conflicto asociado: ${esc(d.conflicto || 'sin tipo de conflicto registrado')} · nivel: ${esc(d.nivel || 's/d')}`;
+    });
+  });
+}
+
+function renderCapacity() {
+  $('#capacityDimensions').innerHTML = DATA.capacity.dimension_scores.map(d => `
+    <div class="panel" style="box-shadow:none;margin:.75rem 0;padding:.9rem">
+      <div class="mini-label">${esc(scoreLabel(d.promedio))} · ${d.n} registros</div>
+      <h3>${esc(d.dimension)}</h3>
+      <div class="score">${fmt(d.promedio)}<small>/5</small></div>
+      ${scaleBlocks(d.promedio,5)}
+      <p>Rango observado: ${fmt(d.min)} a ${fmt(d.max)}.</p>
+    </div>`).join('');
+  const item = d => `<div class="ladder-item"><strong>${fmt(d.promedio)}</strong><div><b>${esc(d.indicador)}</b><br><span class="mini-label">${esc(d.dimension)} · n=${d.n}</span></div>${scaleBlocks(d.promedio,5)}</div>`;
+  $('#capacityHigh').innerHTML = DATA.capacity.indicadores_altos.map(item).join('');
+  $('#capacityLow').innerHTML = DATA.capacity.indicadores_bajos.map(item).join('');
+  $('#capacityMdv').innerHTML = DATA.capacity.mdv_scores.map(d => `
+    <div class="panel">
+      <div class="mini-label">Medio de vida evaluado</div>
+      <h3>${esc(d.mdv)}</h3>
+      <div class="score">${fmt(d.promedio)}<small>/5</small></div>
+      ${scaleBlocks(d.promedio,5)}
+      <p>${d.n} filas de indicadores agregados.</p>
+    </div>`).join('');
+}
+
+function renderActors() {
+  const groups = [
+    'Alta influencia / alto interés',
+    'Alta influencia / bajo interés',
+    'Baja influencia / alto interés',
+    'Baja influencia / bajo interés',
+    'Alta influencia / interés no registrado'
+  ];
+  $('#actorQuadrants').innerHTML = groups.map(g => {
+    const items = DATA.actors.filter(a=>a.cuadrante===g);
+    return `<div class="quad"><h4>${esc(g)}</h4>${items.map(a=>`
+      <div class="actor-chip"><b>${esc(a.nombre)}</b><span>${esc(a.tipo || 's/d')} · poder ${fmt(a.poder)} · interés ${fmt(a.interes)}</span><br><span>${esc(short(a.rol,90))}</span></div>
+    `).join('') || '<span class="mini-label">Sin actores registrados en este cuadrante</span>'}</div>`;
+  }).join('');
+}
+function renderDialogues() {
+  $('#dialogueCards').innerHTML = DATA.dialogues.map(d => `
+    <article class="panel">
+      <div class="mini-label">Grupo ${esc(d.grupo || 's/d')} · ${esc(d.tipo || 's/d')} · incidencia ${esc(d.incidencia || 's/d')}</div>
+      <h3>${esc(d.nombre)}</h3>
+      <p><strong>Alcance:</strong> ${esc(d.alcance)}<br><strong>Función:</strong> ${esc(d.funcion)}</p>
+      <p><strong>Fortalezas:</strong> ${esc(d.fortalezas || 's/d')}</p>
+      <p><strong>Debilidades:</strong> ${esc(d.debilidades || 's/d')}</p>
+      <div class="chip-row">${d.actores.map(a=>`<span class="chip">${esc(a)}</span>`).join('')}</div>
+    </article>`).join('');
+}
+
+function renderConflicts() {
+  $('#conflictTimeline').innerHTML = DATA.conflicts.events.map(e => `
+    <div class="event">
+      <div class="mini-label">${fmt(e.ano_evento)} · código ${esc(e.cod_conflict || 's/d')} · suma ${fmt(e.suma)}</div>
+      <p><strong>${esc(e.evento)}</strong></p>
+      <p><strong>Diferencias:</strong> ${fmt(e.diferencias)} · ${esc(e.dif_factor || 's/d')}<br>
+      <strong>Cooperación:</strong> ${fmt(e.cooperacion)} · ${esc(e.coop_factor || 's/d')}</p>
+    </div>`).join('');
+  $('#conflictActors').innerHTML = DATA.conflicts.actors.map(a => `
+    <div class="panel" style="box-shadow:none;margin:.75rem 0;padding:.9rem">
+      <div class="mini-label">Código ${esc(a.cod_conflict || 's/d')}</div>
+      <h3>${esc(short(a.actor, 90))}</h3>
+      <p><strong>Impacto en actor:</strong> ${esc(a.i_en_actor || 's/d')} · ${esc(a.iea_factor || 's/d')}</p>
+      <p><strong>Impacto en conflicto:</strong> ${esc(a.i_en_conflicto || 's/d')} · ${esc(a.iec_factor || 's/d')}</p>
+    </div>`).join('');
+}
+
+function renderQuality() {
+  $('#qualityNotes').innerHTML = DATA.dataQuality.notes.map(n=>`<p>• ${esc(n)}</p>`).join('');
+  $('#sheetList').innerHTML = `<p>${DATA.dataQuality.sheets_total} hojas en total.</p><div class="chip-row">${DATA.dataQuality.sheets.map(s=>`<span class="chip neutral">${esc(s)}</span>`).join('')}</div>`;
+  const dupRows = DATA.dataQuality.duplicates.map(r=>`<tr><td>${esc(r.table)}</td><td>${esc(r.pk)}</td><td>${fmt(r.duplicate_rows)}</td></tr>`).join('');
+  const missRows = DATA.dataQuality.missing_ids.map(r=>`<tr><td>${esc(r.table)}</td><td>${esc(r.col)}</td><td>${fmt(r.missing)}</td></tr>`).join('');
+  $('#qaTables').innerHTML = `
+    <h4>Duplicados reportados</h4>
+    <table class="small-table"><thead><tr><th>Tabla</th><th>PK</th><th>Filas</th></tr></thead><tbody>${dupRows || '<tr><td colspan="3">Sin duplicados reportados</td></tr>'}</tbody></table>
+    <h4>IDs faltantes reportados</h4>
+    <table class="small-table"><thead><tr><th>Tabla</th><th>Columna</th><th>Faltantes</th></tr></thead><tbody>${missRows || '<tr><td colspan="3">Sin faltantes reportados</td></tr>'}</tbody></table>
+    <p><strong>Filas vacías/repetidas excluidas en amenazas 4.1:</strong> ${fmt(DATA.dataQuality.empty_threat_rows)}.</p>`;
+}
+
+function bindNav() {
+  const sections = $$('main section[id]');
+  const links = $$('#navLinks a');
+  const onScroll = () => {
+    let current = sections[0]?.id;
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 110) current = s.id; });
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current));
+  };
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+}
+
+function init() {
+  renderHeadlineStats();
+  renderDataUniverse();
+  setupLivelihoodFilters();
+  renderLivelihoods();
+  renderEcosystems();
+  renderThreats();
+  renderCapacity();
+  renderActors();
+  renderDialogues();
+  renderConflicts();
+  renderQuality();
+  bindNav();
+}
+init();
+</script>
+</body>
+</html>
