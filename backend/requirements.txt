@@ -3,6 +3,7 @@ uvicorn
 langchain
 langchain-community
 langchain-openai
+langchain-huggingface
 chromadb
 pymupdf
 sentence-transformers
@@ -10,4 +11,7 @@ python-multipart
 python-dotenv
 requests
 python-docx
+docx2txt
 tqdm
+rank_bm25
+langchain-chroma

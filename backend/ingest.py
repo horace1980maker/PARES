@@ -1,13 +1,30 @@
 import os
+import argparse
 import json
 import time
 import hashlib
 from datetime import datetime
-from langchain_community.document_loaders import PyMuPDFLoader
+from langchain_community.document_loaders import PyMuPDFLoader, Docx2txtLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
-from langchain_community.vectorstores import Chroma
+try:
+    from langchain_chroma import Chroma
+except ImportError:
+    from langchain_community.vectorstores import Chroma
 from tqdm import tqdm
+
+# Supported file extensions
+SUPPORTED_EXTENSIONS = (".pdf", ".docx")
+
+def get_loader(file_path: str):
+    """Returns the appropriate document loader based on file extension"""
+    ext = os.path.splitext(file_path)[1].lower()
+    if ext == ".pdf":
+        return PyMuPDFLoader(file_path)
+    elif ext == ".docx":
+        return Docx2txtLoader(file_path)
+    else:
+        raise ValueError(f"Unsupported file type: {ext}")
 
 # Configuration
 DOCS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "documents"))
@@ -66,12 +83,46 @@ def determine_scope_and_org(file_path):
         
     return "global", "UNKNOWN" # Fallback
 
-def ingest_documents():
+def ingest_documents(clear_manifest=False):
     print(f"[START] Starting Ingestion Pipeline")
-    print(f"   - Embedding Model: {EMBEDDING_MODEL}")
-    print(f"   - Chunk Size: {CHUNK_SIZE} / Overlap: {CHUNK_OVERLAP}")
-    print(f"   - DB Path: {DB_DIR}")
-    print("=" * 60)
+    if clear_manifest:
+        print(f"   - [RESET] Clearing existing manifest and DATABASE as requested")
+        if os.path.exists(MANIFEST_FILE):
+            os.remove(MANIFEST_FILE)
+        if os.path.exists(DB_DIR):
+            import shutil
+            print(f"   - [INFO] Emptying database directory: {DB_DIR}")
+            for filename in os.listdir(DB_DIR):
+                file_path = os.path.join(DB_DIR, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)
+                except Exception as e:
+                    print(f"   - [WARN] Failed to delete {file_path}. Reason: {e}")
+            print(f"   - [INFO] Database directory emptied.")
+            
+    # Try to use HuggingFaceEmbeddings
+    try:
+        from langchain_huggingface import HuggingFaceEmbeddings
+        embedding_function = HuggingFaceEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'},
+            encode_kwargs={'normalize_embeddings': True}
+        )
+        print(f"   - [INFO] Using HuggingFaceEmbeddings (Normalized: True)", flush=True)
+    except ImportError:
+        from langchain_community.embeddings import SentenceTransformerEmbeddings
+        embedding_function = SentenceTransformerEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'}
+        )
+        print(f"   - [WARN] Using Fallback SentenceTransformerEmbeddings", flush=True)
+    
+    print(f"   - Chunk Size: {CHUNK_SIZE} / Overlap: {CHUNK_OVERLAP}", flush=True)
+    print(f"   - DB Path: {DB_DIR}", flush=True)
+    print("=" * 60, flush=True)
 
     # 1. Setup Directories
     if not os.path.exists(DOCS_DIR):
@@ -83,23 +134,26 @@ def ingest_documents():
     # 2. Scan Files
     found_files = []
     
-    # Scan Orgs
+    # Scan Orgs - recursively search all subdirectories
     if os.path.exists(orgs_dir):
         for org_id in os.listdir(orgs_dir):
             org_path = os.path.join(orgs_dir, org_id)
             if os.path.isdir(org_path):
-                for file in os.listdir(org_path):
-                    if file.lower().endswith(".pdf"):
-                        found_files.append(os.path.join(org_path, file))
+                # Use os.walk to recursively find all supported documents
+                for root, dirs, files in os.walk(org_path):
+                    for file in files:
+                        if file.lower().endswith(SUPPORTED_EXTENSIONS):
+                            found_files.append(os.path.join(root, file))
+
 
     # Scan Global
     if os.path.exists(global_dir):
         for file in os.listdir(global_dir):
-            if file.lower().endswith(".pdf"):
+            if file.lower().endswith(SUPPORTED_EXTENSIONS):
                 found_files.append(os.path.join(global_dir, file))
 
     if not found_files:
-        print("[WARN] No PDF documents found.")
+        print("[WARN] No supported documents found (PDF, DOCX).")
         return
 
     # 3. Incremental Logic
@@ -114,8 +168,7 @@ def ingest_documents():
         
         if current_hash != stored_hash:
             files_to_process.append(file_path)
-            manifest[file_path] = current_hash # Update manifest (we'll save at end only if success?) 
-            # Ideally save incrementally or at end. For now, we update the dict and save after processing.
+            # manifest[file_path] = current_hash # MOVED: Only update on success
 
     if not files_to_process:
         print("[OK] All files are up to date. No new ingestion needed.")
@@ -124,10 +177,19 @@ def ingest_documents():
     print(f"[PROCESS] Processing {len(files_to_process)} new/modified files...")
 
     # 4. Initialize Components
-    embedding_function = SentenceTransformerEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        model_kwargs={'device': 'cpu'} # Force CPU if no CUDA, usually safe default
-    )
+    try:
+        from langchain_huggingface import HuggingFaceEmbeddings
+        embedding_function = HuggingFaceEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'},
+            encode_kwargs={'normalize_embeddings': True}
+        )
+    except ImportError:
+        from langchain_community.embeddings import SentenceTransformerEmbeddings
+        embedding_function = SentenceTransformerEmbeddings(
+            model_name=EMBEDDING_MODEL,
+            model_kwargs={'device': 'cpu'}
+        )
     
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE,
@@ -168,8 +230,8 @@ def ingest_documents():
             except Exception as e:
                 print(f"   [WARN] Warning cleaning up old chunks for {filename}: {e}")
 
-            # Load & Split
-            loader = PyMuPDFLoader(file_path)
+            # Load & Split - use appropriate loader based on file type
+            loader = get_loader(file_path)
             docs = loader.load()
             
             chunks = text_splitter.split_documents(docs)
@@ -189,7 +251,16 @@ def ingest_documents():
                 })
 
             # Add to DB
-            db.add_documents(chunks)
+            if chunks:
+                print(f"   [INFO] Adding {len(chunks)} chunks for {filename} (Org: {org_id})")
+                db.add_documents(chunks)
+                print(f"   [OK] {filename} stored successfully")
+            else:
+                print(f"   [WARN] No chunks generated for {filename}")
+            
+            # 6. Mark as processed on success
+            manifest[file_path] = calculate_file_hash(file_path)
+            save_manifest(manifest) # Save incrementally for safety
             
         except Exception as e:
             print(f"[ERROR] Error processing {file_path}: {e}")
@@ -197,9 +268,13 @@ def ingest_documents():
             # For simplicity, we won't resort complex revert logic here 
             # but in production we should.
             
-    # 6. Save Manifest
+    # 7. Final Manifest Save
     save_manifest(manifest)
     print(f"\n[OK] Ingestion Complete. Manifest updated.")
 
 if __name__ == "__main__":
-    ingest_documents()
+    parser = argparse.ArgumentParser(description="Ingest documents into ChromaDB")
+    parser.add_argument("--clear", "--reset", action="store_true", help="Clear manifest and re-ingest all files")
+    args = parser.parse_args()
+    
+    ingest_documents(clear_manifest=args.clear)

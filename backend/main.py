@@ -68,7 +68,7 @@ ORG_NAME_TO_FOLDER = {
     "Corporación Biocomercio": "Corporación Biocomercio",
     # Ecuador
     "Tierra Viva": "TIERRA VIVA",
-    "Corporación Toisán": "Corporación Toisán",
+    "Corporación Toisán": "TOISAN",
     # Mexico
     "CECROPIA": "CECROPIA",
     "FONCET": "FONCET",
@@ -418,6 +418,17 @@ load_dotenv()
 
 app = FastAPI(title="CATIE PARES API", version="1.0.0")
 
+@app.get("/ping-debug")
+def ping_debug():
+    """Endpoint para verificar que esta es la versión con logs [INSIGHT]"""
+    return {
+        "status": "ok",
+        "version": "1.0.5-insight-logs",
+        "db_path": os.getenv("CHROMA_DB_DIR", "default"),
+        "orgs_mapped": list(ORG_NAME_TO_FOLDER.keys())
+    }
+
+
 # CORS Configuration
 origins = [
     "http://localhost:5173",
@@ -465,6 +476,18 @@ def startup_event():
         threading.Thread(target=ingest_documents, daemon=True).start()
     else:
         logger.info("STARTUP: DB found. Skipping auto-ingestion.")
+        # Diagnostic: List Orgs in DB
+        try:
+            rag = RAGProcessor()
+            if rag.db:
+                all_data = rag.db.get()
+                if all_data['metadatas']:
+                    orgs_in_db = set(m.get('org_id') for m in all_data['metadatas'] if m.get('org_id'))
+                    logger.info(f"STARTUP: Database contains data for organizations: {orgs_in_db}")
+                else:
+                    logger.warning("STARTUP: Database exists but appears to be EMPTY.")
+        except Exception as e:
+            logger.error(f"STARTUP: Error during DB diagnostic: {e}")
 
 # Mock Data - Organizaciones por país
 # Datos Reales - Organizaciones por país
@@ -878,15 +901,15 @@ RESPONSE:"""
 def obtener_insight_territorial_organizacion(request: ChatRequest):
     """Genera un análisis territorial basado en los documentos de una organización específica"""
     try:
-        print(f"\n[INSIGHT] === Starting Territorial Analysis ===")
-        print(f"[INSIGHT] Organization: {request.organizacion}")
+        print(f"\n[INSIGHT] === Starting Territorial Analysis ===", flush=True)
+        print(f"[INSIGHT] Organization: {request.organizacion}", flush=True)
         
         # Inicializar procesador RAG
         rag = RAGProcessor()
         
         # Obtener org_id (folder name) a partir del nombre (usando mapeo global)
         org_folder = ORG_NAME_TO_FOLDER.get(request.organizacion)
-        print(f"[INSIGHT] Org folder mapping: {org_folder}")
+        print(f"[INSIGHT] Org folder mapping: {org_folder}", flush=True)
         
         if not rag.db:
             print(f"[INSIGHT] ERROR: RAG DB not initialized")
@@ -914,18 +937,35 @@ def obtener_insight_territorial_organizacion(request: ChatRequest):
         # Usar el retriever directamente con filtro de metadata
         try:
             # Buscar solo documentos de esta organización
+            # Strip org_folder just in case of whitespace
+            search_filter = {"org_id": org_folder.strip()}
+            print(f"[INSIGHT] Searching with filter: {search_filter}", flush=True)
+            
             docs = rag.db.similarity_search(
                 query_territorial,
-                k=8,  # Obtener más documentos para mejor contexto
-                filter={"org_id": org_folder}
+                k=15,  # Increased k for better coverage
+                filter=search_filter
             )
             
             if not docs:
+                print(f"[INSIGHT] WARNING: No documents matched search for {request.organizacion} (folder: {org_folder})", flush=True)
+                # Debug: check if ANY docs exist for this org
+                try:
+                    all_org_docs = rag.db.get(where={"org_id": org_folder.strip()}, limit=1)
+                    if not all_org_docs['ids']:
+                        print(f"[INSIGHT] DB ERROR: No documents found at all for org_id='{org_folder}' in ChromaDB", flush=True)
+                    else:
+                        print(f"[INSIGHT] DB OK: Documents exist for {org_folder}, but search query didn't match any.", flush=True)
+                except Exception as e:
+                    print(f"[INSIGHT] DB QUERY ERROR: {e}", flush=True)
+                    
                 return {
                     "respuesta": f"**Análisis Territorial - {request.organizacion}**\n\n"
                                 f"No se encontró información suficiente en los documentos de esta organización para generar un análisis territorial.\n\n"
                                 f"Por favor, asegúrese de que existan documentos cargados para {request.organizacion}."
                 }
+            
+            print(f"[INSIGHT] Found {len(docs)} documents for analysis.")
             
             # Construir contexto a partir de los documentos
             contexto_parts = []
