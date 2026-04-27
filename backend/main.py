@@ -1059,34 +1059,43 @@ def export_docx(request: ExportRequest):
 def get_report(org_folder: str):
     """Serve organization HTML report file"""
     try:
-        # Build path to report file
-        report_path = os.path.join(
+        import glob
+        
+        # Build path to REPORTE directory
+        reporte_dir = os.path.join(
             os.path.dirname(__file__),
             'documents',
             'orgs',
             org_folder,
-            'REPORTE',
-            f'{org_folder.lower().replace(" ", "_")}_report.HTML'
+            'REPORTE'
         )
         
-        # Check if file exists
-        if not os.path.exists(report_path):
-            # Try alternative naming convention
-            alt_report_path = os.path.join(
-                os.path.dirname(__file__),
-                'documents',
-                'orgs',
-                org_folder,
-                'REPORTE',
-                'tierra_viva_report.HTML'  # Fallback for known file
-            )
-            if os.path.exists(alt_report_path):
-                report_path = alt_report_path
-            else:
-                raise HTTPException(status_code=404, detail=f"Report not found for {org_folder}")
+        # Check if REPORTE directory exists
+        if not os.path.isdir(reporte_dir):
+            raise HTTPException(status_code=404, detail=f"Report directory not found for {org_folder}")
+        
+        # Find any .html file in the REPORTE directory (case-insensitive)
+        html_files = glob.glob(os.path.join(reporte_dir, '*.html')) + \
+                     glob.glob(os.path.join(reporte_dir, '*.HTML'))
+        # Deduplicate (on case-insensitive OS both globs may return same files)
+        seen = set()
+        unique_html = []
+        for f in html_files:
+            normalized = os.path.normcase(f)
+            if normalized not in seen:
+                seen.add(normalized)
+                unique_html.append(f)
+        
+        if not unique_html:
+            raise HTTPException(status_code=404, detail=f"No HTML report found for {org_folder}")
+        
+        report_path = unique_html[0]
+        logger.info(f"Serving report: {report_path}")
         
         return FileResponse(report_path, media_type="text/html")
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error serving report: {e}")
         raise HTTPException(status_code=500, detail=f"Error loading report: {str(e)}")

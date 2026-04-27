@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard territorial BIOCOMERCIO</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&family=Oswald:wght@200;300;500;600&display=swap');
+
+    :root{
+      --neutral:#001F89;
+      --primary:#009EE2;
+      --regional:#B71373;
+      --regional2:#751851;
+      --paper:#F7FAFF;
+      --ink:#102042;
+      --muted:#5D6885;
+      --line:rgba(0,31,137,.16);
+      --card:#FFFFFF;
+      --soft-blue:rgba(0,158,226,.10);
+      --soft-regional:rgba(183,19,115,.10);
+      --soft-purple:rgba(117,24,81,.12);
+      --shadow:0 18px 45px rgba(0,31,137,.11);
+      --radius:28px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:'Noto Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+      background:
+        radial-gradient(circle at 18% 4%, rgba(0,158,226,.22), transparent 28rem),
+        radial-gradient(circle at 88% 8%, rgba(183,19,115,.22), transparent 34rem),
+        linear-gradient(180deg,#F7FAFF 0%,#FFFFFF 42%,#F4F7FF 100%);
+      color:var(--ink);
+      line-height:1.5;
+    }
+
+    a{color:inherit}
+    .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+    .eyebrow,.label{
+      font-family:'Oswald',sans-serif;
+      font-weight:300;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .eyebrow{font-size:.84rem;color:var(--regional)}
+    h1,h2,h3,h4{
+      font-family:'Oswald',sans-serif;
+      text-transform:uppercase;
+      line-height:1;
+      margin:0;
+      color:var(--neutral);
+    }
+    h1{font-size:clamp(3.3rem,7vw,7.8rem);letter-spacing:.01em}
+    h2{font-size:clamp(2.2rem,4.3vw,4.4rem);margin-bottom:1rem}
+    h3{font-size:1.65rem}
+    h4{font-size:1.1rem;letter-spacing:.04em}
+    p{margin:.4rem 0 0}
+    .muted{color:var(--muted)}
+    .small{font-size:.88rem}
+    .strong{font-weight:700;color:var(--neutral)}
+    .section{padding:76px 0}
+    .section.tight{padding-top:36px}
+    .section-head{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(280px,430px);
+      gap:24px;
+      align-items:end;
+      margin-bottom:28px;
+    }
+    .section-head p{font-size:1.02rem}
+    .panel{
+      background:rgba(255,255,255,.78);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      overflow:hidden;
+      backdrop-filter: blur(8px);
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:0 12px 26px rgba(0,31,137,.06);
+    }
+    .card.soft{background:linear-gradient(145deg,#FFFFFF,rgba(0,158,226,.05))}
+    .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:.78rem;
+      color:var(--neutral);
+      font-weight:600;
+    }
+    .chip.primary{background:var(--soft-blue);border-color:rgba(0,158,226,.25)}
+    .chip.regional{background:var(--soft-regional);border-color:rgba(183,19,115,.25)}
+    .chip.purple{background:var(--soft-purple);border-color:rgba(117,24,81,.25)}
+    .pill{
+      font-family:'Oswald',sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.09em;
+      font-weight:300;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.35);
+      background:rgba(255,255,255,.14);
+      color:white;
+      padding:8px 12px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-size:.86rem;
+    }
+
+    /* Navegación fija */
+    .nav{
+      position:sticky;top:0;z-index:20;
+      background:rgba(247,250,255,.88);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav .wrap{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;padding-top:10px;padding-bottom:10px;
+    }
+    .brand{font-family:'Oswald';text-transform:uppercase;color:var(--neutral);font-size:1.15rem;letter-spacing:.08em}
+    .nav-links{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+    .nav-links a{
+      font-size:.78rem;text-decoration:none;border:1px solid var(--line);
+      padding:7px 10px;border-radius:999px;background:white;color:var(--neutral);
+    }
+    .nav-links a:hover{border-color:var(--primary);background:var(--soft-blue)}
+
+    /* Hero */
+    .hero{
+      min-height:86vh;
+      display:grid;
+      align-items:stretch;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg,rgba(0,31,137,.97),rgba(0,31,137,.88) 45%,rgba(117,24,81,.92)),
+        radial-gradient(circle at 80% 20%, rgba(0,158,226,.6), transparent 24rem);
+      color:white;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;inset:0;
+      background-image:
+        linear-gradient(30deg, rgba(255,255,255,.06) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,.06) 87.5%, rgba(255,255,255,.06)),
+        linear-gradient(150deg, rgba(255,255,255,.06) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,.06) 87.5%, rgba(255,255,255,.06)),
+        radial-gradient(circle at 40% 60%, rgba(0,158,226,.28), transparent 25rem);
+      background-size:74px 128px,74px 128px,auto;
+      opacity:.45;
+    }
+    .hero .wrap{
+      position:relative;z-index:1;
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);
+      gap:42px;
+      padding-top:68px;
+      padding-bottom:58px;
+      align-items:center;
+    }
+    .hero h1{color:white}
+    .hero .subtitle{font-size:1.2rem;max-width:820px;color:rgba(255,255,255,.86)}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .hero-card{
+      background:rgba(255,255,255,.11);
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:30px;
+      padding:24px;
+      backdrop-filter:blur(12px);
+    }
+    .metrics-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+    .metric{
+      min-height:120px;
+      border-radius:24px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.2);
+      padding:18px;
+      display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .metric.big{grid-column:span 2;background:linear-gradient(135deg,rgba(0,158,226,.36),rgba(183,19,115,.3))}
+    .metric .value{
+      font-family:'Oswald';font-size:3.1rem;line-height:1;color:white;
+    }
+    .metric.big .value{font-size:5rem}
+    .metric .m-label{font-family:'Oswald';text-transform:uppercase;letter-spacing:.08em;font-weight:300;color:rgba(255,255,255,.88)}
+    .metric .note{font-size:.78rem;color:rgba(255,255,255,.70);margin-top:8px}
+
+    /* Filtros */
+    .toolbar{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+      margin:0 0 24px;
+      padding:14px;border-radius:20px;background:#fff;border:1px solid var(--line);
+      box-shadow:0 8px 22px rgba(0,31,137,.05);
+    }
+    .filters{display:flex;flex-wrap:wrap;gap:8px}
+    button{
+      font-family:'Noto Sans',sans-serif;
+      border:1px solid var(--line);background:white;color:var(--neutral);
+      border-radius:999px;padding:9px 13px;cursor:pointer;font-weight:700;
+    }
+    button:hover,button.active{background:var(--neutral);color:white;border-color:var(--neutral)}
+    button.secondary.active{background:var(--regional);border-color:var(--regional)}
+
+    /* Identidad territorial */
+    .territory-grid{
+      display:grid;
+      grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+      gap:22px;
+      align-items:stretch;
+    }
+    .schematic-map{
+      min-height:430px;position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at 45% 38%,rgba(0,158,226,.24),transparent 12rem),
+        linear-gradient(160deg,rgba(0,31,137,.95),rgba(0,31,137,.75),rgba(117,24,81,.82));
+      color:white;
+    }
+    .schematic-map:before{
+      content:"";position:absolute;inset:42px;
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:42% 58% 50% 44% / 45% 35% 65% 55%;
+      transform:rotate(-9deg);
+      box-shadow:0 0 0 24px rgba(255,255,255,.03),0 0 0 54px rgba(255,255,255,.025),0 0 0 92px rgba(255,255,255,.018);
+    }
+    .schematic-map .map-pin{
+      position:absolute;left:54%;top:42%;
+      transform:translate(-50%,-50%);
+      width:140px;height:140px;border-radius:50%;
+      border:2px solid rgba(255,255,255,.75);
+      background:radial-gradient(circle,rgba(0,158,226,.9),rgba(183,19,115,.55) 64%,transparent 65%);
+      display:grid;place-items:center;text-align:center;padding:18px;
+      font-family:'Oswald';text-transform:uppercase;letter-spacing:.08em;
+    }
+    .map-label{position:absolute;left:26px;bottom:26px;right:26px}
+    .site-cloud{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .site-chip{padding:8px 10px;border-radius:13px;background:rgba(0,158,226,.10);color:var(--neutral);border:1px solid rgba(0,158,226,.22);font-weight:600;font-size:.85rem}
+
+    /* Universo de datos */
+    .universe-grid{
+      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;
+    }
+    .universe-card{
+      min-height:170px;padding:18px;border-radius:24px;border:1px solid var(--line);
+      background:linear-gradient(145deg,#fff,rgba(0,158,226,.06));
+      position:relative;overflow:hidden;
+    }
+    .universe-card:after{
+      content:"";position:absolute;right:-28px;bottom:-28px;width:90px;height:90px;border-radius:50%;
+      background:rgba(183,19,115,.14);
+    }
+    .universe-card .count{font-family:'Oswald';font-size:3.2rem;color:var(--regional);line-height:1}
+    .source-scroll{max-height:360px;overflow:auto;border-top:1px solid var(--line);margin-top:18px}
+    .source-row{display:grid;grid-template-columns:1fr 80px 80px 70px;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);align-items:center}
+    .source-row.header{font-family:'Oswald';text-transform:uppercase;color:var(--neutral);letter-spacing:.06em;font-size:.85rem;position:sticky;top:0;background:#fff;z-index:1}
+
+    /* Tarjetas de medios, ecosistemas y amenazas */
+    .cards-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .story-card{
+      display:flex;flex-direction:column;gap:14px;
+      transition:.18s transform ease,.18s box-shadow ease;
+    }
+    .story-card:hover{transform:translateY(-3px);box-shadow:0 18px 34px rgba(0,31,137,.13)}
+    .score-band{
+      height:12px;background:rgba(0,31,137,.08);border-radius:999px;overflow:hidden;
+    }
+    .score-fill{
+      height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--regional));
+      width:calc(var(--score) * 1%);
+    }
+    .mini-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+    .mini-score{
+      min-height:52px;border-radius:14px;background:var(--soft-blue);padding:7px;text-align:center;
+      border:1px solid rgba(0,158,226,.2);
+    }
+    .mini-score strong{display:block;font-family:'Oswald';font-size:1.4rem;color:var(--neutral)}
+    .mini-score span{font-size:.66rem;color:var(--muted)}
+    details{
+      border-top:1px solid var(--line);
+      padding-top:10px;
+    }
+    summary{cursor:pointer;font-weight:700;color:var(--regional)}
+
+    .threat-card.climática{border-left:8px solid var(--primary)}
+    .threat-card.no-climática{border-left:8px solid var(--regional)}
+    .threat-score{
+      font-family:'Oswald';font-size:3rem;line-height:1;color:var(--regional);
+    }
+    .threat-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .threat-mini div{background:rgba(0,31,137,.05);border-radius:14px;padding:10px;text-align:center}
+    .threat-mini strong{display:block;font-family:'Oswald';font-size:1.5rem;color:var(--neutral)}
+
+    /* Matrices */
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+    .matrix-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:24px;padding:14px}
+    .matrix-grid{display:grid;gap:6px;min-width:720px}
+    .cell{
+      min-height:54px;border-radius:12px;border:1px solid rgba(0,31,137,.10);
+      display:flex;align-items:center;justify-content:center;
+      text-align:center;font-size:.78rem;font-weight:700;position:relative;padding:7px;
+    }
+    .cell.header{
+      background:var(--neutral);color:white;font-family:'Oswald';letter-spacing:.06em;text-transform:uppercase;font-weight:300;
+      position:sticky;top:0;z-index:2;
+    }
+    .cell.rowhead{background:#F2F5FF;color:var(--neutral);justify-content:flex-start;text-align:left;position:sticky;left:0;z-index:1}
+    .cell.heat{background:linear-gradient(135deg,rgba(183,19,115,var(--a)),rgba(0,158,226,var(--b)));color:var(--cellColor)}
+    .matrix-note{margin-top:10px;color:var(--muted);font-size:.86rem}
+
+    /* Capacidad */
+    .capacity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .ladder{display:flex;gap:8px;margin-top:14px;align-items:end;height:90px}
+    .ladder-step{
+      flex:1;border-radius:14px 14px 4px 4px;background:linear-gradient(180deg,var(--primary),var(--neutral));
+      min-height:10%;position:relative;
+    }
+    .ladder-step span{position:absolute;bottom:100%;left:0;right:0;text-align:center;font-family:'Oswald';font-size:.9rem;color:var(--neutral)}
+    .signal-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .signal-list .box{background:rgba(0,31,137,.04);border-radius:16px;padding:12px;border:1px solid var(--line)}
+
+    /* Actores */
+    .quadrant-grid{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+    }
+    .quadrant{
+      min-height:220px;border:1px dashed rgba(0,31,137,.26);border-radius:22px;padding:16px;background:rgba(255,255,255,.7)
+    }
+    .actor-chip{
+      display:inline-block;margin:5px 5px 0 0;padding:7px 9px;border-radius:12px;background:var(--soft-blue);border:1px solid rgba(0,158,226,.24);font-size:.78rem;font-weight:700;color:var(--neutral)
+    }
+    .actor-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+
+    /* Conflicto */
+    .timeline{position:relative;padding-left:26px}
+    .timeline:before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:3px;background:linear-gradient(var(--primary),var(--regional));border-radius:999px}
+    .time-item{position:relative;margin-bottom:16px;padding:16px;border:1px solid var(--line);border-radius:20px;background:#fff}
+    .time-item:before{content:"";position:absolute;left:-25px;top:22px;width:16px;height:16px;border-radius:50%;background:var(--regional);border:3px solid #fff;box-shadow:0 0 0 2px rgba(183,19,115,.28)}
+    .year{font-family:'Oswald';font-size:1.6rem;color:var(--regional)}
+    .balance{font-family:'Oswald';font-size:1.1rem;color:var(--neutral)}
+
+    /* Síntesis y calidad */
+    .insights-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+    .insight{
+      min-height:280px;border-radius:24px;padding:18px;color:white;position:relative;overflow:hidden;
+      background:linear-gradient(145deg,var(--neutral),var(--regional2));
+    }
+    .insight:nth-child(even){background:linear-gradient(145deg,var(--primary),var(--neutral))}
+    .insight .num{font-family:'Oswald';font-size:3.5rem;opacity:.35;line-height:1}
+    .quality-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .note-list{margin:12px 0 0;padding-left:18px}
+    .note-list li{margin:8px 0}
+    .empty-note{
+      padding:18px;border:1px dashed var(--line);border-radius:18px;background:rgba(0,31,137,.04);color:var(--muted)
+    }
+
+    @media (max-width:1020px){
+      .hero .wrap,.territory-grid,.section-head{grid-template-columns:1fr}
+      .universe-grid{grid-template-columns:repeat(2,1fr)}
+      .cards-grid{grid-template-columns:repeat(2,1fr)}
+      .insights-grid{grid-template-columns:repeat(2,1fr)}
+      .actor-list,.capacity-grid,.quality-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:680px){
+      .wrap{padding:0 16px}
+      .hero .wrap{padding-top:42px}
+      .metrics-grid,.cards-grid,.universe-grid,.quadrant-grid,.insights-grid{grid-template-columns:1fr}
+      .metric.big{grid-column:auto}
+      .nav-links{display:none}
+      .section{padding:54px 0}
+      .source-row{grid-template-columns:1fr 55px 55px 54px;font-size:.82rem}
+    }
+    @media print{
+      .nav,.toolbar,.tabs,button{display:none!important}
+      body{background:#fff;color:#111}
+      .section{padding:24px 0;break-inside:avoid}
+      .panel,.card{box-shadow:none}
+      .hero{min-height:auto;color:#111;background:#fff}
+      .hero h1,.hero .subtitle,.pill,.metric .value,.metric .m-label,.metric .note{color:#111}
+      .metrics-grid{grid-template-columns:repeat(4,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <div class="brand">BIOCOMERCIO · DASHBOARD TERRITORIAL</div>
+      <div class="nav-links">
+        <a href="#territorio">Territorio</a>
+        <a href="#universo">Datos</a>
+        <a href="#medios">Medios de vida</a>
+        <a href="#ecosistemas">Ecosistemas</a>
+        <a href="#amenazas">Amenazas</a>
+        <a href="#matrices">Matrices</a>
+        <a href="#gobernanza">Gobernanza</a>
+        <a href="#conflicto">Conflicto</a>
+        <a href="#calidad">Calidad</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">Lectura socio-ecológica territorial</div>
+        <h1 id="heroTitle">BIOCOMERCIO</h1>
+        <p class="subtitle" id="heroSubtitle"></p>
+        <div class="hero-meta" id="heroMeta"></div>
+      </div>
+      <div class="hero-card">
+        <div class="eyebrow" style="color:rgba(255,255,255,.78)">Números principales</div>
+        <div class="metrics-grid" id="headlineMetrics"></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="territorio">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Identidad territorial</div>
+            <h2>Ubicación y foco del análisis</h2>
+          </div>
+          <p class="muted">La visualización territorial es esquemática. El archivo identifica país, paisaje, grupos de trabajo y sitios afectados, pero no incluye coordenadas.</p>
+        </div>
+        <div class="territory-grid">
+          <div class="panel schematic-map">
+            <div class="map-pin" id="mapPin"></div>
+            <div class="map-label">
+              <div class="eyebrow" style="color:white">Territorio reportado</div>
+              <h3 style="color:white" id="territoryTitle"></h3>
+              <p id="territoryText" style="color:rgba(255,255,255,.82)"></p>
+            </div>
+          </div>
+          <div class="panel" style="padding:24px">
+            <h3>Lectura rápida del territorio</h3>
+            <p id="territoryNarrative" class="muted"></p>
+            <div class="chip-row" id="groupChips"></div>
+            <h4 style="margin-top:24px">Sitios mencionados en amenazas</h4>
+            <div class="site-cloud" id="siteCloud"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tight" id="universo">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Universo de datos</div>
+            <h2>Qué información analiza este dashboard</h2>
+          </div>
+          <p class="muted">El archivo contiene hojas originales, catálogos, tablas normalizadas y controles de calidad. La lectura pública prioriza las tablas sustantivas y excluye filas vacías cuando afectan los conteos.</p>
+        </div>
+        <div class="universe-grid" id="universeGrid"></div>
+        <details class="panel" style="margin-top:18px;padding:20px">
+          <summary>Ver hojas fuente y volumen de registros</summary>
+          <div class="source-scroll" id="sourceSheets"></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" id="medios">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Medios de vida</div>
+            <h2>Sistemas productivos y exposición</h2>
+          </div>
+          <p class="muted">Los puntajes provienen de la priorización. Las relaciones de amenaza, usuarios y servicios se muestran solamente cuando están disponibles en las tablas relacionales.</p>
+        </div>
+        <div class="toolbar">
+          <div>
+            <span class="label">Filtrar por grupo</span>
+          </div>
+          <div class="filters" id="groupFilters"></div>
+        </div>
+        <div class="cards-grid" id="livelihoodGrid"></div>
+      </div>
+    </section>
+
+    <section class="section tight" id="ecosistemas">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Ecosistemas y servicios</div>
+            <h2>Relaciones ecosistema–servicio–medio de vida</h2>
+          </div>
+          <p class="muted">Los servicios ecosistémicos aparecen como códigos cuando el archivo no trae su nombre completo. Se conservan los códigos para evitar inventar definiciones.</p>
+        </div>
+        <div class="cards-grid" id="ecosystemGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="amenazas">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Amenazas</div>
+            <h2>Señales climáticas y no climáticas</h2>
+          </div>
+          <p class="muted">La intensidad usa la columna “suma” de la hoja de amenazas. Las tarjetas enlazan amenazas con medios de vida, servicios ecosistémicos y conflictos cuando existe relación registrada.</p>
+        </div>
+        <div class="chip-row" id="threatSummary" style="margin-bottom:18px"></div>
+        <div class="cards-grid" id="threatGrid"></div>
+      </div>
+    </section>
+
+    <section class="section tight" id="matrices">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Matrices relacionales</div>
+            <h2>Dónde se cruzan impactos y dependencias</h2>
+          </div>
+          <p class="muted">Las matrices usan intensidad visual en celdas HTML/CSS. No son gráficos externos: cada celda muestra el valor registrado o derivado de las columnas disponibles.</p>
+        </div>
+        <div class="tabs" id="matrixTabs"></div>
+        <div class="matrix-wrap">
+          <div id="matrixTitle" class="eyebrow" style="margin-bottom:12px"></div>
+          <div id="matrixGrid" class="matrix-grid"></div>
+          <div class="matrix-note" id="matrixNote"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="capacidad">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Capacidad adaptativa</div>
+            <h2>Fortalezas y brechas por grupo</h2>
+          </div>
+          <p class="muted">Se presentan promedios agregados por medio de vida, dimensión e indicador. No se interpreta como análisis muestral individual por limitaciones en los metadatos de respondientes.</p>
+        </div>
+        <div class="capacity-grid" id="capacityGrid"></div>
+      </div>
+    </section>
+
+    <section class="section tight" id="gobernanza">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Actores y gobernanza</div>
+            <h2>Constelación de influencia e interés</h2>
+          </div>
+          <p class="muted">La matriz agrupa actores usando los campos poder e interés. El umbral alto se ubica en 7 o más sobre la escala registrada.</p>
+        </div>
+        <div class="quadrant-grid" id="quadrantGrid"></div>
+        <div class="actor-list" id="actorList"></div>
+      </div>
+    </section>
+
+    <section class="section tight" id="dialogo">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Espacios de diálogo</div>
+            <h2>Arquitectura de coordinación</h2>
+          </div>
+          <p class="muted">Se muestran espacios formales e informales, su alcance, función, incidencia y señales de fortalezas o debilidades cuando están registradas.</p>
+        </div>
+        <div class="cards-grid" id="dialogueGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="conflicto">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Conflicto</div>
+            <h2>Evolución, actores y factores asociados</h2>
+          </div>
+          <p class="muted">El conflicto se presenta con lenguaje analítico y no sensacionalista. Los eventos se agrupan para evitar repeticiones cuando un mismo hecho se relaciona con varios códigos.</p>
+        </div>
+        <div class="territory-grid">
+          <div class="panel" style="padding:22px">
+            <h3>Línea de tiempo de eventos</h3>
+            <div class="timeline" id="conflictTimeline"></div>
+          </div>
+          <div class="panel" style="padding:22px">
+            <h3>Actores vinculados al conflicto</h3>
+            <div id="conflictActors"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tight" id="sintesis">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Síntesis territorial integrada</div>
+            <h2>Qué sugiere la evidencia</h2>
+          </div>
+          <p class="muted">Esta síntesis cruza medios de vida, ecosistemas, amenazas, gobernanza, conflicto y capacidad adaptativa sin introducir información externa al archivo.</p>
+        </div>
+        <div class="insights-grid" id="insightsGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="calidad">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Calidad y límites</div>
+            <h2>Transparencia analítica</h2>
+          </div>
+          <p class="muted">El dashboard se basa únicamente en el Excel cargado. Las limitaciones se muestran para evitar sobreinterpretar datos incompletos o codificados.</p>
+        </div>
+        <div class="quality-grid">
+          <div class="panel" style="padding:22px">
+            <h3>Limitaciones encontradas</h3>
+            <ul class="note-list" id="limitations"></ul>
+          </div>
+          <div class="panel" style="padding:22px">
+            <h3>Supuestos de construcción</h3>
+            <ul class="note-list" id="assumptions"></ul>
+          </div>
+        </div>
+        <details class="panel" style="margin-top:18px;padding:20px">
+          <summary>Ver notas técnicas de QA</summary>
+          <div class="quality-grid" style="margin-top:16px">
+            <div>
+              <h4>Identificadores duplicados reportados</h4>
+              <div id="duplicateNotes"></div>
+            </div>
+            <div>
+              <h4>Identificadores faltantes reportados</h4>
+              <div id="missingNotes"></div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* Datos generados desde el Excel cargado */
+    const DATA = {"summary": {"organization": "BIOCOMERCIO", "organization_detail": "Corporación Biocomercio Sostenible aparece registrada como actor en el archivo; el nombre corto se infiere del nombre del libro de Excel.", "country": "Colombia", "landscape": "Llanura aluvial", "groups": ["Cacao", "Piangua", "Pesca", "Cacao-Piangua"], "sites": ["Chapilar", "El Banco", "Nerete", "Piñalito", "Resurrecion", "Robles", "San Antonio", "San Pablo", "San Vicente", "Tambillo"], "date_range": "2025-06-10, 2025-06-11", "headline_numbers": [{"label": "grupos de trabajo", "value": 4, "note": "Cacao, Piangua, Pesca, Cacao-Piangua"}, {"label": "medios de vida priorizados", "value": 8, "note": "registros con puntaje de priorización mayor a cero"}, {"label": "ecosistemas caracterizados", "value": 7, "note": "incluye manglares, humedales, guandales, natal y ecosistema terrestre"}, {"label": "códigos de servicios ecosistémicos", "value": 9, "note": "el archivo registra códigos; no expande todos los nombres"}, {"label": "amenazas sustantivas", "value": 11, "note": "filas con amenaza no vacía en 4.1"}, {"label": "actores mapeados", "value": 23, "note": "actores con poder e interés"}, {"label": "espacios de diálogo", "value": 6, "note": "formales e informales"}, {"label": "eventos de conflicto únicos", "value": 13, "note": "agrupados por evento y año"}, {"label": "indicadores de capacidad", "value": 38, "note": "promedios por medio de vida, dimensión e indicador"}]}, "data_universe": [{"theme": "Identidad territorial", "count": 1, "detail": "País, paisaje y grupos de trabajo"}, {"theme": "Medios de vida", "count": 8, "detail": "Priorización y caracterización productiva"}, {"theme": "Ecosistemas y servicios", "count": 7, "detail": "9 códigos de servicios ecosistémicos"}, {"theme": "Amenazas", "count": 11, "detail": "Amenazas climáticas y no climáticas con puntajes"}, {"theme": "Impactos relacionales", "count": 32, "detail": "Relaciones amenaza–medio de vida y amenaza–servicio"}, {"theme": "Gobernanza", "count": 29, "detail": "Actores y espacios de diálogo"}, {"theme": "Conflicto", "count": 13, "detail": "Eventos, actores y factores de conflicto"}, {"theme": "Capacidad adaptativa", "count": 38, "detail": "Promedios por dimensión e indicador"}], "source_sheets": [{"sheet": "variables", "rows": 131, "cols": 18, "status": "ok"}, {"sheet": "3.1. Lluvia MdV&SE", "rows": 14, "cols": 7, "status": "ok"}, {"sheet": "3.2. Priorización", "rows": 50, "cols": 12, "status": "ok"}, {"sheet": "3.3. Car_A", "rows": 13, "cols": 12, "status": "ok"}, {"sheet": "3.3. Car_B", "rows": 10, "cols": 8, "status": "ok"}, {"sheet": "3.3. Car_C", "rows": 14, "cols": 11, "status": "ok"}, {"sheet": "3.3. Car_D", "rows": 12, "cols": 10, "status": "ok"}, {"sheet": "3.4. Ecosistemas", "rows": 7, "cols": 11, "status": "ok"}, {"sheet": "3.5. SE y MdV", "rows": 12, "cols": 14, "status": "ok"}, {"sheet": "4.1. Amenazas", "rows": 40, "cols": 13, "status": "ok"}, {"sheet": "4.2.1. Amenazas_MdV", "rows": 18, "cols": 26, "status": "ok"}, {"sheet": "4.2.2. Amenazas_SE", "rows": 14, "cols": 26, "status": "ok"}, {"sheet": "5.1. Actores", "rows": 23, "cols": 11, "status": "ok"}, {"sheet": "5.2. Diálogo", "rows": 6, "cols": 12, "status": "ok"}, {"sheet": "6.1. Evolución_conflict", "rows": 13, "cols": 12, "status": "ok"}, {"sheet": "6.2. Actores_conflict", "rows": 11, "cols": 10, "status": "ok"}, {"sheet": "7.1. Encuesta CA", "rows": 38, "cols": 4, "status": "ok"}], "livelihoods": [{"name": "Cacao-Plátano-Maderables", "source_name": "Cacao-Platano-Maderables", "group": "Cacao", "score": 12.0, "product": "Cacao en baba, corriente, platano, madera", "criteria": {"Seguridad alimentaria": 2.0, "Área": 2.0, "Desarrollo local": 2.0, "Ambiente": 3.0, "Inclusión": 3.0}, "threats": [{"name": "Presencia de cultivos de uso ilicito", "type": "no-climática", "impact": 17.0, "families": 1200, "conflict": "C7"}, {"name": "Lluvias intensas", "type": "climática", "impact": 12.0, "families": 1200, "conflict": "C7"}, {"name": "Escasez de agua", "type": "climática", "impact": 9.0, "families": 1200, "conflict": "C7"}, {"name": "Contaminación por agroquimicos", "type": "no-climática", "impact": 7.0, "families": 1200, "conflict": "C7"}], "service_codes": ["EsT + P1, R5"], "service_elements": ["demanda", "flujo", "provisión"], "users": 1200, "barriers": ["P: esta aumentando la provision porque se esta sembrando mas cacao y platano", "F: Sustituciòn de cultivos", "D: El sistema agroforestal sigue brindando los servicios de provision de acuerdo al ciclo reproductivo de cada especie"]}, {"name": "Cacao-Plátano-Frutales", "source_name": "Cacao-Platano-Frutales", "group": "Cacao", "score": 12.0, "product": "Cacao en baba, corriente, platano, frutas", "criteria": {"Seguridad alimentaria": 2.0, "Área": 2.0, "Desarrollo local": 2.0, "Ambiente": 3.0, "Inclusión": 3.0}, "threats": [{"name": "Presencia de cultivos de uso ilicito", "type": "no-climática", "impact": 17.0, "families": 1200, "conflict": "C7"}, {"name": "Lluvias intensas", "type": "climática", "impact": 12.0, "families": 1200, "conflict": "C7"}, {"name": "Escasez de agua", "type": "climática", "impact": 9.0, "families": 1200, "conflict": "C7"}, {"name": "Contaminación por agroquimicos", "type": "no-climática", "impact": 7.0, "families": 1200, "conflict": "C7"}], "service_codes": ["EsT + P1, R5"], "service_elements": ["demanda", "flujo", "provisión"], "users": 1200, "barriers": ["P: esta aumentando la provision porque se esta sembrando mas cacao y platano", "F: La siembra de cacao esta aumentando a raiz de la sustitucion de cultivos de uso ilicito", "D: El sistema agroforestal sigue brindando los servicios de provision de acuerdo al ciclo reproductivo de cada especie"]}, {"name": "Frutales", "source_name": "Frutales", "group": "Cacao", "score": 11.0, "product": "Limon, Borojo, Naranja, Mango, Aguacate, Zapote, Caimito, Guanabana, Ciruelo, Guayaba Araza, Guaba, Coco", "criteria": {"Seguridad alimentaria": 2.0, "Área": 2.0, "Desarrollo local": 2.0, "Ambiente": 3.0, "Inclusión": 2.0}, "threats": [], "service_codes": [], "service_elements": [], "users": null, "barriers": []}, {"name": "Palma de Aceite", "source_name": "Palma de Aceite", "group": "Cacao", "score": 9.0, "product": "Fruto por tonelada", "criteria": {"Seguridad alimentaria": 2.0, "Área": 1.0, "Desarrollo local": 2.0, "Ambiente": 1.0, "Inclusión": 3.0}, "threats": [], "service_codes": [], "service_elements": [], "users": null, "barriers": []}, {"name": "Maderables", "source_name": "Maderables", "group": "Cacao", "score": 8.0, "product": "Cedro, Nato, Laurel, Jigua, Tachuelo, Laguna", "criteria": {"Seguridad alimentaria": 1.0, "Área": 1.0, "Desarrollo local": 2.0, "Ambiente": 2.0, "Inclusión": 2.0}, "threats": [], "service_codes": [], "service_elements": [], "users": null, "barriers": []}, {"name": "Camarón", "source_name": "Camaron", "group": "Cacao", "score": 8.0, "product": "Camaron de piscina, Camaron Chambero", "criteria": {"Seguridad alimentaria": 1.0, "Área": 1.0, "Desarrollo local": 2.0, "Ambiente": 1.0, "Inclusión": 3.0}, "threats": [], "service_codes": [], "service_elements": [], "users": null, "barriers": []}, {"name": "Piangua", "source_name": "Piangua", "group": "Piangua", "score": 7.0, "product": "Piangua Hembra y macho", "criteria": {"Seguridad alimentaria": 2.0, "Área": 1.0, "Desarrollo local": 1.0, "Ambiente": 2.0, "Inclusión": 1.0}, "threats": [{"name": "Perdida de la biodiversidad", "type": "climática", "impact": 20.0, "families": 400, "conflict": "CPB,C4,M"}, {"name": "Escasez de agua", "type": "climática", "impact": 17.0, "families": 400, "conflict": "CPB,C4,M"}, {"name": "Mareas extremas", "type": "climática", "impact": 15.0, "families": 400, "conflict": "CPB,C4,M"}, {"name": "Lluvias intensas", "type": "climática", "impact": 14.0, "families": 400, "conflict": "CPB,C4,M"}, {"name": "Deforestación", "type": "no-climática", "impact": 13.0, "families": 400, "conflict": "CPB,C4,M"}], "service_codes": ["EsMg2 + P1-R3"], "service_elements": ["demanda", "flujo", "provisión"], "users": 400, "barriers": ["P: Deforestación", "F: Deforestación", "D: La piangua es un producto que se consume a nivel local, regional, nacional y se exporta para el Ecuador"]}, {"name": "Pesca Artesanal", "source_name": "Pesca Artesanal", "group": "Piangua", "score": 7.0, "product": "Lisa, Pargo, Canchimala, Machetaso, Pelada, Leiro, Palometa, Piangua, Cangrejo", "criteria": {"Seguridad alimentaria": 2.0, "Área": 1.0, "Desarrollo local": 1.0, "Ambiente": 2.0, "Inclusión": 1.0}, "threats": [{"name": "Escasez de agua", "type": "climática", "impact": 17.0, "families": 400, "conflict": "CPB,C4,M"}, {"name": "Mareas extremas", "type": "climática", "impact": 15.0, "families": 400, "conflict": "CPB,C4,M"}, {"name": "Perdida de la biodiversidad", "type": "climática", "impact": 14.0, "families": 400, "conflict": "CPB,C4,M"}, {"name": "Lluvias intensas", "type": "climática", "impact": 13.0, "families": 400, "conflict": "CPB,C4,M"}], "service_codes": ["EsMg2 + P1-R3"], "service_elements": ["demanda", "flujo", "provisión"], "users": 400, "barriers": ["P: Deforestación", "F: Deforestación", "D: Las comunidades y en Tumaco se consume mucho pescado especialmente Lisa y pelada"]}], "ecosystems": [{"name": "Manglar tipo 1", "type": "Terrestre", "group": "Piangua", "health": 3, "causes": "Deforestación, madera para construcción, contaminación por residuos solidos, negocio del carbón-Corponariño no hace control, erosion costera, sedimentacion, contaminacion por hidrocarburos", "services": ["A1", "C2", "P1", "P2", "R2", "R3"], "livelihoods": ["Pesca artesanal", "Recoleccion de crustaceos (Cangrejo)", "recoleccion de moluscos (Piangua)"]}, {"name": "Manglar tipo 2", "type": "Terrestre", "group": "Piangua", "health": 3, "causes": "Deforestación, madera para construcción, contaminación por residuos solidos, negocio del carbón-Corponariño no hace control", "services": ["A1", "C2", "P1", "P2", "R2", "R3"], "livelihoods": ["Pesca artesanal", "Recoleccion de crustaceos (Cangrejo)", "recoleccion de moluscos (Piangua)"]}, {"name": "Ecosistema terrestre", "type": "Terrestre", "group": "Cacao", "health": 2, "causes": "Humedad, ataque de plagas y enfermedades, contaminación con agroquimicos, cultivos ilicitos, poca fertilizacion al cacao, falta de drenajes, cambio climatico, erosion del suelo", "services": ["P1", "P2", "R1", "R5", "R6"], "livelihoods": ["Cacao", "Plama de aceite", "camaronicultura"]}, {"name": "Manglar Carbonero", "type": "Terrestre", "group": "Piangua", "health": 2, "causes": "Ataque de plagas y enfermedades, picudo, contaminación por agroquimicos", "services": ["A1", "P1", "R1", "R5"], "livelihoods": ["Canchimala)", "Pesca artesanal (Lisa"]}, {"name": "Guandales", "type": "Acuatico", "group": "Cacao", "health": 3, "causes": "Tala indiscrimida, no hay control por las autoridades ambientales, aunque en el conejo comunitario estan realizando control, haciendo vigilancia ya no es permitido talar los bosques si un plan de manejo resiembra de arboles", "services": ["P2", "R1", "R2"], "livelihoods": ["Naidi", "Productos forestales no maderables", "palma real", "taqua"]}, {"name": "Humedales", "type": "Acuatico", "group": "Cacao", "health": 3, "causes": "Amenaza climatica, esta expuesto a la linea de costera", "services": ["R3"], "livelihoods": ["Extracción de madera"]}, {"name": "Natal", "type": "Terrestre", "group": "Piangua", "health": 2, "causes": "Deforestacion", "services": ["R1"], "livelihoods": ["Extraccion de madera"]}], "threats": [{"name": "Pobreza extrema", "type": "no-climática", "group": "Cacao", "score": 10.0, "magnitude": 5.0, "frequency": 3.0, "trend": 2.0, "sites": "Todo el territorio", "mdv_impacts": [], "service_impacts": [], "conflicts": []}, {"name": "Presencia de grupos armados", "type": "no-climática", "group": "Cacao", "score": 10.0, "magnitude": 5.0, "frequency": 3.0, "trend": 2.0, "sites": "Todo el territorio", "mdv_impacts": [], "service_impacts": [], "conflicts": []}, {"name": "Perdida de biodiversidad", "type": "climática", "group": "Cacao", "score": 9.0, "magnitude": 5.0, "frequency": 3.0, "trend": 1.0, "sites": "Todo el territorio", "mdv_impacts": [{"mdv": "Piangua", "impact": 20.0, "families": 400}, {"mdv": "Pesca Artesanal", "impact": 14.0, "families": 400}], "service_impacts": [], "conflicts": []}, {"name": "Debilidad institucional", "type": "no-climática", "group": "Piangua", "score": 9.0, "magnitude": 4.0, "frequency": 3.0, "trend": 2.0, "sites": "Todo el territorio", "mdv_impacts": [], "service_impacts": [], "conflicts": []}, {"name": "Contaminación por agroquimicos", "type": "no-climática", "group": "Piangua", "score": 9.0, "magnitude": 4.0, "frequency": 3.0, "trend": 2.0, "sites": "Todo el territorio", "mdv_impacts": [{"mdv": "Cacao-Plátano-Maderables", "impact": 7.0, "families": 1200}, {"mdv": "Cacao-Plátano-Frutales", "impact": 7.0, "families": 1200}], "service_impacts": [{"service": "R5", "impact": 7.0}, {"service": "R5", "impact": 7.0}], "conflicts": ["Instituciones frágiles o ineficientes (moderado)", "Migración y desplazamientos forzados (moderado)"]}, {"name": "Deforestación", "type": "no-climática", "group": "Piangua", "score": 8.0, "magnitude": 4.0, "frequency": 2.0, "trend": 2.0, "sites": "Todo el territorio", "mdv_impacts": [{"mdv": "Piangua", "impact": 13.0, "families": 400}], "service_impacts": [{"service": "R3", "impact": 13.0}, {"service": "R3", "impact": 13.0}], "conflicts": ["Falta de comunicación y colaboración entre actores (leve)", "Falta de comunicación y colaboración entre actores (moderado)"]}, {"name": "Escasez de agua", "type": "climática", "group": "Cacao", "score": 8.0, "magnitude": 4.0, "frequency": 2.0, "trend": 2.0, "sites": "Todo el territorio", "mdv_impacts": [{"mdv": "Pesca Artesanal", "impact": 17.0, "families": 400}, {"mdv": "Piangua", "impact": 17.0, "families": 400}, {"mdv": "Cacao-Plátano-Frutales", "impact": 9.0, "families": 1200}, {"mdv": "Cacao-Plátano-Maderables", "impact": 9.0, "families": 1200}], "service_impacts": [{"service": "P1", "impact": 4.0}, {"service": "R5", "impact": 3.0}], "conflicts": ["Falta de comunicación y colaboración entre actores (leve)", "Instituciones frágiles o ineficientes (leve)"]}, {"name": "Lluvias intensas", "type": "climática", "group": "Cacao", "score": 7.0, "magnitude": 4.0, "frequency": 1.0, "trend": 2.0, "sites": "Todo el territorio", "mdv_impacts": [{"mdv": "Piangua", "impact": 14.0, "families": 400}, {"mdv": "Pesca Artesanal", "impact": 13.0, "families": 400}, {"mdv": "Cacao-Plátano-Frutales", "impact": 12.0, "families": 1200}, {"mdv": "Cacao-Plátano-Maderables", "impact": 12.0, "families": 1200}], "service_impacts": [{"service": "R3", "impact": 14.0}, {"service": "P1", "impact": 14.0}, {"service": "R5", "impact": 6.0}, {"service": "P1", "impact": 6.0}], "conflicts": ["Falta de comunicación y colaboración entre actores (leve)", "Instituciones frágiles o ineficientes (leve)", "Instituciones frágiles o ineficientes (moderado)"]}, {"name": "Derrame de hidrocarburos", "type": "no-climática", "group": "Piangua", "score": 6.0, "magnitude": 3.0, "frequency": 3.0, "trend": 0.0, "sites": "Nerete, Tambillo, San Vicente, San Antonio, Chapilar, Piñalito, San Pablo. El Banco, Robles, Resurrecion", "mdv_impacts": [], "service_impacts": [], "conflicts": []}, {"name": "Mareas extremas", "type": "climática", "group": "Piangua", "score": 5.0, "magnitude": 3.0, "frequency": 1.0, "trend": 1.0, "sites": "Nerete, Tambillo, San Vicente, San Antonio, Chapilar, Piñalito, San Pablo. El Banco, Robles, Resurrecion", "mdv_impacts": [{"mdv": "Piangua", "impact": 15.0, "families": 400}, {"mdv": "Pesca Artesanal", "impact": 15.0, "families": 400}], "service_impacts": [{"service": "P1", "impact": 15.0}, {"service": "P1", "impact": 15.0}], "conflicts": ["Falta de comunicación y colaboración entre actores (moderado)"]}, {"name": "Presencia de cultivos de uso ilicito", "type": "no-climática", "group": "Cacao", "score": 5.0, "magnitude": 3.0, "frequency": 3.0, "trend": -1.0, "sites": "San Vicente, San Antonio, Nerete, Tambillo", "mdv_impacts": [{"mdv": "Cacao-Plátano-Maderables", "impact": 17.0, "families": 1200}, {"mdv": "Cacao-Plátano-Frutales", "impact": 17.0, "families": 1200}], "service_impacts": [{"service": "P1", "impact": 7.0}], "conflicts": []}], "matrices": {"threatLivelihood": {"rows": ["Perdida de la biodiversidad", "Escasez de agua", "Presencia de cultivos de uso ilicito", "Mareas extremas", "Lluvias intensas", "Deforestación", "Contaminación residuos solidos", "Contaminación por agroquimicos"], "cols": ["Piangua", "Cacao-Plátano-Frutales", "Cacao-Plátano-Maderables", "Pesca Artesanal"], "values": [[20.0, 0.0, 0.0, 14.0], [17.0, 9.0, 9.0, 17.0], [0.0, 17.0, 17.0, 0.0], [15.0, 0.0, 0.0, 15.0], [14.0, 12.0, 12.0, 13.0], [13.0, 0.0, 0.0, 0.0], [11.0, 0.0, 0.0, 0.0], [0.0, 7.0, 7.0, 0.0]]}, "threatService": {"rows": ["Mareas extremas", "Lluvias intensas", "Deforestación", "Presencia de cultivos de uso ilicito", "Contaminación por agroquimicos", "Contaminación por residios solidos", "Escasez de agua"], "cols": ["P1", "R3", "R5"], "values": [[15.0, 0.0, 0.0], [14.0, 14.0, 6.0], [0.0, 13.0, 0.0], [7.0, 0.0, 0.0], [0.0, 0.0, 7.0], [5.0, 0.0, 0.0], [4.0, 0.0, 3.0]]}, "ecosystemService": {"rows": ["Ecosistema terrestre", "Guandales", "Humedales", "Manglar Carbonero", "Manglar tipo 1", "Manglar tipo 2", "Natal"], "cols": ["A1", "C2", "P1", "P2", "R1", "R2", "R3", "R5", "R6"], "values": [[0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0], [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0], [1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]]}, "conflictThreat": {"rows": ["Falta de comunicación y colaboración entre actores", "Instituciones frágiles o ineficientes", "Migración y desplazamientos forzados"], "cols": ["Mareas extremas", "Lluvias intensas", "Deforestación", "Contaminación por agroquimicos", "Contaminación por residios solidos", "Escasez de agua"], "values": [[15.0, 6.0, 13.0, 0.0, 5.0, 4.0], [0.0, 14.0, 0.0, 7.0, 0.0, 3.0], [0.0, 0.0, 0.0, 7.0, 0.0, 0.0]]}}, "capacity": [{"group": "Cacao", "score": 3.105482456140351, "dimensions": [{"dimension": "Innovación", "score": 4.083333333333335, "indicators": 6}, {"dimension": "Acción", "score": 3.1125000000000003, "indicators": 3}, {"dimension": "Necesidades básicas", "score": 2.516666666666666, "indicators": 10}], "strengths": [{"indicator": "Educación", "dimension": "Innovación", "score": 5.0}, {"indicator": "Agencia", "dimension": "Innovación", "score": 4.91666666666667}, {"indicator": "Organización", "dimension": "Acción", "score": 4.25}], "gaps": [{"indicator": "Seguridad comunitaria", "dimension": "Necesidades básicas", "score": 0.0}, {"indicator": "Seguridad política", "dimension": "Necesidades básicas", "score": 0.5}, {"indicator": "Insumos", "dimension": "Acción", "score": 2.1875}]}, {"group": "Piangua", "score": 3.385964912280702, "dimensions": [{"dimension": "Innovación", "score": 4.6944444444444455, "indicators": 6}, {"dimension": "Acción", "score": 4.083333333333333, "indicators": 3}, {"dimension": "Necesidades básicas", "score": 2.391666666666667, "indicators": 10}], "strengths": [{"indicator": "Comunicaciones", "dimension": "Innovación", "score": 5.0}, {"indicator": "Confianza", "dimension": "Innovación", "score": 5.0}, {"indicator": "Educación", "dimension": "Innovación", "score": 5.0}], "gaps": [{"indicator": "Seguridad comunitaria", "dimension": "Necesidades básicas", "score": 0.0}, {"indicator": "Seguridad política", "dimension": "Necesidades básicas", "score": 0.25}, {"indicator": "Seguridad personal", "dimension": "Necesidades básicas", "score": 1.33333333333333}]}], "actors": [{"name": "CONSEJO COMUNITARIO RESCATE LAS VARAS", "type": "Gobernanza local", "role": "Gestion de la gobernanza del territorio", "power": 9.0, "interest": 10.0, "group": "Cacao-Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "POLICIA AMBIENTAL", "type": "Gubernamental", "role": "Eduación ambiental", "power": 9.0, "interest": 10.0, "group": "Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "AUNAP", "type": "Gubernamental", "role": "Gestion y regulacion de pesca y cuicultura", "power": 9.0, "interest": 9.0, "group": "Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "GOBERNACION", "type": "Gubernamental", "role": "Apoyo en proyectos productivos", "power": 9.0, "interest": 8.0, "group": "Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "ART", "type": "Gubernamental", "role": "Capacitaciones", "power": 9.0, "interest": 8.0, "group": "Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "ADR", "type": "Gubernamental", "role": "Apoyo proyectos productivos", "power": 9.0, "interest": 8.0, "group": "Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "ALCALDIA", "type": "Gubernamental", "role": "Apoyo al desarrollo agricola", "power": 9.0, "interest": 7.0, "group": "Cacao-Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "ASOCIACIÓN RAICES DEL MANGLAR", "type": "Asociación comunitaria", "role": "Gestion de proyectos productivos", "power": 8.0, "interest": 10.0, "group": "Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "WWF", "type": "ONG", "role": "Proteger la biodiversidad", "power": 8.0, "interest": 9.0, "group": "Piangua", "quadrant": "Alta influencia / alto interés"}, {"name": "BANCO AGRARIO", "type": "Gubernamental", "role": "Creditos agropecuarios", "power": 8.0, "interest": 5.0, "group": "Cacao", "quadrant": "Alta influencia / bajo interés"}, {"name": "FEDECACAO", "type": "Agremiación", "role": "Asistencia tecnica", "power": 8.0, "interest": 3.0, "group": "Cacao", "quadrant": "Alta influencia / bajo interés"}, {"name": "FAO", "type": "ONG", "role": "Apoyo tecnico organizativo y socio empresarial", "power": 7.0, "interest": 10.0, "group": "Cacao", "quadrant": "Alta influencia / alto interés"}, {"name": "CORPOTEVA", "type": "Corporación comunitaria", "role": "Gestion de proyectos productivos", "power": 7.0, "interest": 10.0, "group": "Cacao", "quadrant": "Alta influencia / alto interés"}, {"name": "PACIFICO TRANS FORCE", "type": "ONG", "role": "Proyectos, capacitaciones, conservacion, recoleccion de residuos solidos", "power": 6.0, "interest": 10.0, "group": "Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "FUNDACIÓN COMPAS/PAZ VERDE", "type": "ONG", "role": "Fortalecimiento de iniciativas productivas comunitarias", "power": 6.0, "interest": 9.0, "group": "Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "UNAL/ Valle, Tolima, Nariño, JAVERIANA, ICESI", "type": "Academia", "role": "Eduacion etnico territorial", "power": 6.0, "interest": 8.0, "group": "Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "CENIT-ECOPETROL", "type": "Privado", "role": "Apoyo proyectos productivos", "power": 6.0, "interest": 8.0, "group": "Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "INSTITUTO DE BIENESTAR FAMILIAR (ICBF)", "type": "Gubernamental", "role": "Velar por la proteccio ingral de la niñez y la adolescencia", "power": 5.0, "interest": 10.0, "group": "Cacao", "quadrant": "Baja influencia / alto interés"}, {"name": "JUNTA PEZ", "type": "Cooperativa comunitaria", "role": "Apoyo a sus asociados", "power": 5.0, "interest": 9.0, "group": "Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "CORPONARIÑO", "type": "Gubernamental", "role": "Gestion y proteccion del medio ambiente y los recursos naturales renovables.", "power": 5.0, "interest": 8.0, "group": "Cacao-Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "PNUD", "type": "ONG", "role": "Apoyo proyectos productivos", "power": 5.0, "interest": 8.0, "group": "Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "CORPORACIÓN BIOCOMERCIO SOSTENIBLE", "type": "ONG", "role": "Fortalecimiento organizativo", "power": 4.0, "interest": 9.0, "group": "Cacao-Piangua", "quadrant": "Baja influencia / alto interés"}, {"name": "FUNDACIÓN AYUDA EN ACCION", "type": "ONG", "role": "Apoyo tecnico y socio empresarial", "power": 3.0, "interest": 5.0, "group": "Cacao", "quadrant": "Baja influencia / bajo interés"}], "actor_quadrants": {"Alta influencia / alto interés": ["FAO", "CONSEJO COMUNITARIO RESCATE LAS VARAS", "AUNAP", "ALCALDIA", "WWF", "ASOCIACIÓN RAICES DEL MANGLAR", "CORPOTEVA", "POLICIA AMBIENTAL", "GOBERNACION", "ART", "ADR"], "Alta influencia / bajo interés": ["FEDECACAO", "BANCO AGRARIO"], "Baja influencia / alto interés": ["CORPORACIÓN BIOCOMERCIO SOSTENIBLE", "INSTITUTO DE BIENESTAR FAMILIAR (ICBF)", "CORPONARIÑO", "PNUD", "PACIFICO TRANS FORCE", "UNAL/ Valle, Tolima, Nariño, JAVERIANA, ICESI", "FUNDACIÓN COMPAS/PAZ VERDE", "JUNTA PEZ", "CENIT-ECOPETROL"], "Baja influencia / bajo interés": ["FUNDACIÓN AYUDA EN ACCION"], "Sin clasificación": []}, "actor_type_counts": [{"type": "Gubernamental", "count": 9}, {"type": "ONG", "count": 7}, {"type": "Agremiación", "count": 1}, {"type": "Gobernanza local", "count": 1}, {"type": "Asociación comunitaria", "count": 1}, {"type": "Corporación comunitaria", "count": 1}, {"type": "Academia", "count": 1}, {"type": "Cooperativa comunitaria", "count": 1}, {"type": "Privado", "count": 1}], "dialogue": [{"name": "Junta de gobierno", "type": "Formal", "scope": "Gobernanza local", "function": "Trabajar de forma articulada por el desarrollo y el bienestar del territorio", "incidence": "Alto", "strengths": "Instancia reconocida a nivel local, regional, gestion de proyectos productivos, sociales, ambientales, autonomia en el territorio", "weaknesses": "Comunicación acertiva, no cuenta con recursos propios", "group": "Cacao"}, {"name": "Junta veredal", "type": "Formal", "scope": "Gobernanza local", "function": "Gestionar bienestar para la comunidad", "incidence": "Alto", "strengths": "Escala la informacion a la junta de gobierno para que gestione los espacios de financiamiento para los proyectos veredales", "weaknesses": "Comunicación acertiva y concreta", "group": "Cacao"}, {"name": "Alianza publico privada APP-CACAO", "type": "Formal", "scope": "Intervencion en el territorio desde la nacion", "function": "Gestionar proyectos para la transformacion del cacao, mejorar calidad y precios", "incidence": "Medio", "strengths": "Gestion, inclusion, marca propia para el cacao, gestion de acuerdos comerciales a nivel internacional, competitividad", "weaknesses": "Aseguramiento financiero para continuar con proyectos a largo plazo", "group": "Cacao"}, {"name": "Mesa municipal de mujeres", "type": "Formal", "scope": "Local", "function": "Mesas de dialogo comunitario", "incidence": "Medio", "strengths": "400 mujeres ruenion coliseo, se inscriben, creaccion juridica", "weaknesses": "Falta manejopresupuestal, dinamizadores", "group": "Piangua"}, {"name": "Grupo Tra…. Nominacion piangueras PCIH", "type": "Informal", "scope": "Nacional", "function": "Postulacion internacional", "incidence": "Alto", "strengths": "Reconocimeinto y legitimidad de la practica ancestral", "weaknesses": "Divulgacion del proceso", "group": "Piangua"}, {"name": "Pabellon de la pesca", "type": "Formal", "scope": "Nacional", "function": "Mejorar y posicionar el gremio pesquero en colombia para la toma de decisiones", "incidence": "Medio", "strengths": "Confederacion nacional de la pesca artesanal, agremiacion del sector, reconocimiento de la FAO premio", "weaknesses": "Financiacion", "group": "Piangua"}], "conflict_events": [{"year": 1990, "event": "Migracion de trabajadores al Putumayo porque no hay fuente de trabajo local el 20% de los hombres del territorio", "codes": ["C7"], "groups": ["Cacao"], "balance": 2.0, "difference": "Falta de trabajo local", "cooperation": "Las personas de las comunidades que se quedaron se dedicaron a otras actividades, pesca, frutales, maderables"}, {"year": 2000, "event": "Leñateros, carboneros y aserradores de mangle vienen realizando tala en el manglar sin control ni restricciones por la autoridad ambiental, gobiernos locales consejos comunitarios, asociaciones de piangueros y comunidad en general", "codes": ["C4", "CPB", "M"], "groups": ["Piangua"], "balance": -1.0, "difference": "Intolerables porque no han llegado acuerdo los actores con las comunidades y las asociaciones de piangueras para reducir la tala en el manglar y en consecuencia las especies de fauna siguen migrando, la piangua disminuye y se afecta la estructura del manglar", "cooperation": "No habia cooperacion en los actores, prevalece el beneficio individual porque es la fuente de obtener sus ingresos"}, {"year": 2006, "event": "El estado hace fumigaciones masivas con glifosato, se mueren todos los cultivos, contaminacion del agua, cuando se realizaron las fumigaciones las personas se dedicaron a otras actividades ejm la madera", "codes": ["C7"], "groups": [], "balance": 1.0, "difference": "Aumento del area de cultivo de la coca", "cooperation": ""}, {"year": 2008, "event": "Empieza a esteblecerce nuevamente el cacao, llego un proyecto con Cordeagropaz, este fue el primer proyecto y no fue abierto a todas las comunidades, bajo impacto a nivel comunitario Cuando se bajaba el precio del cacao la gente volvia a trabajar en la coca, ausencia del Estado", "codes": ["C7"], "groups": ["Cacao"], "balance": 0.0, "difference": "Fluctuacion en el precio del cacao y la coca y ausencia del Estado", "cooperation": "Cordeagropaz ingreso al territorio con un proyecto de cacao en articulacion con el Ministerio de Agricultura"}, {"year": 2009, "event": "La asociacion Raices del Manglar tiene acercamientos con un grupo especifico de leñateros, carboneros y aserradores de mangle para sensibilizar sobre los impactos de esta actividad al ecosistema", "codes": ["C4", "CPB", "M"], "groups": ["Piangua"], "balance": 2.0, "difference": "Tolerable porque se logro realizar el dialogo con los actores del conflicto", "cooperation": "Los actores estuvieron dispuestos a cooperar porque reconocen el daño que se le causa al ecosistema, sin embargo piden otras alternativas economicas"}, {"year": 2009, "event": "Se fracciono el dialogo entre los consejos comunitarios y los grupos armados, no dejaban entrar los proyectos a los territorios, los grupos armados utilizaron la estrategia de vincular personas de las comunidades para poder establecerse en estos territorios", "codes": ["C7"], "groups": ["Cacao"], "balance": -1.0, "difference": "Perdida de la gobernabilidad de los consejos comunitarios", "cooperation": ""}, {"year": 2014, "event": "Los actores del conflictos reciben apoyo de la Corporacion Autonoma a traves de un proyecto de cerdos y camaronera con el onjetivo de dejar de talar el manglar y generar ingresos a partir de otras alternativas productivas", "codes": ["C4", "CPB", "M"], "groups": ["Piangua"], "balance": 2.0, "difference": "Tolerables porque se brindo a los actores una alternativa de solucion", "cooperation": "Cooperacion alta porque se logra brindar otra alternativa economica a los actores"}, {"year": 2020, "event": "Empieza el conflicto en el area de manglar, prohibieron conchar o aveces ceden el acceso los del Consejo Comunitario.La comunidad no entraba e inspeccionaban para entrar, a veces les decian donde si o donde no, todo era a traves de otras personas. Grupos al margen de la ley", "codes": ["C4", "CPB", "M"], "groups": ["Piangua"], "balance": -2.0, "difference": "Llegada de grupos armados", "cooperation": "No hay dialogo ni negociacion"}, {"year": 2021, "event": "Empiezan a inspeccionar zonas para conchar en barranco, se consiguen personas muy duras y otros ceden. Grupos al margen de la ley", "codes": ["C4", "CPB", "M"], "groups": ["Piangua"], "balance": -2.0, "difference": "Respuesta a una amenaza", "cooperation": "No hay negociacion"}, {"year": 2025, "event": "Actores del mismo Consejo Comunitario estan restringiendo zonas, delimitando la zona de los recursos pesqueros son de todos. Desicion arbitraria para la comunidad solo deberian restrinfir los metodos de extraccion, no las areas, no se ha intentado acercamiento", "codes": ["C4", "CPB", "M"], "groups": ["Piangua"], "balance": -2.0, "difference": "Restricciones del mismo CC al territorio", "cooperation": "No hay negociacion ni dialogo"}, {"year": 2025, "event": "En la actualidad persiste la tala en el manglar porque aun no existen garantias para este grupo de actores donde el gobierno territorial les brinde otras alternativas productivas para generar ingresos", "codes": ["C4", "CPB", "M"], "groups": ["Piangua"], "balance": 1.0, "difference": "Intolerable porque no se ha logrado llegar acuerdos, ni obtener alternativas productivas diferentes que permitan dejar de talar el manglar", "cooperation": "No hay cooperacion porque en la actualidad hay mucha violencia y los funcionarios publicos estan cuidando su vida, nadie realiza control, ni vigilancia a esta actividad por la presencia de grupos armados"}, {"year": null, "event": "Aparicion de los grupos paramilitares, aumento de la violencia generalizada, ruptura social, aumento de la migracion (abandono del estado)", "codes": ["C7"], "groups": ["Cacao"], "balance": 2.0, "difference": "Aumento de la violencia, aumento de la miugracion", "cooperation": "Los adultos mayores del territorio se unieron y dialogaban con los grupos armados y no permitieron que se asentaran del todo en el territorio"}, {"year": null, "event": "Llegada de la coca, la gente que migro al Putumayo trae la semilla, Auge de la coca", "codes": ["C7"], "groups": ["Cacao"], "balance": 1.0, "difference": "Violencia en el Putumayo y bajo el precio de la coca en ese departamento", "cooperation": ""}], "conflict_actors": [{"actor": "Asociacion de mujeres piangueras raices del manglar", "codes": "CPB,C4,M", "impact_on_actor": "Negativo", "factor_actor": "Porque son zonas de extraccion de piangua con bosque mas extensos y mejor conservados", "impact_on_conflict": "Positivo", "factor_conflict": "Mesas de dialogo con el CC, dinamizar negocioacion con piangueras hacer parte del CC", "group": "Piangua"}, {"actor": "Actores armados ilegales", "codes": "CPB,C4,M", "impact_on_actor": "Positivo", "factor_actor": "Son rutas de los grupos", "impact_on_conflict": "Negativo", "factor_conflict": "Reciben ordenes no son autonomos", "group": "Piangua"}, {"actor": "Consejo comunitario Rescate las Varas", "codes": "CPB,C4,M", "impact_on_actor": "Positivo", "factor_actor": "Areas de conservacion del manglar del CC con mayor manejo", "impact_on_conflict": "Neutral", "factor_conflict": "No se conocen las reglas de juego de ellos", "group": "Piangua"}, {"actor": "Leñateros-Carboneros", "codes": "CPB,C4,M", "impact_on_actor": "Positivo", "factor_actor": "Mayores ingresos", "impact_on_conflict": "Negativo", "factor_conflict": "No participan en la solucion, no tienen mas alternativas", "group": "Piangua"}, {"actor": "Grupos de piangueras", "codes": "CPB,C4,M", "impact_on_actor": "Negativo", "factor_actor": "Alteracion de habitat y recursos que aprovechan", "impact_on_conflict": "Positivo", "factor_conflict": "Crear espacios de dialogo", "group": "Piangua"}, {"actor": "Poblacion residente", "codes": "CPB,C4,M", "impact_on_actor": "Negativo", "factor_actor": "Contaminacion de areas de ocupacion, enfermedades esteticas", "impact_on_conflict": "Neutro", "factor_conflict": "Les falta iniciativa para buscar soluciones, falta de cultura ciudadana", "group": "Piangua"}, {"actor": "Grupo piangueras Raices", "codes": "CPB,C4,M", "impact_on_actor": "Negativo", "factor_actor": "Se alejan de estas zonas contaminadas, riesgo a la seguridad en el trabajo, alteracion del habitat", "impact_on_conflict": "Positivo", "factor_conflict": "Educacion a los pobladores, recoleccion y elaboracion de artesanias", "group": "Piangua"}, {"actor": "Grupos armados", "codes": "C7", "impact_on_actor": "Positivo", "factor_actor": "La produccion del cultivo de coca", "impact_on_conflict": "Positivo", "factor_conflict": "Resulta ser un negocio positivo para los grupos armados", "group": "Cacao"}, {"actor": "Consejo Comunitario", "codes": "C7", "impact_on_actor": "Negativo", "factor_actor": "Hechos violentos, inseguridad, personas desaparecidas, desplazamiento forzado", "impact_on_conflict": "Positivo", "factor_conflict": "Alternativas de sustitucion de cultivos, proceso de desarrollo alternativos", "group": "Cacao"}, {"actor": "Cordeagropaz", "codes": "C7", "impact_on_actor": "Negativo", "factor_actor": "Habian dificultades para el ingreso al territorio, inseguridad", "impact_on_conflict": "Positivo", "factor_conflict": "Proyectos productivos, apoyo social y microempresarial", "group": "Cacao"}, {"actor": "Cooperacion internacional", "codes": "C7", "impact_on_actor": "Negativo", "factor_actor": "Inseguridad en el territorio", "impact_on_conflict": "Positivo", "factor_conflict": "Apoyo con proyectos productivos", "group": "Cacao"}], "threat_summary": [{"type": "no-climática", "count": 7}, {"type": "climática", "count": 4}], "insights": [{"title": "Doble eje territorial: cacao y manglar", "text": "El archivo organiza el análisis alrededor de sistemas productivos de cacao y de medios de vida asociados al manglar, especialmente piangua y pesca artesanal. Esta lectura aparece tanto en la priorización de medios de vida como en las relaciones ecosistema–servicio–medio de vida."}, {"title": "Los sistemas de cacao puntúan alto, pero no están aislados de amenazas no climáticas", "text": "Cacao-Plátano-Maderables y Cacao-Plátano-Frutales alcanzan 12 puntos en priorización. Sus relaciones de impacto aparecen vinculadas a lluvias intensas, escasez de agua, contaminación por agroquímicos y presencia de cultivos de uso ilícito."}, {"title": "El manglar concentra diversidad de servicios y exposición acumulada", "text": "Manglar tipo 1 y Manglar tipo 2 son los ecosistemas con más códigos de servicios asociados. Piangua y pesca artesanal aparecen con impactos altos frente a pérdida de biodiversidad, escasez de agua, mareas extremas y deforestación."}, {"title": "Gobernanza con actores relevantes, pero con señales de fragilidad", "text": "El mapeo de actores incluye instituciones, ONG, consejos comunitarios y asociaciones. A la vez, las matrices de conflicto señalan falta de comunicación e instituciones frágiles como tipos de conflicto asociados a amenazas sobre servicios ecosistémicos."}, {"title": "Capacidad adaptativa: innovación fuerte, necesidades básicas más débiles", "text": "Los promedios agregados muestran mejores señales en innovación y acción, mientras que necesidades básicas concentra brechas, especialmente seguridad comunitaria, seguridad política y seguridad personal."}], "quality": {"input_sheets": [{"sheet": "variables", "status": "ok", "missing": ""}, {"sheet": "3.1. Lluvia MdV&SE", "status": "ok", "missing": ""}, {"sheet": "3.2. Priorización", "status": "ok", "missing": ""}, {"sheet": "3.3. Car_A", "status": "ok", "missing": ""}, {"sheet": "3.3. Car_B", "status": "ok", "missing": ""}, {"sheet": "3.3. Car_C", "status": "ok", "missing": ""}, {"sheet": "3.3. Car_D", "status": "ok", "missing": ""}, {"sheet": "3.4. Ecosistemas", "status": "ok", "missing": ""}, {"sheet": "3.5. SE y MdV", "status": "ok", "missing": ""}, {"sheet": "4.1. Amenazas", "status": "ok", "missing": ""}, {"sheet": "4.2.1. Amenazas_MdV", "status": "ok", "missing": ""}, {"sheet": "4.2.2. Amenazas_SE", "status": "ok", "missing": ""}, {"sheet": "5.1. Actores", "status": "ok", "missing": ""}, {"sheet": "5.2. Diálogo", "status": "ok", "missing": ""}, {"sheet": "6.1. Evolución_conflict", "status": "ok", "missing": ""}, {"sheet": "6.2. Actores_conflict", "status": "ok", "missing": ""}, {"sheet": "7.1. Encuesta CA", "status": "ok", "missing": ""}], "duplicate_notes": [{"table": "TIDY_3_5_SE_MONTHS", "pk": "se_month_id", "duplicates": 360}, {"table": "TIDY_3_3_CAR_LONG", "pk": "car_long_id", "duplicates": 177}, {"table": "TIDY_7_1_RESPONSES", "pk": "response_id", "duplicates": 152}, {"table": "TIDY_3_5_SE_INCLUSION", "pk": "se_inclusion_id", "duplicates": 126}, {"table": "TIDY_3_2_PRIORIZACION", "pk": "priorizacion_id", "duplicates": 42}, {"table": "TIDY_7_1_RESPONDENTS", "pk": "respondent_id", "duplicates": 38}, {"table": "TIDY_4_1_AMENAZAS", "pk": "amenaza_obs_id", "duplicates": 29}, {"table": "TIDY_3_3_CAR_A", "pk": "car_a_id", "duplicates": 8}], "missing_id_notes": [{"table": "TIDY_3_2_PRIORIZACION", "field": "mdv_id", "missing": 43}, {"table": "TIDY_7_1_RESPONDENTS", "field": "mdv_id", "missing": 38}, {"table": "TIDY_4_1_AMENAZAS", "field": "amenaza_id", "missing": 29}, {"table": "TIDY_3_5_SE_MDV", "field": "ecosistema_id", "missing": 12}, {"table": "TIDY_6_2_CONFLICTO_ACTOR", "field": "conflicto_id", "missing": 7}], "missing_fk_total": 0, "limitations": ["No se encontraron coordenadas geográficas; la sección territorial usa una representación esquemática, no un mapa exacto.", "El archivo registra varios servicios ecosistémicos mediante códigos como P1, R3 o R5; no se expanden nombres que no estén disponibles en el Excel.", "Se armonizaron visualmente variantes evidentes de escritura: “Futales/Frutales”, “Cacao-Plátano-Madera/Maderables” y “Pesca/Pesca Artesanal”.", "La tabla normalizada de encuestas contiene metadatos incompletos de respondientes y un único identificador repetido; por eso la capacidad adaptativa se muestra como promedios agregados, no como análisis muestral individual.", "Varias tablas TIDY incluyen filas vacías o identificadores repetidos según las hojas QA; los conteos principales excluyen filas vacías cuando corresponde.", "No se generó conteo de comunidades porque no existe una columna específica de comunidad; se muestran sitios afectados únicamente cuando aparecen en amenazas."], "assumptions": ["El nombre corto “BIOCOMERCIO” se toma del nombre del archivo y se contrasta con el actor “CORPORACIÓN BIOCOMERCIO SOSTENIBLE”.", "Los puntajes de amenazas usan la columna “suma” disponible en 4.1; los impactos relacionales suman dimensiones económica, alimentaria, sanitaria, ambiental, personal, comunitaria y política.", "Los eventos de conflicto se agruparon por texto del evento y año para evitar repetir el mismo evento asociado a varios códigos de conflicto."]}};
+
+    let selectedGroup = "Todos";
+    const matrixConfigs = {
+      threatLivelihood: {
+        title:"Amenazas × medios de vida",
+        note:"Valor = impacto total máximo por relación, sumando las dimensiones disponibles.",
+        row:"Amenaza",
+        col:"Medio de vida"
+      },
+      threatService: {
+        title:"Amenazas × servicios ecosistémicos",
+        note:"Valor = impacto total máximo por código de servicio ecosistémico.",
+        row:"Amenaza",
+        col:"Servicio"
+      },
+      ecosystemService: {
+        title:"Ecosistemas × servicios ecosistémicos",
+        note:"Valor = presencia registrada del código de servicio en el ecosistema.",
+        row:"Ecosistema",
+        col:"Servicio"
+      },
+      conflictThreat: {
+        title:"Tipos de conflicto × amenazas",
+        note:"Valor = impacto asociado en registros amenaza–servicio con tipo de conflicto.",
+        row:"Tipo de conflicto",
+        col:"Amenaza"
+      }
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (v) => String(v ?? "").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
+    const fmt = (n, d=0) => Number(n).toLocaleString("es-ES",{maximumFractionDigits:d, minimumFractionDigits:d});
+    const pct = (value, max) => Math.max(0, Math.min(100, (Number(value||0)/max)*100));
+    const groupMatch = (item) => selectedGroup === "Todos" || !item.group || item.group === selectedGroup;
+
+    function chip(text, cls="primary", title=""){
+      return `<span class="chip ${cls}" title="${esc(title)}">${esc(text)}</span>`;
+    }
+
+    function truncate(text, len=165){
+      const t = String(text || "");
+      return t.length > len ? t.slice(0,len).trim() + "…" : t;
+    }
+
+    function initHero(){
+      const s = DATA.summary;
+      $("heroTitle").textContent = s.organization;
+      $("heroSubtitle").textContent = `Dashboard territorial de ${s.organization} para ${s.landscape}, ${s.country}. La lectura integra medios de vida, ecosistemas, amenazas, gobernanza, conflicto y capacidad adaptativa a partir del archivo cargado.`;
+      $("heroMeta").innerHTML = [
+        `País: ${s.country}`,
+        `Paisaje: ${s.landscape}`,
+        `Fechas de registro: ${s.date_range || "no especificadas"}`
+      ].map(x => `<span class="pill">${esc(x)}</span>`).join("");
+      $("headlineMetrics").innerHTML = s.headline_numbers.map((m,i) => `
+        <div class="metric ${i===1 || i===2 ? "big":""}">
+          <div class="value">${esc(m.value)}</div>
+          <div>
+            <div class="m-label">${esc(m.label)}</div>
+            <div class="note">${esc(m.note)}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function initTerritory(){
+      const s = DATA.summary;
+      $("mapPin").innerHTML = `${esc(s.country)}<br><span style="font-size:.72rem">${esc(s.landscape)}</span>`;
+      $("territoryTitle").textContent = `${s.landscape} · ${s.country}`;
+      $("territoryText").textContent = `Grupos registrados: ${s.groups.join(", ")}.`;
+      $("territoryNarrative").textContent = "El archivo sitúa el diagnóstico en la Llanura aluvial de Colombia. Los grupos de trabajo combinan sistemas agroforestales de cacao y medios de vida asociados al manglar, con menciones territoriales específicas en los sitios afectados por amenazas.";
+      $("groupChips").innerHTML = s.groups.map(g => chip(g,"regional")).join("");
+      $("siteCloud").innerHTML = s.sites.length ? s.sites.map(x => `<span class="site-chip">${esc(x)}</span>`).join("") : `<div class="empty-note">No hay sitios específicos registrados.</div>`;
+    }
+
+    function initUniverse(){
+      $("universeGrid").innerHTML = DATA.data_universe.map(x => `
+        <div class="universe-card">
+          <div class="count">${fmt(x.count)}</div>
+          <h4>${esc(x.theme)}</h4>
+          <p class="muted small">${esc(x.detail)}</p>
+        </div>
+      `).join("");
+      $("sourceSheets").innerHTML = `
+        <div class="source-row header"><div>Hoja</div><div>Filas</div><div>Columnas</div><div>Estado</div></div>
+        ${DATA.source_sheets.map(s => `
+          <div class="source-row"><div>${esc(s.sheet)}</div><div>${fmt(s.rows)}</div><div>${fmt(s.cols)}</div><div>${esc(s.status)}</div></div>
+        `).join("")}
+      `;
+    }
+
+    function initFilters(){
+      const groups = ["Todos", ...DATA.summary.groups];
+      $("groupFilters").innerHTML = groups.map(g => `<button class="${g==="Todos"?"active":""}" data-group="${esc(g)}">${esc(g)}</button>`).join("");
+      $("groupFilters").querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedGroup = btn.dataset.group;
+          $("groupFilters").querySelectorAll("button").forEach(b => b.classList.toggle("active", b.dataset.group === selectedGroup));
+          renderFiltered();
+        });
+      });
+    }
+
+    function renderLivelihoods(){
+      const items = DATA.livelihoods.filter(groupMatch);
+      $("livelihoodGrid").innerHTML = items.length ? items.map(item => {
+        const criteria = Object.entries(item.criteria || {}).map(([k,v]) => `
+          <div class="mini-score"><strong>${fmt(v)}</strong><span>${esc(k)}</span></div>
+        `).join("");
+        const threats = item.threats && item.threats.length ? item.threats.map(t => chip(`${t.name}: ${fmt(t.impact)}`, t.type==="climática" ? "primary":"regional", `${t.type}; familias: ${t.families || "s/d"}`)).join("") : `<span class="muted small">Sin relación amenaza–medio de vida registrada.</span>`;
+        const services = item.service_codes && item.service_codes.length ? item.service_codes.map(s => chip(s,"purple")).join("") : `<span class="muted small">Sin servicio relacional registrado.</span>`;
+        return `
+          <article class="card story-card" data-group="${esc(item.group)}">
+            <div>
+              <div class="eyebrow">${esc(item.group || "Grupo no especificado")}</div>
+              <h3>${esc(item.name)}</h3>
+              <p class="muted">${esc(item.product || "Producto principal no especificado.")}</p>
+            </div>
+            <div>
+              <div class="label">Puntaje de priorización: ${fmt(item.score)} / 15</div>
+              <div class="score-band"><div class="score-fill" style="--score:${pct(item.score,15)}"></div></div>
+            </div>
+            <div class="mini-grid">${criteria}</div>
+            <div>
+              <div class="label">Servicios y usuarios</div>
+              <div class="chip-row">${services}${item.users ? chip(`${fmt(item.users)} usuarios reportados`,"primary") : ""}</div>
+            </div>
+            <details>
+              <summary>Ver amenazas y barreras registradas</summary>
+              <div class="chip-row">${threats}</div>
+              ${item.barriers && item.barriers.length ? `<p class="small muted">${esc(item.barriers.map(x => truncate(x,90)).join(" | "))}</p>` : ""}
+            </details>
+          </article>
+        `;
+      }).join("") : `<div class="empty-note">No hay medios de vida para el filtro seleccionado.</div>`;
+    }
+
+    function renderEcosystems(){
+      const items = DATA.ecosystems.filter(groupMatch);
+      $("ecosystemGrid").innerHTML = items.length ? items.map(item => `
+        <article class="card story-card" data-group="${esc(item.group)}">
+          <div>
+            <div class="eyebrow">${esc(item.group || "Grupo no especificado")} · ${esc(item.type || "Tipo no especificado")}</div>
+            <h3>${esc(item.name)}</h3>
+          </div>
+          <div>
+            <div class="label">Estado/salud reportado: ${item.health ?? "s/d"}</div>
+            <div class="score-band"><div class="score-fill" style="--score:${pct(item.health || 0,3)}"></div></div>
+          </div>
+          <div>
+            <div class="label">Servicios registrados</div>
+            <div class="chip-row">${item.services.length ? item.services.map(s => chip(s,"primary")).join("") : `<span class="muted small">Sin servicios codificados.</span>`}</div>
+          </div>
+          <details open>
+            <summary>Medios de vida y causas de degradación</summary>
+            <div class="chip-row">${item.livelihoods.length ? item.livelihoods.map(s => chip(s,"regional")).join("") : ""}</div>
+            <p class="small muted">${esc(truncate(item.causes,260))}</p>
+          </details>
+        </article>
+      `).join("") : `<div class="empty-note">No hay ecosistemas para el filtro seleccionado.</div>`;
+    }
+
+    function renderThreats(){
+      const items = DATA.threats.filter(groupMatch);
+      $("threatSummary").innerHTML = DATA.threat_summary.map(x => chip(`${x.type}: ${x.count}` , x.type==="climática" ? "primary":"regional")).join("");
+      $("threatGrid").innerHTML = items.length ? items.map(item => {
+        const rels = [
+          ...(item.mdv_impacts || []).map(x => chip(`${x.mdv}: ${fmt(x.impact)}`,"primary",`Impacto en medio de vida; familias: ${x.families || "s/d"}`)),
+          ...(item.service_impacts || []).map(x => chip(`Servicio ${x.service}: ${fmt(x.impact)}`,"purple","Impacto en servicio ecosistémico"))
+        ].join("");
+        return `
+          <article class="card story-card threat-card ${esc(item.type)}" data-group="${esc(item.group)}">
+            <div>
+              <div class="eyebrow">${esc(item.type)} · ${esc(item.group || "Grupo no especificado")}</div>
+              <h3>${esc(item.name)}</h3>
+            </div>
+            <div class="threat-score">${fmt(item.score)}</div>
+            <div class="threat-mini">
+              <div><strong>${fmt(item.magnitude)}</strong><span class="small muted">Magnitud</span></div>
+              <div><strong>${fmt(item.frequency)}</strong><span class="small muted">Frecuencia</span></div>
+              <div><strong>${fmt(item.trend)}</strong><span class="small muted">Tendencia</span></div>
+            </div>
+            <p class="small muted"><span class="strong">Sitios:</span> ${esc(item.sites || "sin detalle")}</p>
+            <details>
+              <summary>Relaciones registradas</summary>
+              <div class="chip-row">${rels || `<span class="muted small">Sin relaciones adicionales en tablas 4.2.</span>`}</div>
+              ${item.conflicts.length ? `<p class="small muted"><span class="strong">Conflictos asociados:</span> ${esc(item.conflicts.join(" | "))}</p>` : ""}
+            </details>
+          </article>
+        `;
+      }).join("") : `<div class="empty-note">No hay amenazas para el filtro seleccionado.</div>`;
+    }
+
+    function renderMatrix(key){
+      const cfg = matrixConfigs[key];
+      const m = DATA.matrices[key];
+      $("matrixTitle").textContent = cfg.title;
+      $("matrixNote").textContent = cfg.note;
+      const max = Math.max(1, ...m.values.flat().map(Number));
+      const cols = m.cols.length + 1;
+      let html = `<div class="cell header">${esc(cfg.row)} / ${esc(cfg.col)}</div>`;
+      html += m.cols.map(c => `<div class="cell header">${esc(c)}</div>`).join("");
+      m.rows.forEach((r, i) => {
+        html += `<div class="cell rowhead">${esc(r)}</div>`;
+        m.cols.forEach((c, j) => {
+          const val = Number(m.values[i][j] || 0);
+          const alpha = val > 0 ? (0.16 + (val/max)*0.72).toFixed(2) : "0.03";
+          const beta = val > 0 ? (0.10 + (val/max)*0.38).toFixed(2) : "0.02";
+          const color = val/max > .54 ? "#fff" : "var(--neutral)";
+          html += `<div class="cell heat" style="--a:${alpha};--b:${beta};--cellColor:${color}" title="${esc(r)} × ${esc(c)}: ${fmt(val, key==='ecosystemService' ? 0 : 1)}">${val ? fmt(val, key==='ecosystemService' ? 0 : 1) : ""}</div>`;
+        });
+      });
+      $("matrixGrid").style.gridTemplateColumns = `minmax(190px,1.3fr) repeat(${m.cols.length}, minmax(110px,1fr))`;
+      $("matrixGrid").innerHTML = html;
+    }
+
+    function initMatrices(){
+      const tabs = [
+        ["threatLivelihood","Amenazas × MdV"],
+        ["threatService","Amenazas × SE"],
+        ["ecosystemService","Ecosistemas × SE"],
+        ["conflictThreat","Conflicto × amenazas"]
+      ];
+      $("matrixTabs").innerHTML = tabs.map((t,i) => `<button class="secondary ${i===0?"active":""}" data-matrix="${t[0]}">${t[1]}</button>`).join("");
+      $("matrixTabs").querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+        $("matrixTabs").querySelectorAll("button").forEach(b => b.classList.toggle("active", b === btn));
+        renderMatrix(btn.dataset.matrix);
+      }));
+      renderMatrix("threatLivelihood");
+    }
+
+    function renderCapacity(){
+      $("capacityGrid").innerHTML = DATA.capacity.map(item => `
+        <article class="card">
+          <div class="eyebrow">${esc(item.group)}</div>
+          <h3>Promedio general: ${fmt(item.score,2)} / 5</h3>
+          <div class="ladder">
+            ${item.dimensions.map(d => `<div class="ladder-step" style="height:${Math.max(8,pct(d.score,5))}%"><span>${fmt(d.score,1)}</span></div>`).join("")}
+          </div>
+          <div class="chip-row">${item.dimensions.map(d => chip(`${d.dimension}: ${fmt(d.score,2)}`,"primary")).join("")}</div>
+          <div class="signal-list">
+            <div class="box">
+              <h4>Señales fuertes</h4>
+              ${item.strengths.map(s => `<p class="small"><span class="strong">${esc(s.indicator)}</span> · ${fmt(s.score,2)}</p>`).join("")}
+            </div>
+            <div class="box">
+              <h4>Brechas</h4>
+              ${item.gaps.map(s => `<p class="small"><span class="strong">${esc(s.indicator)}</span> · ${fmt(s.score,2)}</p>`).join("")}
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderActors(){
+      const qs = DATA.actor_quadrants;
+      const order = ["Alta influencia / alto interés","Alta influencia / bajo interés","Baja influencia / alto interés","Baja influencia / bajo interés"];
+      $("quadrantGrid").innerHTML = order.map(q => `
+        <div class="quadrant">
+          <h4>${esc(q)}</h4>
+          <div>${(qs[q] || []).map(a => `<span class="actor-chip">${esc(a)}</span>`).join("") || `<p class="muted small">Sin actores.</p>`}</div>
+        </div>
+      `).join("");
+      const items = DATA.actors.filter(groupMatch).slice(0,12);
+      $("actorList").innerHTML = items.map(a => `
+        <article class="card">
+          <div class="eyebrow">${esc(a.type)} · ${esc(a.group || "Sin grupo")}</div>
+          <h3>${esc(a.name)}</h3>
+          <p class="muted small">${esc(a.role)}</p>
+          <div class="chip-row">${chip(`Poder ${fmt(a.power)}`,"primary")}${chip(`Interés ${fmt(a.interest)}`,"regional")}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderDialogue(){
+      const items = DATA.dialogue.filter(groupMatch);
+      $("dialogueGrid").innerHTML = items.length ? items.map(d => `
+        <article class="card story-card">
+          <div>
+            <div class="eyebrow">${esc(d.type)} · ${esc(d.group || "Grupo no especificado")}</div>
+            <h3>${esc(d.name)}</h3>
+            <p class="muted small">${esc(d.scope)}</p>
+          </div>
+          <p><span class="strong">Función:</span> ${esc(d.function || "sin detalle")}</p>
+          <div class="chip-row">${chip(`Incidencia ${d.incidence || "s/d"}`, d.incidence === "Alto" ? "regional":"primary")}</div>
+          <details>
+            <summary>Fortalezas y debilidades</summary>
+            <p class="small muted"><span class="strong">Fortalezas:</span> ${esc(d.strengths || "sin registro")}</p>
+            <p class="small muted"><span class="strong">Debilidades:</span> ${esc(d.weaknesses || "sin registro")}</p>
+          </details>
+        </article>
+      `).join("") : `<div class="empty-note">No hay espacios de diálogo para el filtro seleccionado.</div>`;
+    }
+
+    function renderConflict(){
+      const evts = DATA.conflict_events;
+      $("conflictTimeline").innerHTML = evts.map(e => `
+        <div class="time-item">
+          <div class="year">${e.year || "Año no especificado"}</div>
+          <p>${esc(e.event)}</p>
+          <div class="chip-row">${(e.codes||[]).map(c => chip(`Código ${c}`,"purple")).join("")}${(e.groups||[]).map(g => chip(g,"primary")).join("")}${e.balance !== null ? chip(`Balance ${fmt(e.balance,1)}`,"regional") : ""}</div>
+          <details>
+            <summary>Factores reportados</summary>
+            <p class="small muted"><span class="strong">Diferencias:</span> ${esc(e.difference || "sin detalle")}</p>
+            <p class="small muted"><span class="strong">Cooperación:</span> ${esc(e.cooperation || "sin detalle")}</p>
+          </details>
+        </div>
+      `).join("");
+      $("conflictActors").innerHTML = DATA.conflict_actors.slice(0,10).map(a => `
+        <div class="card" style="margin-bottom:12px">
+          <div class="eyebrow">${esc(a.group || "Grupo no especificado")} · ${esc(a.codes)}</div>
+          <h4>${esc(a.actor)}</h4>
+          <div class="chip-row">${chip(`Impacto en actor: ${a.impact_on_actor}`,"primary")}${chip(`Impacto en conflicto: ${a.impact_on_conflict}`,"regional")}</div>
+          <p class="small muted">${esc(truncate(a.factor_actor || a.factor_conflict,180))}</p>
+        </div>
+      `).join("");
+    }
+
+    function initInsights(){
+      $("insightsGrid").innerHTML = DATA.insights.map((x,i) => `
+        <article class="insight">
+          <div class="num">${String(i+1).padStart(2,"0")}</div>
+          <h3 style="color:white">${esc(x.title)}</h3>
+          <p>${esc(x.text)}</p>
+        </article>
+      `).join("");
+    }
+
+    function initQuality(){
+      $("limitations").innerHTML = DATA.quality.limitations.map(x => `<li>${esc(x)}</li>`).join("");
+      $("assumptions").innerHTML = DATA.quality.assumptions.map(x => `<li>${esc(x)}</li>`).join("");
+      $("duplicateNotes").innerHTML = DATA.quality.duplicate_notes.length ? DATA.quality.duplicate_notes.map(x => `
+        <div class="card" style="margin-bottom:10px;padding:12px">
+          <strong>${esc(x.table)}</strong><br><span class="muted small">${esc(x.pk)}: ${fmt(x.duplicates)} filas duplicadas reportadas</span>
+        </div>
+      `).join("") : `<p class="muted">No se reportaron duplicados.</p>`;
+      $("missingNotes").innerHTML = DATA.quality.missing_id_notes.length ? DATA.quality.missing_id_notes.map(x => `
+        <div class="card" style="margin-bottom:10px;padding:12px">
+          <strong>${esc(x.table)}</strong><br><span class="muted small">${esc(x.field)}: ${fmt(x.missing)} faltantes reportados</span>
+        </div>
+      `).join("") : `<p class="muted">No se reportaron identificadores faltantes.</p>`;
+    }
+
+    function renderFiltered(){
+      renderLivelihoods();
+      renderEcosystems();
+      renderThreats();
+      renderActors();
+      renderDialogue();
+    }
+
+    function boot(){
+      initHero();
+      initTerritory();
+      initUniverse();
+      initFilters();
+      renderFiltered();
+      initMatrices();
+      renderCapacity();
+      renderConflict();
+      initInsights();
+      initQuality();
+    }
+
+    document.addEventListener("DOMContentLoaded", boot);
+  </script>
+</body>
+</html>
