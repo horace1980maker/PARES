@@ -21,7 +21,7 @@ function App() {
   React.useEffect(() => {
     if (selectedCountry) {
       console.log("Obteniendo organizaciones para:", selectedCountry);
-      fetch(`${config.API_URL}/organizaciones/${selectedCountry}`)
+      fetch(`${config.API_URL}/organizaciones/${encodeURIComponent(selectedCountry)}`)
         .then(res => res.json())
         .then(data => {
           console.log("Organizaciones obtenidas:", data);
