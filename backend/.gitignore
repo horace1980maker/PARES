@@ -29,3 +29,14 @@ Thumbs.db
 
 # Logs
 *.log
+
+# AI Agent folders
+.agent/
+.claude/
+.codex/
+.cursor/
+.aider/
+.aider.chat.history.md
+
+# Other potential AI files
+*.aider.md

@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard socioecológico ASOVERDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&family=Oswald:wght@200;300;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --neutral:#001F89; --primary:#009EE2; --accent:#B71373; --accent2:#751851;
+  --ink:#111827; --soft:#f4f7fb; --paper:#ffffff; --muted:#68728a;
+  --line:rgba(0,31,137,.14); --shadow:0 18px 50px rgba(0,31,137,.13);
+  --radius:26px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(140deg,#f7faff 0%,#ffffff 46%,#fdf6fb 100%);font-family:'Noto Sans',Arial,sans-serif;color:var(--ink);line-height:1.55}
+a{color:inherit}
+.skip-link{position:absolute;left:-999px;top:0;background:#fff;padding:.8rem;z-index:999}
+.skip-link:focus{left:1rem;top:1rem}
+.site-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:1rem;justify-content:space-between;padding:.65rem 1.2rem;background:rgba(255,255,255,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:.6rem;font-family:'Oswald';font-weight:600;text-transform:uppercase;color:var(--neutral);letter-spacing:.04em}
+.brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:conic-gradient(from 180deg,var(--neutral),var(--primary),var(--accent),var(--accent2),var(--neutral));color:white}
+.nav-links{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
+.nav-links a{font-family:'Oswald';font-weight:300;text-transform:uppercase;text-decoration:none;font-size:.82rem;letter-spacing:.04em;padding:.45rem .65rem;border-radius:999px;color:#263355}
+.nav-links a:hover{background:var(--soft);color:var(--neutral)}
+main{overflow:hidden}
+.section{padding:76px 5vw;position:relative}
+.section.narrow{padding-top:56px}
+.section-title{max-width:1100px;margin:0 auto 28px;display:grid;grid-template-columns:1fr auto;gap:1.2rem;align-items:end}
+.section-title h2{font-family:'Oswald';font-weight:600;text-transform:uppercase;font-size:clamp(2.1rem,4vw,4.8rem);letter-spacing:.02em;line-height:.95;color:var(--neutral);margin:0}
+.section-title p{max-width:760px;color:#34415e;font-size:1.02rem;margin:.8rem 0 0}
+.kicker{font-family:'Oswald';font-weight:300;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);font-size:.86rem}
+.hero{min-height:86vh;padding:74px 5vw 56px;background:radial-gradient(circle at 88% 18%,rgba(0,158,226,.20),transparent 30%),radial-gradient(circle at 12% 24%,rgba(183,19,115,.16),transparent 32%),linear-gradient(135deg,var(--neutral),#0530ad 48%,#04175d);color:white;display:grid;align-items:center}
+.hero-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:4vw;align-items:center;max-width:1320px;margin:0 auto;width:100%}
+.hero h1{font-family:'Oswald';font-weight:600;text-transform:uppercase;font-size:clamp(4rem,10vw,10rem);line-height:.82;margin:0 0 1rem;letter-spacing:.015em}
+.hero h1 span{display:block;color:#99e3ff}
+.hero-copy{font-size:1.18rem;max-width:760px;color:#e7f4ff}
+.hero-meta{display:flex;gap:.65rem;flex-wrap:wrap;margin:1.5rem 0}
+.meta-pill{font-family:'Oswald';font-weight:300;text-transform:uppercase;letter-spacing:.08em;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:.55rem .8rem;background:rgba(255,255,255,.08)}
+.headline-grid{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:1rem}
+.headline-card{min-height:170px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,.06));border-radius:var(--radius);padding:1.2rem;box-shadow:0 30px 70px rgba(0,0,0,.18);position:relative;overflow:hidden}
+.headline-card::after{content:"";position:absolute;right:-30px;bottom:-32px;width:110px;height:110px;border-radius:50%;background:rgba(0,158,226,.28)}
+.headline-card.h1::after{background:rgba(183,19,115,.28)}.headline-card.h2::after{background:rgba(117,24,81,.35)}.headline-card.h3::after{background:rgba(255,255,255,.18)}
+.headline-value{font-family:'Oswald';font-size:calc(3rem * var(--scale));font-weight:600;line-height:.85;color:#fff}
+.headline-label{font-family:'Oswald';font-weight:300;text-transform:uppercase;letter-spacing:.07em;margin-top:.8rem;color:#eaf7ff}
+.headline-note{font-size:.78rem;color:#c9ddff;margin-top:.35rem}
+.territory-wrap{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:stretch}
+.map-card{border-radius:36px;background:linear-gradient(135deg,#eaf7ff,#fff 55%,#fff1f7);box-shadow:var(--shadow);padding:2rem;position:relative;overflow:hidden;border:1px solid var(--line)}
+.map-card svg{width:100%;height:auto;display:block;filter:drop-shadow(0 18px 25px rgba(0,31,137,.15))}
+.map-note{position:absolute;left:1.6rem;bottom:1.2rem;right:1.6rem;font-size:.78rem;color:#526078}
+.territory-panel{display:grid;gap:1rem}
+.territory-panel article,.info-card,.story-card,.eco-card,.threat-card,.capacity-card,.dialogue-card,.conflict-card,.signal-card{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.territory-panel article{padding:1.2rem}
+.territory-panel h3,.story-card h3,.eco-card h3,.threat-card h3,.capacity-card h3,.dialogue-card h3,.conflict-card h3,.signal-card h4{font-family:'Oswald';text-transform:uppercase;letter-spacing:.02em;line-height:1.05;color:var(--neutral);margin:.2rem 0 .7rem}
+.chips{display:flex;gap:.45rem;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:.25rem;border:1px solid rgba(0,31,137,.16);background:#eef7ff;color:var(--neutral);border-radius:999px;padding:.34rem .58rem;font-size:.79rem;margin:.16rem .18rem .16rem 0}
+.chip.tiny{font-size:.68rem;padding:.22rem .42rem;text-transform:uppercase;letter-spacing:.04em}
+.chip.service{background:#eefaff;border-color:rgba(0,158,226,.25);color:#005b85}
+.chip.danger{background:#fff0f7;border-color:rgba(183,19,115,.25);color:#8f0c56}
+.muted{color:var(--muted);font-size:.9rem}
+.universe-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(7,1fr);gap:1rem}
+.universe-tile{grid-column:span 2;background:#fff;border:1px solid var(--line);border-radius:24px;padding:1rem;box-shadow:0 15px 35px rgba(0,31,137,.08)}
+.universe-tile:nth-child(1),.universe-tile:nth-child(4){grid-column:span 3}
+.tile-top{display:flex;justify-content:space-between;gap:.7rem;font-family:'Oswald';text-transform:uppercase;color:var(--neutral)}
+.tile-top strong{font-size:2.3rem;line-height:.9}
+.tile-bar{height:8px;background:#eef2ff;border-radius:999px;overflow:hidden;margin:.8rem 0}
+.tile-bar span{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--primary),var(--accent))}
+.filter-row{max-width:1180px;margin:0 auto 24px;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:999px;padding:.7rem 1rem;box-shadow:0 10px 30px rgba(0,31,137,.06)}
+.filter-row label{font-family:'Oswald';font-weight:300;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+select,.btn{border:1px solid var(--line);background:white;border-radius:999px;padding:.55rem .85rem;font-family:'Noto Sans';font-size:.92rem;color:#22304d}
+.btn{cursor:pointer;background:var(--neutral);color:#fff}
+.cards-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.story-card{padding:1.1rem;display:flex;flex-direction:column;gap:.7rem}
+.story-card p{margin:.1rem 0;color:#3e4b67}
+.metric strong{font-family:'Oswald';font-size:1.8rem;color:var(--accent)}
+.score-line{height:10px;background:#eff4ff;border-radius:999px;overflow:hidden}
+.score-line span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:999px}
+.subgrid{display:grid;grid-template-columns:1fr;gap:.5rem;margin-top:auto}
+.label{display:block;font-family:'Oswald';font-weight:300;text-transform:uppercase;letter-spacing:.1em;color:var(--accent2);font-size:.78rem;margin:.3rem 0}
+.eco-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.eco-card{padding:1.2rem}
+.eco-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.eco-head span{font-family:'Oswald';font-weight:300;text-transform:uppercase;color:var(--accent)}
+.eco-head strong{font-family:'Oswald';font-size:1.35rem;text-transform:uppercase;color:var(--neutral)}
+.eco-type{color:#44516d}
+.eco-meter{display:flex;align-items:center;gap:.7rem;margin:.7rem 0}
+.eco-score{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:var(--neutral);color:white;font-family:'Oswald';font-size:1.6rem}
+.eco-score.s1,.eco-score.s2{background:var(--accent)}.eco-score.s3{background:var(--primary)}.eco-score.s4,.eco-score.s5{background:#027a80}
+details{margin-top:.6rem;border-top:1px solid var(--line);padding-top:.6rem}
+summary{cursor:pointer;font-family:'Oswald';text-transform:uppercase;color:var(--neutral);font-weight:300}
+.signal-grid{max-width:1180px;margin:1.5rem auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.signal-card{display:grid;grid-template-columns:auto 1fr;gap:1rem;padding:1rem;align-items:center}
+.signal-number{font-family:'Oswald';font-size:3.4rem;line-height:1;color:var(--primary)}
+.threat-layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.threat-column{display:grid;gap:1rem}
+.threat-card{display:grid;grid-template-columns:14px 1fr;overflow:hidden}
+.threat-rank{background:#eff4ff;position:relative}
+.threat-rank span{position:absolute;bottom:0;left:0;right:0;height:var(--p);background:linear-gradient(0deg,var(--accent),var(--primary))}
+.threat-content{padding:1rem}
+.threat-meta{display:flex;gap:.3rem;flex-wrap:wrap}
+.signal{display:inline-flex;margin-top:.4rem;border-radius:999px;padding:.3rem .58rem;font-family:'Oswald';text-transform:uppercase;font-size:.78rem;letter-spacing:.08em;background:#eefaff;color:#005b85}
+.signal.alta,.signal.muy-alta{background:#fff0f7;color:#8f0c56}
+.matrices{max-width:1280px;margin:0 auto;display:grid;gap:1.2rem}
+.matrix-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;overflow:auto}
+.matrix-card h3{font-family:'Oswald';text-transform:uppercase;color:var(--neutral);margin:.2rem 0 1rem}
+.matrix-wrap{min-width:780px;display:grid;gap:.35rem}
+.matrix-row{display:grid;grid-template-columns:190px repeat(var(--cols,10),minmax(78px,1fr));gap:.35rem;align-items:stretch}
+.matrix-head>div{font-family:'Oswald';font-weight:300;text-transform:uppercase;letter-spacing:.05em;color:var(--neutral);font-size:.74rem;background:#eff4ff;border-radius:12px;padding:.55rem;text-align:center}
+.row-title{font-family:'Oswald';font-weight:300;text-transform:uppercase;color:#25375e;background:#fbfcff;border-radius:14px;padding:.55rem}
+.matrix-cell{min-height:52px;border:1px solid var(--line);border-radius:14px;background:#fff;color:#fff;cursor:pointer;font-family:'Oswald';font-size:1.2rem}
+.matrix-cell span{filter:drop-shadow(0 1px 1px rgba(0,0,0,.12))}
+.matrix-cell.i0{background:#f6f8fc;color:#68728a}.matrix-cell.i1{background:#b9eefe}.matrix-cell.i2{background:#65cef3}.matrix-cell.i3{background:#009EE2}.matrix-cell.i4{background:#B71373}.matrix-cell.i5{background:#751851}
+.tooltip{position:fixed;z-index:100;pointer-events:none;background:#101828;color:white;padding:.55rem .7rem;border-radius:12px;font-size:.86rem;box-shadow:0 16px 40px rgba(0,0,0,.25);display:none;max-width:280px}
+.capacity-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.capacity-card{padding:1.1rem}
+.capacity-label{font-family:'Oswald';text-transform:uppercase;color:var(--accent);letter-spacing:.07em;font-size:.75rem}
+.capacity-score strong{font-family:'Oswald';font-size:3.4rem;line-height:1;color:var(--primary)}
+.capacity-ladder{height:10px;background:#eff4ff;border-radius:999px;overflow:hidden;margin:.6rem 0}
+.capacity-ladder span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent2));border-radius:999px}
+.quadrant-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.quadrant{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem}
+.quadrant h3{font-family:'Oswald';text-transform:uppercase;color:var(--neutral)}
+.actor-list{display:grid;gap:.45rem}
+.actor-chip{border:1px solid var(--line);border-radius:18px;padding:.65rem;background:#fbfcff}
+.actor-chip strong{display:block;color:var(--neutral)}
+.actor-chip span{font-size:.78rem;color:#5f6b82}
+.dialogue-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.dialogue-card{padding:1.2rem}
+.dialogue-top{display:flex;gap:.4rem;flex-wrap:wrap}
+.dialogue-top span{font-family:'Oswald';text-transform:uppercase;background:#eef7ff;color:var(--neutral);border-radius:999px;padding:.25rem .5rem;font-size:.72rem}
+.dialogue-top .inc-alto{background:#fff0f7;color:#8f0c56}.dialogue-top .inc-medio{background:#eefaff;color:#005b85}
+.split2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.timeline{max-width:980px;margin:0 auto;position:relative}
+.timeline::before{content:"";position:absolute;left:72px;top:0;bottom:0;width:3px;background:linear-gradient(var(--primary),var(--accent))}
+.timeline-item{display:grid;grid-template-columns:140px 1fr;gap:1rem;margin-bottom:1rem;align-items:start}
+.year{font-family:'Oswald';font-size:2.2rem;color:var(--neutral);text-align:right;padding-right:1rem}
+.timeline-body{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem;position:relative}
+.timeline-body::before{content:"";position:absolute;left:-17px;top:24px;width:14px;height:14px;border-radius:50%;background:var(--primary);border:3px solid #fff;box-shadow:0 0 0 3px var(--primary)}
+.timeline-item.negative .timeline-body::before{background:var(--accent);box-shadow:0 0 0 3px var(--accent)}
+.timeline-body span{font-family:'Oswald';text-transform:uppercase;color:var(--accent2);letter-spacing:.05em}
+.conflict-grid{max-width:1180px;margin:1.5rem auto 0;display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.conflict-card{padding:1rem;position:relative;overflow:hidden}
+.conflict-count{float:right;font-family:'Oswald';font-size:3rem;color:rgba(0,158,226,.45);line-height:.85}
+.synthesis-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.synthesis-main{grid-column:1/-1;background:linear-gradient(135deg,var(--neutral),#032e9f);color:white;border-radius:36px;padding:2rem;box-shadow:var(--shadow)}
+.synthesis-main h3{font-family:'Oswald';font-size:3rem;text-transform:uppercase;margin:.2rem 0;color:#bdefff}
+.insight-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem}
+.insight-card h3{font-family:'Oswald';text-transform:uppercase;color:var(--neutral)}
+.data-quality{max-width:1180px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:36px;box-shadow:var(--shadow);padding:1.3rem}
+.dq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1rem 0}
+.dq-stat{background:#fbfcff;border:1px solid var(--line);border-radius:20px;padding:1rem}
+.dq-stat strong{display:block;font-family:'Oswald';font-size:2.5rem;color:var(--primary)}
+ul.clean{padding-left:1.1rem}
+.empty-note{padding:1rem;border:1px dashed var(--line);border-radius:20px;background:#fbfcff;color:#526078}
+.footer{padding:2rem 5vw;background:#06164d;color:#d8e6ff}
+.footer p{max-width:1180px;margin:.3rem auto}
+.hidden{display:none !important}
+@media (max-width:1050px){.hero-grid,.territory-wrap,.threat-layout,.synthesis-grid{grid-template-columns:1fr}.headline-grid{grid-template-columns:repeat(2,1fr)}.cards-grid,.capacity-grid{grid-template-columns:repeat(2,1fr)}.universe-grid{grid-template-columns:repeat(2,1fr)}.universe-tile,.universe-tile:nth-child(1),.universe-tile:nth-child(4){grid-column:span 1}.eco-grid,.dialogue-grid,.conflict-grid,.quadrant-grid,.signal-grid{grid-template-columns:1fr}.nav-links{display:none}}
+@media (max-width:680px){.section{padding:52px 4vw}.hero{padding-top:54px}.headline-grid,.cards-grid,.capacity-grid{grid-template-columns:1fr}.split2{grid-template-columns:1fr}.timeline::before{left:24px}.timeline-item{grid-template-columns:50px 1fr}.year{font-size:1rem;text-align:left;padding:0;writing-mode:vertical-rl}.section-title{grid-template-columns:1fr}}
+@media print{.site-nav,.filter-row,.btn{display:none}body{background:#fff}.section{page-break-inside:avoid;padding:28px 0}.hero{min-height:auto;color:#111;background:#fff}.hero h1,.section-title h2{color:#001F89}.headline-card,.story-card,.eco-card,.threat-card,.capacity-card,.dialogue-card,.conflict-card,.insight-card,.data-quality{box-shadow:none}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<nav class="site-nav" aria-label="Navegación principal">
+  <div class="brand"><span class="brand-mark">A</span><span>ASOVERDE · tablero territorial</span></div>
+  <div class="nav-links">
+    <a href="#territorio">Territorio</a><a href="#universo">Datos</a><a href="#medios">Medios de vida</a><a href="#ecosistemas">Ecosistemas</a><a href="#amenazas">Amenazas</a><a href="#matrices">Matrices</a><a href="#gobernanza">Gobernanza</a><a href="#sintesis">Síntesis</a>
+  </div>
+</nav>
+<main id="contenido">
+<section class="hero" id="inicio">
+  <div class="hero-grid">
+    <div>
+      <span class="kicker">Dashboard socioecológico interactivo</span>
+      <h1>ASOVERDE<span>Guatemala</span></h1>
+      <div class="hero-meta">
+        <span class="meta-pill">Cerro Huexqué</span><span class="meta-pill">Volcán de Ipala</span><span class="meta-pill">Montaña el Gigante</span>
+      </div>
+      <p class="hero-copy">El archivo de ASOVERDE sitúa el análisis en Guatemala, con énfasis en Cerro Huexqué, Volcán de Ipala, Montaña el Gigante. La base combina medios de vida, ecosistemas, servicios ecosistémicos, amenazas, actores, espacios de diálogo, conflictos y capacidad adaptativa. La lectura integrada muestra un territorio donde los medios de vida dependen de relaciones ecosistema–servicio y donde las amenazas climáticas y no climáticas se conectan con impactos sobre medios de vida y servicios ecosistémicos.</p>
+    </div>
+    <div class="headline-grid" aria-label="Números principales">
+      
+        <article class="headline-card h0" style="--scale:1.02" tabindex="0">
+          <div class="headline-value">3</div>
+          <div class="headline-label">paisajes / zonas territoriales</div>
+          <div class="headline-note">según LOOKUP_GEO</div>
+        </article>
+        
+
+        <article class="headline-card h1" style="--scale:1.02" tabindex="0">
+          <div class="headline-value">3</div>
+          <div class="headline-label">grupos territoriales</div>
+          <div class="headline-note">campo grupo</div>
+        </article>
+        
+
+        <article class="headline-card h2" style="--scale:1.16" tabindex="0">
+          <div class="headline-value">20</div>
+          <div class="headline-label">medios de vida identificados</div>
+          <div class="headline-note">tablas de priorización y relaciones</div>
+        </article>
+        
+
+        <article class="headline-card h3" style="--scale:1.03" tabindex="0">
+          <div class="headline-value">4</div>
+          <div class="headline-label">ecosistemas observados</div>
+          <div class="headline-note">TIDY_3_4_ECOSISTEMAS</div>
+        </article>
+        
+
+        <article class="headline-card h0" style="--scale:1.35" tabindex="0">
+          <div class="headline-value">43</div>
+          <div class="headline-label">registros ecosistema–servicio</div>
+          <div class="headline-note">TIDY_3_4_ECO_SE</div>
+        </article>
+        
+
+        <article class="headline-card h1" style="--scale:1.23" tabindex="0">
+          <div class="headline-value">28</div>
+          <div class="headline-label">amenazas registradas</div>
+          <div class="headline-note">TIDY_4_1_AMENAZAS</div>
+        </article>
+        
+
+        <article class="headline-card h2" style="--scale:1.16" tabindex="0">
+          <div class="headline-value">20</div>
+          <div class="headline-label">actores mapeados</div>
+          <div class="headline-note">TIDY_5_1_ACTORES</div>
+        </article>
+        
+
+        <article class="headline-card h3" style="--scale:2.30" tabindex="0">
+          <div class="headline-value">160</div>
+          <div class="headline-label">respuestas / filas CA</div>
+          <div class="headline-note">Encuesta CA agregada</div>
+        </article>
+        
+    </div>
+  </div>
+</section>
+
+<section class="section" id="territorio">
+  <div class="section-title"><div><span class="kicker">Identidad territorial</span><h2>Territorio de análisis</h2><p>Mapa esquemático no georreferenciado construido a partir de los nombres territoriales presentes en el archivo. No representa coordenadas exactas.</p></div></div>
+  <div class="territory-wrap">
+    <article class="map-card" aria-label="Mapa esquemático de Guatemala y territorios">
+      <svg viewBox="0 0 720 560" role="img" aria-label="Representación esquemática de Guatemala con paisajes de ASOVERDE">
+        <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#009EE2"/><stop offset="1" stop-color="#B71373"/></linearGradient></defs>
+        <path d="M185 88 L328 68 L434 110 L510 82 L607 160 L562 238 L602 335 L500 416 L406 390 L314 487 L239 418 L122 446 L87 330 L124 234 L91 150 Z" fill="url(#g1)" opacity=".92"/>
+        <path d="M185 88 L328 68 L434 110 L510 82 L607 160 L562 238 L602 335 L500 416 L406 390 L314 487 L239 418 L122 446 L87 330 L124 234 L91 150 Z" fill="none" stroke="#001F89" stroke-width="6" stroke-linejoin="round" opacity=".75"/>
+        <g font-family="Oswald" text-transform="uppercase" fill="#001F89">
+          <text x="86" y="52" font-size="34" font-weight="600">Guatemala</text>
+          <text x="90" y="528" font-size="15" font-weight="300">representación simbólica · sin coordenadas exactas</text>
+        </g>
+        <g>
+          <circle cx="190" cy="190" r="16" fill="#fff" stroke="#001F89" stroke-width="5"/><text x="215" y="196" font-family="Oswald" font-size="18" fill="#001F89">Cerro Huexqué</text><circle cx="274" cy="252" r="16" fill="#fff" stroke="#001F89" stroke-width="5"/><text x="299" y="258" font-family="Oswald" font-size="18" fill="#001F89">Volcán de Ipala</text><circle cx="358" cy="314" r="16" fill="#fff" stroke="#001F89" stroke-width="5"/><text x="383" y="320" font-family="Oswald" font-size="18" fill="#001F89">Montaña el Gigante</text>
+        </g>
+      </svg>
+      <p class="map-note">La ubicación se presenta como lectura territorial esquemática. El archivo no contiene coordenadas para construir cartografía precisa.</p>
+    </article>
+    <div class="territory-panel">
+      <article><span class="kicker">País</span><h3>Guatemala</h3><p>El país se identifica a partir de LOOKUP_GEO y las tablas territoriales.</p></article>
+      <article><span class="kicker">Paisajes / zonas</span><div class="chips"><span class="chip">Cerro Huexqué</span><span class="chip">Volcán de Ipala</span><span class="chip">Montaña el Gigante</span></div></article>
+      <article><span class="kicker">Grupos territoriales</span><div class="chips"><span class="chip">San José La Arada</span><span class="chip">Ipala</span><span class="chip">Chiquimula</span></div></article>
+      <article><span class="kicker">Lectura rápida</span><p>El archivo combina registros por contexto territorial con módulos temáticos normalizados, lo que permite leer relaciones entre medios de vida, servicios, amenazas, actores, espacios de diálogo y conflictos.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section narrow" id="universo">
+  <div class="section-title"><div><span class="kicker">Huella de información</span><h2>Universo de datos</h2><p>La base contiene hojas originales, tablas normalizadas, catálogos y controles de calidad. Esta sección resume qué información se usó para construir el tablero.</p></div></div>
+  <div class="universe-grid">
+    <article class="universe-tile" style="--w:8.0%">
+      <div class="tile-top"><span>Territorio</span><strong>10</strong></div>
+      <div class="tile-bar"><span></span></div>
+      <p>registros geográficos</p>
+    </article>
+
+    <article class="universe-tile" style="--w:100.0%">
+      <div class="tile-top"><span>Medios de vida</span><strong>248</strong></div>
+      <div class="tile-bar"><span></span></div>
+      <p>registros de priorización y caracterización</p>
+    </article>
+
+    <article class="universe-tile" style="--w:49.2%">
+      <div class="tile-top"><span>Ecosistemas y servicios</span><strong>122</strong></div>
+      <div class="tile-bar"><span></span></div>
+      <p>registros relacionales</p>
+    </article>
+
+    <article class="universe-tile" style="--w:99.6%">
+      <div class="tile-top"><span>Amenazas</span><strong>247</strong></div>
+      <div class="tile-bar"><span></span></div>
+      <p>amenazas y relaciones de impacto</p>
+    </article>
+
+    <article class="universe-tile" style="--w:38.7%">
+      <div class="tile-top"><span>Actores y gobernanza</span><strong>96</strong></div>
+      <div class="tile-bar"><span></span></div>
+      <p>actores, relaciones y espacios</p>
+    </article>
+
+    <article class="universe-tile" style="--w:13.3%">
+      <div class="tile-top"><span>Conflictos</span><strong>33</strong></div>
+      <div class="tile-bar"><span></span></div>
+      <p>eventos y actores vinculados</p>
+    </article>
+
+    <article class="universe-tile" style="--w:64.5%">
+      <div class="tile-top"><span>Capacidad adaptativa</span><strong>160</strong></div>
+      <div class="tile-bar"><span></span></div>
+      <p>filas agregadas por dimensión / medio de vida</p>
+    </article></div>
+</section>
+
+<section class="section" id="medios">
+  <div class="section-title"><div><span class="kicker">Sistemas productivos y medios de vida</span><h2>Medios de vida</h2><p>Los medios de vida se presentan como tarjetas narrativas: puntajes de priorización, paisajes asociados, productos principales, amenazas y servicios vinculados cuando existen relaciones explícitas en la base.</p></div></div>
+  <div class="filter-row"><label for="landscapeFilter">Filtrar por paisaje</label><select id="landscapeFilter"><option value="Todos">Todos</option><option>Cerro Huexqué</option><option>Volcán de Ipala</option><option>Montaña el Gigante</option></select><button class="btn" id="resetFilters">Restablecer</button></div>
+  <div class="cards-grid" id="livelihoodGrid">
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Turismo</h3>
+          <div class="score-line"><span style="width:100.0%"></span></div>
+          <p class="metric"><strong>15</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Dinero; Servicios de lancha, hospedaje, caballos, comedores, tiendas</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Montaña el Gigante">
+          <div class="mini-meta"><span class="chip tiny">Montaña el Gigante</span></div>
+          <h3>Café</h3>
+          <div class="score-line"><span style="width:93.3%"></span></div>
+          <p class="metric"><strong>14</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Planta de vivero, café maduro</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="chip service">ES-ag · 3</span><span class="chip service">P2 · 3</span><span class="chip service">R1 · 3</span><span class="chip service">R3 · 3</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Montaña el Gigante">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Montaña el Gigante</span></div>
+          <h3>Remesas</h3>
+          <div class="score-line"><span style="width:86.7%"></span></div>
+          <p class="metric"><strong>13</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Dinero</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span></div>
+          <h3>Protección</h3>
+          <div class="score-line"><span style="width:86.7%"></span></div>
+          <p class="metric"><strong>13</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Incentivos forestales</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Maíz</h3>
+          <div class="score-line"><span style="width:80.0%"></span></div>
+          <p class="metric"><strong>12</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Grano; Tortillas, Concentrados, encilados, rastrojos, atoles, pinol</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Frijol</h3>
+          <div class="score-line"><span style="width:80.0%"></span></div>
+          <p class="metric"><strong>12</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Alimento, rastrojo; Grano</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="chip service">Es-ag · 3</span><span class="chip service">P1 · 3</span><span class="chip service">P2 · 3</span><span class="chip service">R1 · 3</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Gallinas</h3>
+          <div class="score-line"><span style="width:80.0%"></span></div>
+          <p class="metric"><strong>12</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Carne, huevos; Huevos, carnes, pollitos</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="chip service">Es-ag · 3</span><span class="chip service">P1 · 3</span><span class="chip service">P2 · 3</span><span class="chip service">R1 · 3</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Montaña el Gigante|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Montaña el Gigante</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Servicios</h3>
+          <div class="score-line"><span style="width:80.0%"></span></div>
+          <p class="metric"><strong>12</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Domesticos, mano de obra agricola, albañiles, carpinteros</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="chip service">MO- · 3</span><span class="chip service">P1 · 3</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span></div>
+          <h3>Leña</h3>
+          <div class="score-line"><span style="width:73.3%"></span></div>
+          <p class="metric"><strong>11</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Leña</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Montaña el Gigante">
+          <div class="mini-meta"><span class="chip tiny">Montaña el Gigante</span></div>
+          <h3>Manejo Forestal</h3>
+          <div class="score-line"><span style="width:73.3%"></span></div>
+          <p class="metric"><strong>11</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Madera Aserrada, Poste, Leña, Ocote, Hoja de pino, Musgo, Rama de Cipres, Bromelias (Tilansias)</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="chip service">ES-bm · 6</span><span class="chip service">P1 · 6</span><span class="chip service">R1 · 6</span><span class="chip service">A1 · 6</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Tomate</h3>
+          <div class="score-line"><span style="width:66.7%"></span></div>
+          <p class="metric"><strong>10</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Fruto</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="chip service">Es-ag · 3</span><span class="chip service">P1 · 3</span><span class="chip service">P2 · 3</span><span class="chip service">R1 · 3</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Bovinos</h3>
+          <div class="score-line"><span style="width:66.7%"></span></div>
+          <p class="metric"><strong>10</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Carne; Leche, carne, productos lacteos, cuero</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué|Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Cerdos</h3>
+          <div class="score-line"><span style="width:66.7%"></span></div>
+          <p class="metric"><strong>10</strong> puntaje máximo registrado · 2 mención(es)</p>
+          <p>Carne; Carne, embutidos, ventas de lechones</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Volcán de Ipala">
+          <div class="mini-meta"><span class="chip tiny">Volcán de Ipala</span></div>
+          <h3>Melón</h3>
+          <div class="score-line"><span style="width:66.7%"></span></div>
+          <p class="metric"><strong>10</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Fruto</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Montaña el Gigante">
+          <div class="mini-meta"><span class="chip tiny">Montaña el Gigante</span></div>
+          <h3>Transporte terrestre</h3>
+          <div class="score-line"><span style="width:66.7%"></span></div>
+          <p class="metric"><strong>10</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Personas, Materiales e insumos</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span></div>
+          <h3>Ayote</h3>
+          <div class="score-line"><span style="width:60.0%"></span></div>
+          <p class="metric"><strong>9</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Alimentos</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span></div>
+          <h3>Cilantro</h3>
+          <div class="score-line"><span style="width:40.0%"></span></div>
+          <p class="metric"><strong>6</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Hoja</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article>
+
+        <article class="story-card livelihood-card" data-landscape="Cerro Huexqué">
+          <div class="mini-meta"><span class="chip tiny">Cerro Huexqué</span></div>
+          <h3>Chile</h3>
+          <div class="score-line"><span style="width:40.0%"></span></div>
+          <p class="metric"><strong>6</strong> puntaje máximo registrado · 1 mención(es)</p>
+          <p>Fruto</p>
+          <div class="subgrid">
+            <div><span class="label">Amenazas asociadas</span><span class="muted">Sin vínculo directo</span></div>
+            <div><span class="label">Servicios vinculados</span><span class="muted">Sin vínculo directo</span></div>
+          </div>
+        </article></div>
+</section>
+
+<section class="section" id="ecosistemas">
+  <div class="section-title"><div><span class="kicker">Ecosistemas, servicios y dependencias</span><h2>Ecosistemas y servicios</h2><p>Las tarjetas integran el estado registrado del ecosistema, los servicios asociados, los medios de vida relacionados y las causas de degradación declaradas.</p></div></div>
+  <div class="eco-grid">
+        <article class="eco-card" data-landscape="Montaña el Gigante">
+          <div class="eco-head"><span>Montaña el Gigante</span><strong>Agropecuarios</strong></div>
+          <p class="eco-type">Producción de animales y cultivos</p>
+          <div class="eco-meter"><span class="eco-score s2">2</span><small>estado sensible</small></div>
+          <div class="label">Servicios ecosistémicos</div>
+          <div class="chips"><span class="chip service">SE-P1</span><span class="chip service">P2</span><span class="chip service">R3</span><span class="chip service">R6</span><span class="chip service">R7</span><span class="chip service">C2</span><span class="chip service">C4</span><span class="chip service">A1</span><span class="chip service">A2</span></div>
+          <div class="label">Medios de vida relacionados</div>
+          <div class="chips"><span class="chip">Café</span><span class="chip">Hortalizas</span><span class="chip">Producción pecuaria</span><span class="chip">Granos básicos</span><span class="chip">Frutales</span></div>
+          <details><summary>Causas de degradación registradas</summary><p>Erosión del suelo, uso excesivo de agroquimicos, sequias, lluvias excesivas, altas temperaturas, compactación del suelo, condiciones fitosanitarias</p></details>
+        </article>
+
+        <article class="eco-card" data-landscape="Cerro Huexqué">
+          <div class="eco-head"><span>Cerro Huexqué</span><strong>Bosque mixto</strong></div>
+          <p class="eco-type">Pino, encino, roble</p>
+          <div class="eco-meter"><span class="eco-score s2">2</span><small>estado sensible</small></div>
+          <div class="label">Servicios ecosistémicos</div>
+          <div class="chips"><span class="chip service">P2</span><span class="chip service">P3</span><span class="chip service">R1</span><span class="chip service">R2</span><span class="chip service">R3</span><span class="chip service">R7</span><span class="chip service">A1</span><span class="chip service">C1</span><span class="chip service">C2</span></div>
+          <div class="label">Medios de vida relacionados</div>
+          <div class="chips"><span class="chip">Protección</span><span class="chip">Leña</span><span class="chip">ganadería</span></div>
+          <details><summary>Causas de degradación registradas</summary><p>Incendios forestales, deforestación, tala ilegal, cambio de uso del suelo, plagas y enfermedades, pastoreo de ganado y extracción de ocote</p></details>
+        </article>
+
+        <article class="eco-card" data-landscape="Montaña el Gigante">
+          <div class="eco-head"><span>Montaña el Gigante</span><strong>Bosque Mixto</strong></div>
+          <p class="eco-type">Pino, encino, roble</p>
+          <div class="eco-meter"><span class="eco-score s1">1</span><small>estado sensible</small></div>
+          <div class="label">Servicios ecosistémicos</div>
+          <div class="chips"><span class="chip service">SE-P2</span><span class="chip service">P3</span><span class="chip service">R1</span><span class="chip service">R6</span><span class="chip service">R7</span><span class="chip service">C2</span><span class="chip service">A1</span><span class="chip service">A2</span></div>
+          <div class="label">Medios de vida relacionados</div>
+          <div class="chips"><span class="chip">Aprovechamiento forestal</span><span class="chip">Plantaciones forestales</span><span class="chip">protección forestal</span></div>
+          <details><summary>Causas de degradación registradas</summary><p>Tala ilegal, Cambio uso del suelo, Erosión del suelo, Incendios forestales, Plagas y enfermedades, Sobreexplotación, Perdida de especies nativas.</p></details>
+        </article>
+
+        <article class="eco-card" data-landscape="Volcán de Ipala">
+          <div class="eco-head"><span>Volcán de Ipala</span><strong>Bosque Mixto</strong></div>
+          <p class="eco-type">encino, cedro, madrecacao, pino ocarpa, conacaste, san andres, amate, ceiba, guachipilin, naranjillo, lomoncillo, pito</p>
+          <div class="eco-meter"><span class="eco-score s2">2</span><small>estado sensible</small></div>
+          <div class="label">Servicios ecosistémicos</div>
+          <div class="chips"><span class="chip service">P1</span><span class="chip service">P3</span><span class="chip service">R1</span><span class="chip service">C2</span><span class="chip service">C4</span><span class="chip service">A1</span><span class="chip service">A2</span></div>
+          <div class="label">Medios de vida relacionados</div>
+          <div class="chips"><span class="chip">Manejo Forestal</span><span class="chip">Granos básicos</span><span class="chip">Ganadería</span></div>
+          <details><summary>Causas de degradación registradas</summary><p>Tala ilegal, pastoreo de ganado</p></details>
+        </article>
+
+        <article class="eco-card" data-landscape="Volcán de Ipala">
+          <div class="eco-head"><span>Volcán de Ipala</span><strong>Acuaticos</strong></div>
+          <p class="eco-type">Lagunas y ríos</p>
+          <div class="eco-meter"><span class="eco-score s3">3</span><small>mejor estado relativo</small></div>
+          <div class="label">Servicios ecosistémicos</div>
+          <div class="chips"><span class="chip service">P3</span><span class="chip service">P1</span><span class="chip service">C2</span><span class="chip service">R1</span></div>
+          <div class="label">Medios de vida relacionados</div>
+          <div class="chips"><span class="chip">Protección forestal y turismo</span></div>
+          <details><summary>Causas de degradación registradas</summary><p>Extracción de agua por parte del municipio de agua blanca, contaminación de agua por desechos sólidos</p></details>
+        </article>
+
+        <article class="eco-card" data-landscape="Volcán de Ipala">
+          <div class="eco-head"><span>Volcán de Ipala</span><strong>Agropecuario</strong></div>
+          <p class="eco-type">Producción de animales y cultivos</p>
+          <div class="eco-meter"><span class="eco-score s2">2</span><small>estado sensible</small></div>
+          <div class="label">Servicios ecosistémicos</div>
+          <div class="chips"><span class="chip service">P1</span><span class="chip service">P2</span><span class="chip service">R1</span></div>
+          <div class="label">Medios de vida relacionados</div>
+          <div class="chips"><span class="chip">Gallinas</span><span class="chip">Maiz</span><span class="chip">Frijol</span><span class="chip">Tomate y Melón</span></div>
+          <details><summary>Causas de degradación registradas</summary><p>Contaminación de fuentes de agua por uso excesivo de productos químicos, desechos sólidos, malas prácticas de conservación de suelos, rosas no controladas,  avance de frontera agrícola</p></details>
+        </article>
+
+        <article class="eco-card" data-landscape="Cerro Huexqué">
+          <div class="eco-head"><span>Cerro Huexqué</span><strong>Agropecuario</strong></div>
+          <p class="eco-type">Producción de animales y cultivos</p>
+          <div class="eco-meter"><span class="eco-score s2">2</span><small>estado sensible</small></div>
+          <div class="label">Servicios ecosistémicos</div>
+          <div class="chips"><span class="chip service">P1</span><span class="chip service">A2</span><span class="chip service">R7</span></div>
+          <div class="label">Medios de vida relacionados</div>
+          <div class="chips"><span class="chip">Maíz</span><span class="chip">frijol y gallinas</span></div>
+          <details><summary>Causas de degradación registradas</summary><p>Producción de monocultivos, variabilidad climática (sequia), no hay prácticas de conservación, uso excesivo de plaguicidas</p></details>
+        </article></div>
+  <div class="section-title" style="margin-top:34px"><div><span class="kicker">Servicios con más vínculos</span><h2 style="font-size:clamp(1.8rem,3vw,3.4rem)">Servicios estratégicos</h2></div></div>
+  <div class="signal-grid">
+    <article class="signal-card">
+      <div class="signal-number">12</div>
+      <div><h4>P1</h4><p>Medios de vida vinculados: Frijol, GB-f, GB-m, Gallinas, Maiz, Manejo Forestal</p></div>
+    </article>
+
+    <article class="signal-card">
+      <div class="signal-number">9</div>
+      <div><h4>P2</h4><p>Medios de vida vinculados: Café, Frijol, Gallinas, MF-l, MF-pr, Maiz</p></div>
+    </article>
+
+    <article class="signal-card">
+      <div class="signal-number">9</div>
+      <div><h4>R1</h4><p>Medios de vida vinculados: Café, Frijol, Gallinas, MF-pr, Maiz, Manejo Forestal</p></div>
+    </article>
+
+    <article class="signal-card">
+      <div class="signal-number">6</div>
+      <div><h4>R7</h4><p>Medios de vida vinculados: Café, GB-f, GB-m, MF-pr, Manejo Forestal, PP-g</p></div>
+    </article>
+
+    <article class="signal-card">
+      <div class="signal-number">6</div>
+      <div><h4>C2</h4><p>Medios de vida vinculados: Café, MF-pr, Manejo Forestal, Migración, Proteccion de bosque/ Turismo, Transporte</p></div>
+    </article>
+
+    <article class="signal-card">
+      <div class="signal-number">5</div>
+      <div><h4>A2</h4><p>Medios de vida vinculados: Café, GB-f, GB-m, Manejo Forestal, PP-g</p></div>
+    </article></div>
+</section>
+
+<section class="section" id="amenazas">
+  <div class="section-title"><div><span class="kicker">Amenazas climáticas y no climáticas</span><h2>Amenazas</h2><p>La intensidad visual se basa en la suma registrada en la tabla de amenazas. Las relaciones adicionales provienen de los vínculos amenaza–medio de vida y amenaza–servicio ecosistémico.</p></div></div>
+  <div class="threat-layout">
+    <div class="threat-column">
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:100.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Contaminación del agua</h3>
+            <p><strong>10</strong> suma · magnitud 5 · frecuencia 3 · tendencia 2</p>
+            <p>Nacimientos y ríos del área</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Deforestación</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Toda el área</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Degradación del suelo</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Toda el área</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Plagas y enfermedades</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Toda el área</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Uso desmedido de agroquimicos</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Toda el área de cultivos</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Aumento de Temperatura</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Zonas agricolas, Bosques naturales, Plantaciones forestales</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Mala distribución de lluvias</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Zonas agricolas, Bosques naturales, Plantaciones forestales, Fuentes de agua</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Contaminacion por desechos solidos</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Centros poblados, Carreteras, sitios de trabajo, Corrientes de agua superficial</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:90.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Plagas y enfermedades</h3>
+            <p><strong>9</strong> suma · magnitud 4 · frecuencia 3 · tendencia 2</p>
+            <p>Zonas agropecuarias, bosques naturales y plantaciones forestales</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:80.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Sequia Agricola</h3>
+            <p><strong>8</strong> suma · magnitud 4 · frecuencia 2 · tendencia 2</p>
+            <p>Toda el área</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Volcán de Ipala">
+          <div class="threat-rank" style="--p:80.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Volcán de Ipala</span></div>
+            <h3>Uso desmedido de agroquimicos</h3>
+            <p><strong>8</strong> suma · magnitud 3 · frecuencia 3 · tendencia 2</p>
+            <p>Todo el Sitio</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Volcán de Ipala">
+          <div class="threat-rank" style="--p:80.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Volcán de Ipala</span></div>
+            <h3>Plagas y enfermedades</h3>
+            <p><strong>8</strong> suma · magnitud 3 · frecuencia 3 · tendencia 2</p>
+            <p>Todo el Sitio</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:80.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Sequia Agricola</h3>
+            <p><strong>8</strong> suma · magnitud 4 · frecuencia 2 · tendencia 2</p>
+            <p>Zonas agricolas, Bosques naturales, Plantaciones forestales, Fuentes de agua para consumo humano</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:80.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Incendios Forestales</h3>
+            <p><strong>8</strong> suma · magnitud 4 · frecuencia 2 · tendencia 2</p>
+            <p>Bosques naturales, plantaciones forestales y zonas agricolas</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:80.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Desconocimiento de BPA</h3>
+            <p><strong>8</strong> suma · magnitud 4 · frecuencia 3 · tendencia 1</p>
+            <p>Zonas agricolas</p>
+            <span class="signal muy-alta">muy alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:70.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Aumento de Temperatura</h3>
+            <p><strong>7</strong> suma · magnitud 3 · frecuencia 2 · tendencia 2</p>
+            <p>Toda el área</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:70.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Cambio de uso de suelo</h3>
+            <p><strong>7</strong> suma · magnitud 3 · frecuencia 2 · tendencia 2</p>
+            <p>Toda el área</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Volcán de Ipala">
+          <div class="threat-rank" style="--p:70.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Volcán de Ipala</span></div>
+            <h3>Sequia Agricola</h3>
+            <p><strong>7</strong> suma · magnitud 4 · frecuencia 2 · tendencia 1</p>
+            <p>Del Centro de Casco Urbano hacia Cececapa</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Volcán de Ipala">
+          <div class="threat-rank" style="--p:70.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Volcán de Ipala</span></div>
+            <h3>Deforestación</h3>
+            <p><strong>7</strong> suma · magnitud 3 · frecuencia 2 · tendencia 2</p>
+            <p>De san Isidro hacia Cececapa</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:70.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Hundimientos</h3>
+            <p><strong>7</strong> suma · magnitud 3 · frecuencia 2 · tendencia 2</p>
+            <p>Centros poblados y carreteras</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:60.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Urbanización</h3>
+            <p><strong>6</strong> suma · magnitud 3 · frecuencia 2 · tendencia 1</p>
+            <p>El Rincón, Los Simientos, parte baja de San José La Arada</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:60.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Incendios Forestales</h3>
+            <p><strong>6</strong> suma · magnitud 3 · frecuencia 3 · tendencia 0</p>
+            <p>Toda el área</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Volcán de Ipala">
+          <div class="threat-rank" style="--p:60.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Volcán de Ipala</span></div>
+            <h3>Fuertes Vientos</h3>
+            <p><strong>6</strong> suma · magnitud 3 · frecuencia 2 · tendencia 1</p>
+            <p>Del sauce hacia Cececapa</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Volcán de Ipala">
+          <div class="threat-rank" style="--p:60.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Volcán de Ipala</span></div>
+            <h3>Aumento de Temperatura</h3>
+            <p><strong>6</strong> suma · magnitud 3 · frecuencia 3 · tendencia 0</p>
+            <p>Todo el Sitio</p>
+            <span class="signal alta">alta</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="no-climática" data-landscape="Volcán de Ipala">
+          <div class="threat-rank" style="--p:50.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">no-climática</span> <span class="chip tiny">Volcán de Ipala</span></div>
+            <h3>Contaminacion por desechos solidos</h3>
+            <p><strong>5</strong> suma · magnitud 3 · frecuencia 3 · tendencia -1</p>
+            <p>Todo el Sitio</p>
+            <span class="signal media">media</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:50.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Fuertes lluvias</h3>
+            <p><strong>5</strong> suma · magnitud 3 · frecuencia 1 · tendencia -1</p>
+            <p>Zonas agricolas, Bosques naturales, Plantaciones forestales, Carreteras e infraestructura</p>
+            <span class="signal media">media</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Cerro Huexqué">
+          <div class="threat-rank" style="--p:40.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Cerro Huexqué</span></div>
+            <h3>Indundaciones</h3>
+            <p><strong>4</strong> suma · magnitud 2 · frecuencia 1 · tendencia 1</p>
+            <p>Parte baja, quebrada de Santa Rosa, Guacamaya, Rodeo, 3Ceibas</p>
+            <span class="signal media">media</span>
+          </div>
+        </article>
+
+        <article class="threat-card" data-type="climática" data-landscape="Montaña el Gigante">
+          <div class="threat-rank" style="--p:40.0%"><span></span></div>
+          <div class="threat-content">
+            <div class="threat-meta"><span class="chip tiny">climática</span> <span class="chip tiny">Montaña el Gigante</span></div>
+            <h3>Fuertes Vientos</h3>
+            <p><strong>4</strong> suma · magnitud 3 · frecuencia 1 · tendencia 0</p>
+            <p>Zonas agricolas, Bosques naturales, Plantaciones forestales</p>
+            <span class="signal media">media</span>
+          </div>
+        </article></div>
+    <aside class="info-card" style="padding:1.2rem">
+      <span class="kicker">Familias de amenaza</span>
+      <h3>Composición registrada</h3>
+      <div class="chips"><span class="chip service">climática: 11</span><span class="chip danger">no-climática: 17</span></div>
+      <p>La lectura no asume que una amenaza sea más importante fuera de lo que indican las variables magnitud, frecuencia, tendencia, suma y relaciones explícitas en el archivo.</p>
+      <details open><summary>Amenazas con mayor suma</summary><div class="chips"><span class="chip danger">Contaminación del agua · 10</span><span class="chip danger">Deforestación · 9</span><span class="chip danger">Degradación del suelo · 9</span><span class="chip danger">Plagas y enfermedades · 9</span><span class="chip danger">Uso desmedido de agroquimicos · 9</span><span class="chip danger">Aumento de Temperatura · 9</span><span class="chip danger">Mala distribución de lluvias · 9</span><span class="chip danger">Contaminacion por desechos solidos · 9</span></div></details>
+    </aside>
+  </div>
+</section>
+
+<section class="section" id="matrices">
+  <div class="section-title"><div><span class="kicker">Relaciones críticas</span><h2>Matrices de impacto</h2><p>Matrices hechas con HTML/CSS. Cada celda muestra la suma promedio de impactos registrados en dimensiones económicas, alimentarias, sanitarias, ambientales, personales, comunitarias y políticas. Haz clic o pasa el cursor sobre una celda para ver el detalle.</p></div></div>
+  <div class="matrices">
+    <article class="matrix-card" style="--cols:9"><h3>Amenazas × medios de vida</h3><div class="matrix-wrap"><div class="matrix-row matrix-head"><div>Amenaza</div><div>MF</div><div>CF</div><div>GB-m/f</div><div>H-t/m</div><div>PP-g</div><div>Bm</div><div>GB-mf</div><div>H-tm</div><div>T</div></div><div class="matrix-row"><div class="row-title">Contaminación del agua</div><button class="matrix-cell i4" data-tip="Contaminación del agua × MF: 12"><span>12</span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × CF: 0"><span></span></button><button class="matrix-cell i4" data-tip="Contaminación del agua × GB-m/f: 12"><span>12</span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × H-t/m: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × PP-g: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × H-tm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × T: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Deforestación</div><button class="matrix-cell i0" data-tip="Deforestación × MF: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × CF: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × GB-m/f: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × H-t/m: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × PP-g: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × H-tm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × T: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Degradación del suelo</div><button class="matrix-cell i3" data-tip="Degradación del suelo × MF: 9"><span>9</span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × CF: 0"><span></span></button><button class="matrix-cell i3" data-tip="Degradación del suelo × GB-m/f: 9"><span>9</span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × H-t/m: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × PP-g: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × H-tm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × T: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Plagas y enfermedades</div><button class="matrix-cell i5" data-tip="Plagas y enfermedades × MF: 16.1"><span>16.1</span></button><button class="matrix-cell i5" data-tip="Plagas y enfermedades × CF: 18"><span>18</span></button><button class="matrix-cell i4" data-tip="Plagas y enfermedades × GB-m/f: 13.5"><span>13.5</span></button><button class="matrix-cell i4" data-tip="Plagas y enfermedades × H-t/m: 15"><span>15</span></button><button class="matrix-cell i4" data-tip="Plagas y enfermedades × PP-g: 15"><span>15</span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × H-tm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × T: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Uso desmedido de agroquimicos</div><button class="matrix-cell i3" data-tip="Uso desmedido de agroquimicos × MF: 8"><span>8</span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × CF: 0"><span></span></button><button class="matrix-cell i3" data-tip="Uso desmedido de agroquimicos × GB-m/f: 10.8"><span>10.8</span></button><button class="matrix-cell i4" data-tip="Uso desmedido de agroquimicos × H-t/m: 15"><span>15</span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × PP-g: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × H-tm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × T: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Aumento de Temperatura</div><button class="matrix-cell i4" data-tip="Aumento de Temperatura × MF: 15"><span>15</span></button><button class="matrix-cell i5" data-tip="Aumento de Temperatura × CF: 19"><span>19</span></button><button class="matrix-cell i4" data-tip="Aumento de Temperatura × GB-m/f: 14.3"><span>14.3</span></button><button class="matrix-cell i5" data-tip="Aumento de Temperatura × H-t/m: 17"><span>17</span></button><button class="matrix-cell i5" data-tip="Aumento de Temperatura × PP-g: 17"><span>17</span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × H-tm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × T: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Mala distribución de lluvias</div><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × MF: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × CF: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × GB-m/f: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × H-t/m: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × PP-g: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × H-tm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × T: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Contaminacion por desechos solidos</div><button class="matrix-cell i4" data-tip="Contaminacion por desechos solidos × MF: 15"><span>15</span></button><button class="matrix-cell i4" data-tip="Contaminacion por desechos solidos × CF: 15"><span>15</span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × GB-m/f: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × H-t/m: 0"><span></span></button><button class="matrix-cell i4" data-tip="Contaminacion por desechos solidos × PP-g: 12"><span>12</span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × Bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × GB-mf: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × H-tm: 0"><span></span></button><button class="matrix-cell i4" data-tip="Contaminacion por desechos solidos × T: 12"><span>12</span></button></div></div></article>
+    <article class="matrix-card" style="--cols:8"><h3>Amenazas × servicios ecosistémicos</h3><div class="matrix-wrap"><div class="matrix-row matrix-head"><div>Amenaza</div><div>P1, P2, P3, P4, R1, R6, R7, A1, A2</div><div>P1, P2, P3, A1, A2</div><div>P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3</div><div>P1, P2, P3, R6, R7, A1, A2</div><div>P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4</div><div>P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2</div><div>P3</div><div>P1, P2, P3, P4,A1, A2, R7</div></div><div class="matrix-row"><div class="row-title">Contaminación del agua</div><button class="matrix-cell i0" data-tip="Contaminación del agua × P1, P2, P3, P4, R1, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i5" data-tip="Contaminación del agua × P3: 17"><span>17</span></button><button class="matrix-cell i0" data-tip="Contaminación del agua × P1, P2, P3, P4,A1, A2, R7: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Deforestación</div><button class="matrix-cell i0" data-tip="Deforestación × P1, P2, P3, P4, R1, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × P3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Deforestación × P1, P2, P3, P4,A1, A2, R7: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Degradación del suelo</div><button class="matrix-cell i0" data-tip="Degradación del suelo × P1, P2, P3, P4, R1, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × P3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Degradación del suelo × P1, P2, P3, P4,A1, A2, R7: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Plagas y enfermedades</div><button class="matrix-cell i0" data-tip="Plagas y enfermedades × P1, P2, P3, P4, R1, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i5" data-tip="Plagas y enfermedades × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 19"><span>19</span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Plagas y enfermedades × P3: 0"><span></span></button><button class="matrix-cell i5" data-tip="Plagas y enfermedades × P1, P2, P3, P4,A1, A2, R7: 17"><span>17</span></button></div><div class="matrix-row"><div class="row-title">Uso desmedido de agroquimicos</div><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P1, P2, P3, P4, R1, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Uso desmedido de agroquimicos × P1, P2, P3, P4,A1, A2, R7: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Aumento de Temperatura</div><button class="matrix-cell i5" data-tip="Aumento de Temperatura × P1, P2, P3, P4, R1, R6, R7, A1, A2: 19"><span>19</span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × P3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Aumento de Temperatura × P1, P2, P3, P4,A1, A2, R7: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Mala distribución de lluvias</div><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P1, P2, P3, P4, R1, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Mala distribución de lluvias × P1, P2, P3, P4,A1, A2, R7: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Contaminacion por desechos solidos</div><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P1, P2, P3, P4, R1, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P1, P2, P3, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P1, P2, P4, R1, R2, R3, R6, R7, A1, A2, C1, C2, C3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P1, P2, P3, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P2, P3, R1, R2, R3, R5, R6, R7, A1 ,A2, C1, C2, C3, C4: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P1, P2, P3, P4, R1, R3, R4, R5, R6, R7, A1, A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Contaminacion por desechos solidos × P1, P2, P3, P4,A1, A2, R7: 0"><span></span></button></div></div></article>
+    <article class="matrix-card" style="--cols:10"><h3>Ecosistemas × servicios ecosistémicos</h3><div class="matrix-wrap"><div class="matrix-row matrix-head"><div>Ecosistema</div><div>ES-ag</div><div>P1</div><div>A2</div><div>R7</div><div>ES-bm</div><div>P2</div><div>P3</div><div>R1</div><div>R2</div><div>R3</div></div><div class="matrix-row"><div class="row-title">Agropecuarios</div><button class="matrix-cell i0" data-tip="Agropecuarios × ES-ag: 0"><span></span></button><button class="matrix-cell i0" data-tip="Agropecuarios × P1: 0"><span></span></button><button class="matrix-cell i3" data-tip="Agropecuarios × A2: 1"><span>1</span></button><button class="matrix-cell i3" data-tip="Agropecuarios × R7: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Agropecuarios × ES-bm: 0"><span></span></button><button class="matrix-cell i3" data-tip="Agropecuarios × P2: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Agropecuarios × P3: 0"><span></span></button><button class="matrix-cell i0" data-tip="Agropecuarios × R1: 0"><span></span></button><button class="matrix-cell i0" data-tip="Agropecuarios × R2: 0"><span></span></button><button class="matrix-cell i3" data-tip="Agropecuarios × R3: 1"><span>1</span></button></div><div class="matrix-row"><div class="row-title">Bosque mixto</div><button class="matrix-cell i0" data-tip="Bosque mixto × ES-ag: 0"><span></span></button><button class="matrix-cell i0" data-tip="Bosque mixto × P1: 0"><span></span></button><button class="matrix-cell i0" data-tip="Bosque mixto × A2: 0"><span></span></button><button class="matrix-cell i3" data-tip="Bosque mixto × R7: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Bosque mixto × ES-bm: 0"><span></span></button><button class="matrix-cell i3" data-tip="Bosque mixto × P2: 1"><span>1</span></button><button class="matrix-cell i3" data-tip="Bosque mixto × P3: 1"><span>1</span></button><button class="matrix-cell i3" data-tip="Bosque mixto × R1: 1"><span>1</span></button><button class="matrix-cell i3" data-tip="Bosque mixto × R2: 1"><span>1</span></button><button class="matrix-cell i3" data-tip="Bosque mixto × R3: 1"><span>1</span></button></div><div class="matrix-row"><div class="row-title">Bosque Mixto</div><button class="matrix-cell i0" data-tip="Bosque Mixto × ES-ag: 0"><span></span></button><button class="matrix-cell i3" data-tip="Bosque Mixto × P1: 1"><span>1</span></button><button class="matrix-cell i5" data-tip="Bosque Mixto × A2: 2"><span>2</span></button><button class="matrix-cell i3" data-tip="Bosque Mixto × R7: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Bosque Mixto × ES-bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Bosque Mixto × P2: 0"><span></span></button><button class="matrix-cell i5" data-tip="Bosque Mixto × P3: 2"><span>2</span></button><button class="matrix-cell i5" data-tip="Bosque Mixto × R1: 2"><span>2</span></button><button class="matrix-cell i0" data-tip="Bosque Mixto × R2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Bosque Mixto × R3: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Acuaticos</div><button class="matrix-cell i0" data-tip="Acuaticos × ES-ag: 0"><span></span></button><button class="matrix-cell i3" data-tip="Acuaticos × P1: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Acuaticos × A2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acuaticos × R7: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acuaticos × ES-bm: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acuaticos × P2: 0"><span></span></button><button class="matrix-cell i3" data-tip="Acuaticos × P3: 1"><span>1</span></button><button class="matrix-cell i3" data-tip="Acuaticos × R1: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Acuaticos × R2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acuaticos × R3: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Agropecuario</div><button class="matrix-cell i0" data-tip="Agropecuario × ES-ag: 0"><span></span></button><button class="matrix-cell i5" data-tip="Agropecuario × P1: 2"><span>2</span></button><button class="matrix-cell i3" data-tip="Agropecuario × A2: 1"><span>1</span></button><button class="matrix-cell i3" data-tip="Agropecuario × R7: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Agropecuario × ES-bm: 0"><span></span></button><button class="matrix-cell i3" data-tip="Agropecuario × P2: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Agropecuario × P3: 0"><span></span></button><button class="matrix-cell i3" data-tip="Agropecuario × R1: 1"><span>1</span></button><button class="matrix-cell i0" data-tip="Agropecuario × R2: 0"><span></span></button><button class="matrix-cell i0" data-tip="Agropecuario × R3: 0"><span></span></button></div></div></article>
+  </div>
+</section>
+
+<section class="section" id="capacidad">
+  <div class="section-title"><div><span class="kicker">Encuesta de capacidad adaptativa</span><h2>Capacidad adaptativa</h2><p>Se presenta sin radar ni barras convencionales. Los valores provienen de la hoja agregada “7.1. Encuesta CA”.</p></div></div>
+  <div class="capacity-grid">
+    <article class="capacity-card">
+      <span class="capacity-label">medio</span>
+      <h3>Innovación</h3>
+      <div class="capacity-score"><strong>2.9</strong><span>/ 5</span></div>
+      <div class="capacity-ladder"><span style="width:57.6%"></span></div>
+      <p>48 registros agregados · rango 0–5</p>
+    </article>
+
+    <article class="capacity-card">
+      <span class="capacity-label">medio</span>
+      <h3>Necesidades básicas</h3>
+      <div class="capacity-score"><strong>2.8</strong><span>/ 5</span></div>
+      <div class="capacity-ladder"><span style="width:56.3%"></span></div>
+      <p>80 registros agregados · rango 0–5</p>
+    </article>
+
+    <article class="capacity-card">
+      <span class="capacity-label">medio</span>
+      <h3>Acción</h3>
+      <div class="capacity-score"><strong>2.6</strong><span>/ 5</span></div>
+      <div class="capacity-ladder"><span style="width:52.5%"></span></div>
+      <p>32 registros agregados · rango 0–4.5</p>
+    </article></div>
+  <div class="matrix-card" style="--cols:20;max-width:1180px;margin:1rem auto 0"><h3>Dimensiones × grupos de indicador</h3><div class="matrix-wrap capacity-matrix"><div class="matrix-row matrix-head"><div>Dimensión</div><div>Agencia</div><div>Comunicaciones</div><div>Confianza</div><div>Disposición al cambio</div><div>Educación</div><div>Energía doméstica</div><div>Equidad_AC</div><div>Equidad_INN</div><div>Equidad_NB</div><div>Extensión</div><div>Insumos</div><div>Organización</div><div>Seguridad alimentaria</div><div>Seguridad comunitaria</div><div>Seguridad económica</div><div>Seguridad personal</div><div>Seguridad política</div><div>Seguridad en salud</div><div>Valor añadido y comercio</div><div>Vivienda</div></div><div class="matrix-row"><div class="row-title">Acción</div><button class="matrix-cell i0" data-tip="Acción · Agencia: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Comunicaciones: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Confianza: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Disposición al cambio: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Educación: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Energía doméstica: 0"><span></span></button><button class="matrix-cell i3" data-tip="Acción · Equidad_AC: 2.4"><span>2.4</span></button><button class="matrix-cell i0" data-tip="Acción · Equidad_INN: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Equidad_NB: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Extensión: 0"><span></span></button><button class="matrix-cell i3" data-tip="Acción · Insumos: 2.6"><span>2.6</span></button><button class="matrix-cell i3" data-tip="Acción · Organización: 2.7"><span>2.7</span></button><button class="matrix-cell i0" data-tip="Acción · Seguridad alimentaria: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Seguridad comunitaria: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Seguridad económica: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Seguridad personal: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Seguridad política: 0"><span></span></button><button class="matrix-cell i0" data-tip="Acción · Seguridad en salud: 0"><span></span></button><button class="matrix-cell i3" data-tip="Acción · Valor añadido y comercio: 2.8"><span>2.8</span></button><button class="matrix-cell i0" data-tip="Acción · Vivienda: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Innovación</div><button class="matrix-cell i4" data-tip="Innovación · Agencia: 3.1"><span>3.1</span></button><button class="matrix-cell i4" data-tip="Innovación · Comunicaciones: 3.1"><span>3.1</span></button><button class="matrix-cell i3" data-tip="Innovación · Confianza: 2.8"><span>2.8</span></button><button class="matrix-cell i3" data-tip="Innovación · Disposición al cambio: 2.7"><span>2.7</span></button><button class="matrix-cell i0" data-tip="Innovación · Educación: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Energía doméstica: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Equidad_AC: 0"><span></span></button><button class="matrix-cell i4" data-tip="Innovación · Equidad_INN: 3.5"><span>3.5</span></button><button class="matrix-cell i0" data-tip="Innovación · Equidad_NB: 0"><span></span></button><button class="matrix-cell i3" data-tip="Innovación · Extensión: 2.0"><span>2.0</span></button><button class="matrix-cell i0" data-tip="Innovación · Insumos: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Organización: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Seguridad alimentaria: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Seguridad comunitaria: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Seguridad económica: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Seguridad personal: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Seguridad política: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Seguridad en salud: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Valor añadido y comercio: 0"><span></span></button><button class="matrix-cell i0" data-tip="Innovación · Vivienda: 0"><span></span></button></div><div class="matrix-row"><div class="row-title">Necesidades básicas</div><button class="matrix-cell i0" data-tip="Necesidades básicas · Agencia: 0"><span></span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Comunicaciones: 0"><span></span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Confianza: 0"><span></span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Disposición al cambio: 0"><span></span></button><button class="matrix-cell i3" data-tip="Necesidades básicas · Educación: 2.5"><span>2.5</span></button><button class="matrix-cell i3" data-tip="Necesidades básicas · Energía doméstica: 2.6"><span>2.6</span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Equidad_AC: 0"><span></span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Equidad_INN: 0"><span></span></button><button class="matrix-cell i3" data-tip="Necesidades básicas · Equidad_NB: 2.9"><span>2.9</span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Extensión: 0"><span></span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Insumos: 0"><span></span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Organización: 0"><span></span></button><button class="matrix-cell i3" data-tip="Necesidades básicas · Seguridad alimentaria: 2.7"><span>2.7</span></button><button class="matrix-cell i4" data-tip="Necesidades básicas · Seguridad comunitaria: 3.1"><span>3.1</span></button><button class="matrix-cell i3" data-tip="Necesidades básicas · Seguridad económica: 2.9"><span>2.9</span></button><button class="matrix-cell i4" data-tip="Necesidades básicas · Seguridad personal: 3.2"><span>3.2</span></button><button class="matrix-cell i4" data-tip="Necesidades básicas · Seguridad política: 3.7"><span>3.7</span></button><button class="matrix-cell i3" data-tip="Necesidades básicas · Seguridad en salud: 2.6"><span>2.6</span></button><button class="matrix-cell i0" data-tip="Necesidades básicas · Valor añadido y comercio: 0"><span></span></button><button class="matrix-cell i2" data-tip="Necesidades básicas · Vivienda: 2.0"><span>2.0</span></button></div></div></div>
+</section>
+
+<section class="section" id="gobernanza">
+  <div class="section-title"><div><span class="kicker">Actores, poder e interés</span><h2>Constelación de gobernanza</h2><p>La matriz de actores clasifica los registros según poder e interés declarados. No es un scatterplot: es una lectura por cuadrantes para apoyar decisiones de coordinación.</p></div></div>
+  <div class="quadrant-grid">
+        <section class="quadrant">
+          <h3>Alta influencia / alto interés</h3>
+          <p>14 actor(es)</p>
+          <div class="actor-list"><article class="actor-chip" title="Autoriza manejo forestal, otorga incentivos forestales"><strong>Tecnicos del INAB encargados los municipios de Ipala, San josé La Arada y Chiqumula 2 personas</strong><span>Institucional · poder 8 / interés 8</span></article><article class="actor-chip" title="Monitoreo en áreas protegidas"><strong>CONAP, Jutiapa, asesor profesional del SIGAP, 1 persona</strong><span>Institucional · poder 8 / interés 8</span></article><article class="actor-chip" title="Formular, evaluar y ejecutar proyectos ambientales"><strong>Técnicos de UGAM de los tres municipios, 3 personas</strong><span>Institucional · poder 7 / interés 6</span></article><article class="actor-chip" title="Coadministra área protegida Volcán de Ipala, ejecuta proyectos y gestionan financiamiento"><strong>ADISO,ASEDECHI, Directores, 2 personas</strong><span>ONG · poder 8 / interés 8</span></article><article class="actor-chip" title="Cordinan, gestionan proyectos, autorizan ejecución de proyectos"><strong>Presidentes de COCODES de las comunidades, El Durazno, Plan del Guineo, Tierra Blanca, Matasano, El Anonal La Joya, El Rincón, Los Cimientos, Chparroncito, Suyate, La Torera, Tontoles y La Chorrera, 13 personas</strong><span>Comunitarios · poder 9 / interés 8</span></article><article class="actor-chip" title="Protección y manejo forestal, beneficiario de incentivos forestales"><strong>Propietarios de bosque, Luis Villafuerte, 1 persona</strong><span>Privado · poder 8 / interés 10</span></article><article class="actor-chip" title="Regulación ambiental"><strong>MARN, 2 personas</strong><span>institucional · poder 8 / interés 7</span></article><article class="actor-chip" title="Otorgar créditos agopecuarios"><strong>Genesis, COOSAJO, CASVACHI, CHIQUIMULJA, 4 persona</strong><span>Privado · poder 8 / interés 7</span></article></div>
+        </section>
+
+        <section class="quadrant">
+          <h3>Alta influencia / bajo interés</h3>
+          <p>1 actor(es)</p>
+          <div class="actor-list"><article class="actor-chip" title="Representación de ganaderos"><strong>Asociaión de ganaderos de Ipala, 2 personas</strong><span>privado · poder 8 / interés 3</span></article></div>
+        </section>
+
+        <section class="quadrant">
+          <h3>Baja influencia / alto interés</h3>
+          <p>3 actor(es)</p>
+          <div class="actor-list"><article class="actor-chip" title="Asistencia técnica y ejecución de proyectos"><strong>MAGA, Técnicos de DAR, de los tres municipios, 3 personas</strong><span>Institucional · poder 5 / interés 7</span></article><article class="actor-chip" title="Asistencia técnica y ejecución de proyectos"><strong>Técnico de ANACAFÉ, 1 persona</strong><span>Institucional · poder 4 / interés 8</span></article><article class="actor-chip" title="Exploración de minerales"><strong>Cierra Pacifica S.A</strong><span>Privada · poder 5 / interés 9</span></article></div>
+        </section>
+
+        <section class="quadrant">
+          <h3>Baja influencia / bajo interés</h3>
+          <p>2 actor(es)</p>
+          <div class="actor-list"><article class="actor-chip" title="Producen y exportan café,"><strong>Osvaldo Suchini, Productores de café en la zona, 1 persona</strong><span>Privado · poder 4 / interés 4</span></article><article class="actor-chip" title="Investigación de RRNN"><strong>CUNORI, 2 persona</strong><span>Academia · poder 3 / interés 3</span></article></div>
+        </section>
+
+        <section class="quadrant">
+          <h3>Sin clasificación</h3>
+          <p>0 actor(es)</p>
+          <div class="actor-list"><span class="muted">Sin actores</span></div>
+        </section></div>
+</section>
+
+<section class="section" id="dialogo">
+  <div class="section-title"><div><span class="kicker">Arquitectura de diálogo</span><h2>Espacios de diálogo</h2><p>Espacios formales e informales registrados, con función, incidencia, fortalezas, debilidades y actores asociados cuando la relación está disponible.</p></div></div>
+  <div class="dialogue-grid">
+    <article class="dialogue-card" data-landscape="Cerro Huexqué">
+      <div class="dialogue-top"><span>informal</span><span>Local</span><span class="inc-alto">alto</span></div>
+      <h3>Dialogo entre lideres comunitarios por empresa minera</h3>
+      <p>Sabotaje de explotación minera</p>
+      <div class="split2"><div><span class="label">Fortalezas</span><p>Unión comunitaria, coordinación con alcalde municipal y toma de decisiones</p></div><div><span class="label">Debilidades</span><p>Falta de respaldo legal</p></div></div>
+      <div class="chips"><span class="chip tiny">Lideres comunitarios</span></div>
+    </article>
+
+    <article class="dialogue-card" data-landscape="Cerro Huexqué">
+      <div class="dialogue-top"><span>informal</span><span>local</span><span class="inc-alto">alto</span></div>
+      <h3>Acuerdos entre extractores de leña y ganaderos para quemas forestales</h3>
+      <p>Aprovechamiento de leña y pasto por los incendios provocados</p>
+      <div class="split2"><div><span class="label">Fortalezas</span><p>Protección del Cerro Huexqué por municipalidad, acceso a financiamiento</p></div><div><span class="label">Debilidades</span><p>Incumpliento de normativas, desacuerdos entre actores en protección del cerro Huexqué</p></div></div>
+      <div class="chips"><span class="chip tiny">Extractores de leña</span><span class="chip tiny">ganaderos</span></div>
+    </article>
+
+    <article class="dialogue-card" data-landscape="Volcán de Ipala">
+      <div class="dialogue-top"><span>formal</span><span>Local</span><span class="inc-medio">medio</span></div>
+      <h3>Creación de plan maestro para extracción de agua en Laguna de Ipala</h3>
+      <p>Resolución de conflicto en la extracción de agua, Conservación del ecosistema</p>
+      <div class="split2"><div><span class="label">Fortalezas</span><p>Diversidad de actores, acceso financiero</p></div><div><span class="label">Debilidades</span><p>Incumpliento de normativas, burocracia</p></div></div>
+      <div class="chips"><span class="chip tiny">Municipalidades de Ipala y Agua Blanca</span><span class="chip tiny">comunidades</span><span class="chip tiny">ADISO y CONAP</span></div>
+    </article>
+
+    <article class="dialogue-card" data-landscape="Montaña el Gigante">
+      <div class="dialogue-top"><span>formal</span><span>Local</span><span class="inc-bajo">bajo</span></div>
+      <h3>Mesa de dialogo de limites territoriales entre Zacapa y Chiquimula</h3>
+      <p>Resolución de conflicto por acceso de las tierras</p>
+      <div class="split2"><div><span class="label">Fortalezas</span><p>Diversidad de actores, articulación de gobernaciones</p></div><div><span class="label">Debilidades</span><p>Falta de respaldo legal, acuerdos no vinculantes, burocracia, poca participación</p></div></div>
+      <div class="chips"><span class="chip tiny">Municipalidades de Zacapa y Chiquimula</span><span class="chip tiny">Lideres comunitarios</span><span class="chip tiny">Gobernación de Zacapa y Chiquimula</span></div>
+    </article>
+
+    <article class="dialogue-card" data-landscape="Montaña el Gigante">
+      <div class="dialogue-top"><span>informal</span><span>Local</span><span class="inc-alto">alto</span></div>
+      <h3>Dialogo entre lideres comunitarios por empresa minera</h3>
+      <p>Sabotaje y amenzas a trabajadores</p>
+      <div class="split2"><div><span class="label">Fortalezas</span><p>Unión comunitaria, coordinación con alcalde municipal y toma de decisiones, otorgamiento de licencias de explotación y licencias ambientales</p></div><div><span class="label">Debilidades</span><p>Falta de respaldo legal, falta de información confiable</p></div></div>
+      <div class="chips"><span class="chip tiny">Municipalidad de Chiquimula</span><span class="chip tiny">Ministerio de Energía y Minas</span><span class="chip tiny">Ministerio de Ambiente y Recursos naturales</span><span class="chip tiny">comunidades</span></div>
+    </article></div>
+</section>
+
+<section class="section" id="conflicto">
+  <div class="section-title"><div><span class="kicker">Dinámicas de conflicto</span><h2>Conflicto y amenazas</h2><p>La información se presenta de forma analítica y sobria. La línea de tiempo y las relaciones conflicto–amenaza se basan solo en los registros del archivo.</p></div></div>
+  <div class="timeline">
+        <article class="timeline-item negative" data-landscape="Montaña el Gigante">
+          <div class="year">1891</div>
+          <div class="timeline-body"><span>CZ · señal -2</span><p>Conflicto territorial, limite territorial con Zacapa desde el año 1,891</p></div>
+        </article>
+
+        <article class="timeline-item negative" data-landscape="Montaña el Gigante">
+          <div class="year">1900</div>
+          <div class="timeline-body"><span>CZ · señal -2</span><p>Violencia entre comunidades Zacapa-Chiquimula</p></div>
+        </article>
+
+        <article class="timeline-item positive" data-landscape="Volcán de Ipala">
+          <div class="year">1990</div>
+          <div class="timeline-body"><span>CZ · señal 2</span><p>Extracción de agua de la Laguna del Volcán de Ipala</p></div>
+        </article>
+
+        <article class="timeline-item positive" data-landscape="Volcán de Ipala">
+          <div class="year">2001</div>
+          <div class="timeline-body"><span>CZ · señal 2</span><p>Se hizo el plan maestro y se acordo que iban a darles 2 años para poder retirar la extraccion de agua de la laguna</p></div>
+        </article>
+
+        <article class="timeline-item positive" data-landscape="Cerro Huexqué">
+          <div class="year">2002</div>
+          <div class="timeline-body"><span>CA1 · señal 1</span><p>Inicio de exploración de los recursos del cerro Huaxqué por personas provenientes de Cobán (utilización de herramientas como piocha, pala, barra). Se tomaron muestras de suelo para analizarlos en laboratorio xx</p></div>
+        </article>
+
+        <article class="timeline-item negative" data-landscape="Volcán de Ipala">
+          <div class="year">2003</div>
+          <div class="timeline-body"><span>CZ · señal -1</span><p>Bajo el nivel del agua, llegando a un acuerdo que el alcalde de ipala iba realizar un pozo para que se abasteciera de agua del pozo los de agua blanca e ipala  y no del volcan de ipala,  el pozo lo hizo unicamente ipala y la unica extraccion de agua que hay son los de la comunidades de jutiapa</p></div>
+        </article>
+
+        <article class="timeline-item neutral" data-landscape="Volcán de Ipala">
+          <div class="year">2015</div>
+          <div class="timeline-body"><span>CZ · señal 0</span><p>Las comunidades de sector de agua blanca demandan a ADISO que el dinero recaudado por el turismo que genera el area protegida se haya invertido en las comunidades aledañas del volcan</p></div>
+        </article>
+
+        <article class="timeline-item positive" data-landscape="Montaña el Gigante">
+          <div class="year">2015</div>
+          <div class="timeline-body"><span>CZ · señal 2</span><p>Hace 10 años las comunidades afectadas pidieron apoyo a las comunidades de la parte alta de Chiquimula</p></div>
+        </article>
+
+        <article class="timeline-item neutral" data-landscape="Montaña el Gigante">
+          <div class="year">2020</div>
+          <div class="timeline-body"><span>CZ · señal 0</span><p>El problema es con la comunidad de Santa Rosalia Zacapa</p></div>
+        </article>
+
+        <article class="timeline-item neutral" data-landscape="Cerro Huexqué">
+          <div class="year">2021</div>
+          <div class="timeline-body"><span>CA2 · señal 0</span><p>19 años después, regresan a explorar  el área del cerro Huexqué, ahora con maquinaria especial. Contactan a 3 personas del lugar para iniciar trabajos de exploración minera</p></div>
+        </article>
+
+        <article class="timeline-item negative" data-landscape="Cerro Huexqué">
+          <div class="year">2022</div>
+          <div class="timeline-body"><span>CA3 · señal -2</span><p>Comunitarios de la Joya y El Ricón, se agrupan para protestar por exploración minera realizada por Cierra Pacifica S.A., lo que provocó el incendio de vehículos y maquinaria de la empresa.</p></div>
+        </article>
+
+        <article class="timeline-item negative" data-landscape="Cerro Huexqué">
+          <div class="year">2023</div>
+          <div class="timeline-body"><span>CA4 · señal -2</span><p>la población se opuso a la empresa y pidieron el apoyo del alcalde para que intervinieran en expulsar  la empresa del Cerro Huexqué</p></div>
+        </article>
+
+        <article class="timeline-item negative" data-landscape="Cerro Huexqué">
+          <div class="year">2024</div>
+          <div class="timeline-body"><span>CA5 · señal -1</span><p>Se genera división entre pobladores de la Joya y El Ricón, existiendo un 13% de personas que apoyan a la explotación minera y un 87% en contra.</p></div>
+        </article>
+
+        <article class="timeline-item neutral" data-landscape="Volcán de Ipala">
+          <div class="year">2024</div>
+          <div class="timeline-body"><span>CZ · señal 0</span><p>Le asignaron por el consejo de desarrollo de jutiapa los fondos para la ampliacion del pozo, desde aldea monterrico hacia aldea san cayetano subiran el agua para distribuir el agua por gravedad, sin embargo se hara un sistema de emergencia para abastecerse de agua del volcan en casos eventuales.…</p></div>
+        </article>
+
+        <article class="timeline-item positive" data-landscape="">
+          <div class="year">2025</div>
+          <div class="timeline-body"><span>CA6 · señal 1</span><p>La empresa Cierra Pacifica S.A. es expulsada del Cerro Huexqué</p></div>
+        </article>
+
+        <article class="timeline-item neutral" data-landscape="Volcán de Ipala">
+          <div class="year">2025</div>
+          <div class="timeline-body"><span>CZ · señal 0</span><p>se espera que este año agua blanca deje de extraer agua de la laguna de Ipala</p></div>
+        </article>
+
+        <article class="timeline-item positive" data-landscape="Montaña el Gigante">
+          <div class="year">2025</div>
+          <div class="timeline-body"><span>CZ · señal 2</span><p>Actualmente no hay conflicto debido a que la persona que promovia el conflicto fallecio.</p></div>
+        </article></div>
+  <div class="conflict-grid">
+    <article class="conflict-card">
+      <div class="conflict-count">56</div>
+      <h3>Instituciones frágiles o ineficientes</h3>
+      <div><span class="chip danger">Aumento de Temperatura · 7</span><span class="chip danger">Sequia Agricola · 6</span><span class="chip danger">Plagas y enfermedades · 6</span><span class="chip danger">Contaminacion por desechos solidos · 6</span><span class="chip danger">Uso desmedido de agroquimicos · 5</span></div>
+    </article>
+
+    <article class="conflict-card">
+      <div class="conflict-count">55</div>
+      <h3>Competencia por recursos naturales</h3>
+      <div><span class="chip danger">Aumento de Temperatura · 9</span><span class="chip danger">Plagas y enfermedades · 8</span><span class="chip danger">Sequia Agricola · 6</span><span class="chip danger">Uso desmedido de agroquimicos · 6</span><span class="chip danger">Deforestacion · 4</span></div>
+    </article>
+
+    <article class="conflict-card">
+      <div class="conflict-count">48</div>
+      <h3>Falta de comunicación y colaboración entre actores</h3>
+      <div><span class="chip danger">Plagas y enfermedades · 7</span><span class="chip danger">Aumento de Temperatura · 6</span><span class="chip danger">Contaminacion por desechos solidos · 6</span><span class="chip danger">Degradación del suelo · 3</span><span class="chip danger">Contaminación del agua · 3</span></div>
+    </article>
+
+    <article class="conflict-card">
+      <div class="conflict-count">26</div>
+      <h3>Migración y desplazamientos forzados</h3>
+      <div><span class="chip danger">Aumento de Temperatura · 7</span><span class="chip danger">Sequia Agricola · 5</span><span class="chip danger">Mala distribución de las lluvias · 3</span><span class="chip danger">Indundaciones · 2</span><span class="chip danger">Sequias Agricolas · 2</span></div>
+    </article>
+
+    <article class="conflict-card">
+      <div class="conflict-count">19</div>
+      <h3>Marginalización, tensión comunitaria o disturbios sociales</h3>
+      <div><span class="chip danger">Deforestacion · 3</span><span class="chip danger">Mala distribución de las lluvias · 3</span><span class="chip danger">Plagas y enfermedades · 3</span><span class="chip danger">Contaminación del agua · 2</span><span class="chip danger">Incendios Forestales · 2</span></div>
+    </article>
+
+    <article class="conflict-card">
+      <div class="conflict-count">8</div>
+      <h3>Violencia, asesinatos o presencia de grupos armados</h3>
+      <div><span class="chip danger">Contaminación del agua · 2</span><span class="chip danger">Aumento de Temperatura · 2</span><span class="chip danger">Contaminacion por desechos solidos · 2</span><span class="chip danger">Incendios Forestales · 2</span></div>
+    </article>
+
+    <article class="conflict-card">
+      <div class="conflict-count">7</div>
+      <h3>Desigualdad intergeneracional o de género</h3>
+      <div><span class="chip danger">Sequia Agricola · 3</span><span class="chip danger">Incendios Forestales · 2</span><span class="chip danger">Contaminación del agua · 1</span><span class="chip danger">Aumento de Temperatura · 1</span></div>
+    </article></div>
+</section>
+
+<section class="section" id="sintesis">
+  <div class="section-title"><div><span class="kicker">Lectura integrada</span><h2>Síntesis territorial</h2><p>La síntesis cruza señales de medios de vida, ecosistemas, amenazas, gobernanza, conflictos y capacidad adaptativa sin introducir supuestos externos.</p></div></div>
+  <div class="synthesis-grid">
+    <article class="synthesis-main"><span class="kicker" style="color:#bdefff">Lo que sugieren los datos</span><h3>Una lectura socioecológica conectada</h3><p>El archivo de ASOVERDE sitúa el análisis en Guatemala, con énfasis en Cerro Huexqué, Volcán de Ipala, Montaña el Gigante. La base combina medios de vida, ecosistemas, servicios ecosistémicos, amenazas, actores, espacios de diálogo, conflictos y capacidad adaptativa. La lectura integrada muestra un territorio donde los medios de vida dependen de relaciones ecosistema–servicio y donde las amenazas climáticas y no climáticas se conectan con impactos sobre medios de vida y servicios ecosistémicos.</p></article>
+    <article class="insight-card"><h3>Señales de amenaza más visibles</h3><p>Las amenazas con mayor suma registrada en la tabla 4.1 son: Contaminación del agua (10), Deforestación (9), Degradación del suelo (9).</p></article><article class="insight-card"><h3>Ecosistemas como soporte territorial</h3><p>El ecosistema con más conexiones registradas en las relaciones ecosistema–servicio es Agropecuarios, con 9 servicios asociados y 5 medios de vida vinculados en la tabla normalizada.</p></article><article class="insight-card"><h3>Medios de vida priorizados</h3><p>Entre los medios de vida priorizados, Turismo aparece con puntaje máximo 15 y presencia en 2 paisaje(s) según la tabla de priorización.</p></article><article class="insight-card"><h3>Gobernanza y actores</h3><p>El mapeo registra 20 actores y clasifica influencia/interés para construir una lectura de oportunidad de coordinación. Alta influencia / alto interés: 14; Baja influencia / alto interés: 3; Baja influencia / bajo interés: 2; Alta influencia / bajo interés: 1.</p></article><article class="insight-card"><h3>Capacidad adaptativa</h3><p>Las dimensiones con promedio más alto son Innovación (2.9), Necesidades básicas (2.8); las de menor promedio relativo son Necesidades básicas (2.8), Acción (2.6).</p></article><article class="insight-card"><h3>Conflictos como trayectoria</h3><p>La línea de tiempo contiene 17 eventos de conflicto, con años entre 1891 y 2025. La lectura se presenta sin asumir causalidad adicional fuera del archivo.</p></article>
+  </div>
+</section>
+
+<section class="section" id="calidad">
+  <div class="section-title"><div><span class="kicker">Transparencia analítica</span><h2>Calidad y límites de datos</h2><p>Esta sección resume las fuentes internas usadas, los controles de calidad y los límites de interpretación encontrados.</p></div></div>
+  <article class="data-quality">
+    <div class="dq-grid">
+      <div class="dq-stat"><strong>62</strong><span>hojas totales</span></div>
+      <div class="dq-stat"><strong>17</strong><span>hojas de entrada</span></div>
+      <div class="dq-stat"><strong>28</strong><span>tablas TIDY</span></div>
+      <div class="dq-stat"><strong>5</strong><span>hojas QA</span></div>
+    </div>
+    <details open><summary>Notas principales</summary><ul class="clean"><li>Las hojas de entrada revisadas por QA_INPUT_SCHEMA aparecen con estado “ok” en el archivo.</li><li>No se observan duplicados de claves primarias en los chequeos QA revisados.</li><li>No se observan IDs faltantes en los chequeos QA revisados.</li><li>No se observan problemas de llaves foráneas en los chequeos QA revisados.</li><li>Se normalizaron variantes ortográficas territoriales presentes en LOOKUP_GEO —por ejemplo “Volván de Ipala”, “Volcan de Ipala” y “Volcán de ipala”— bajo la etiqueta pública “Volcán de Ipala”.</li><li>La tabla TIDY_7_1_RESPONDENTS contiene identificadores repetidos y varios campos territoriales vacíos; por eso la capacidad adaptativa se presenta a partir de la hoja agregada “7.1. Encuesta CA”.</li></ul></details>
+    <details><summary>Hojas analizadas</summary><p>variables, 3.1. Lluvia MdV&amp;SE, 3.2. Priorización, 3.3. Car_A, 3.3. Car_B, 3.3. Car_C, 3.3. Car_D, 3.4. Ecosistemas, 3.5. SE y MdV, 4.1. Amenazas, 4.2.1. Amenazas_MdV, 4.2.2. Amenazas_SE, 5.1. Actores, 5.2. Diálogo, 6.1. Evolución_conflict, 6.2. Actores_conflict, 7.1. Encuesta CA, LOOKUP_GEO, LOOKUP_CONTEXT, LOOKUP_SURVEY_CONTEXT, LOOKUP_MDV, LOOKUP_ECOSISTEMA, LOOKUP_SE, LOOKUP_ELEMENTO_SE, LOOKUP_AMENAZA, LOOKUP_ACTOR, LOOKUP_ESPACIO, LOOKUP_CONFLICTO, LOOKUP_CA_QUESTIONS, TIDY_3_1_BRAINSTORM, TIDY_3_2_PRIORIZACION, TIDY_3_3_CAR_A, TIDY_3_3_CAR_B, TIDY_3_3_CAR_C, TIDY_3_3_CAR_D, TIDY_3_3_CAR_LONG, TIDY_3_4_ECOSISTEMAS, TIDY_3_4_ECO_SE, TIDY_3_4_ECO_MDV, TIDY_3_5_SE_MDV, TIDY_3_5_SE_MONTHS, TIDY_3_5_SE_INCLUSION, TIDY_4_1_AMENAZAS, TIDY_4_2_1_AMENAZA_MDV, TIDY_4_2_1_DIFERENCIADO, TIDY_4_2_1_MAPEO_CONFLICTO, TIDY_4_2_2_AMENAZA_SE, TIDY_4_2_2_DIFERENCIADO, TIDY_4_2_2_MAPEO_CONFLICTO, TIDY_5_1_ACTORES, TIDY_5_1_RELACIONES, TIDY_5_2_DIALOGO, TIDY_5_2_DIALOGO_ACTOR, TIDY_6_1_CONFLICT_EVENTS, TIDY_6_2_CONFLICTO_ACTOR, TIDY_7_1_RESPONDENTS, TIDY_7_1_RESPONSES, QA_INPUT_SCHEMA, QA_TABLE_SUMMARY, QA_PK_DUPLICATES, QA_MISSING_IDS, QA_FOREIGN_KEYS</p></details>
+    <details><summary>Supuestos usados para generar el tablero</summary><ul class="clean"><li>El nombre de la organización se infiere del nombre del archivo: FINAL_ASOVERDE_analysis_ready.xlsx.</li><li>Las tablas TIDY se priorizan para relaciones y matrices porque ya normalizan la información de las hojas originales.</li><li>Cuando una relación aparece como código y no hay nombre completo equivalente en el archivo, el código se conserva y se explica como limitación.</li><li>Las matrices usan agregaciones simples de relaciones explícitas; no implican causalidad.</li></ul></details>
+  </article>
+</section>
+</main>
+<div class="tooltip" id="tooltip"></div>
+<footer class="footer"><p><strong>ASOVERDE · Dashboard socioecológico.</strong> Generado automáticamente a partir del archivo Excel cargado. Diseño inspirado en principios de narración territorial e infografía interactiva; sin bibliotecas de gráficos.</p></footer>
+<script>
+const DATA={"landscapes": ["Cerro Huexqué", "Volcán de Ipala", "Montaña el Gigante"], "groups": ["San José La Arada", "Ipala", "Chiquimula"], "livelihoods": [{"mdv": "Turismo", "menciones": 2, "puntaje_promedio": 12.5, "puntaje_max": 15.0, "paisajes": ["Cerro Huexqué", "Volcán de Ipala"], "productos": ["Dinero", "Servicios de lancha, hospedaje, caballos, comedores, tiendas"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Café", "menciones": 1, "puntaje_promedio": 14.0, "puntaje_max": 14.0, "paisajes": ["Montaña el Gigante"], "productos": ["Planta de vivero, café maduro"], "amenazas_principales": [], "servicios_principales": [{"name": "ES-ag", "count": 3}, {"name": "P2", "count": 3}, {"name": "R1", "count": 3}, {"name": "R3", "count": 3}], "familias_total": 0}, {"mdv": "Remesas", "menciones": 2, "puntaje_promedio": 10.0, "puntaje_max": 13.0, "paisajes": ["Cerro Huexqué", "Montaña el Gigante"], "productos": ["Dinero"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Protección", "menciones": 1, "puntaje_promedio": 13.0, "puntaje_max": 13.0, "paisajes": ["Cerro Huexqué"], "productos": ["Incentivos forestales"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Maíz", "menciones": 2, "puntaje_promedio": 11.5, "puntaje_max": 12.0, "paisajes": ["Cerro Huexqué", "Volcán de Ipala"], "productos": ["Grano", "Tortillas, Concentrados, encilados, rastrojos, atoles, pinol"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Frijol", "menciones": 2, "puntaje_promedio": 12.0, "puntaje_max": 12.0, "paisajes": ["Cerro Huexqué", "Volcán de Ipala"], "productos": ["Alimento, rastrojo", "Grano"], "amenazas_principales": [], "servicios_principales": [{"name": "Es-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "P2", "count": 3}, {"name": "R1", "count": 3}], "familias_total": 0}, {"mdv": "Gallinas", "menciones": 2, "puntaje_promedio": 11.0, "puntaje_max": 12.0, "paisajes": ["Cerro Huexqué", "Volcán de Ipala"], "productos": ["Carne, huevos", "Huevos, carnes, pollitos"], "amenazas_principales": [], "servicios_principales": [{"name": "Es-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "P2", "count": 3}, {"name": "R1", "count": 3}], "familias_total": 0}, {"mdv": "Servicios", "menciones": 2, "puntaje_promedio": 10.5, "puntaje_max": 12.0, "paisajes": ["Montaña el Gigante", "Volcán de Ipala"], "productos": ["Domesticos, mano de obra agricola, albañiles, carpinteros"], "amenazas_principales": [], "servicios_principales": [{"name": "MO-", "count": 3}, {"name": "P1", "count": 3}], "familias_total": 0}, {"mdv": "Leña", "menciones": 1, "puntaje_promedio": 11.0, "puntaje_max": 11.0, "paisajes": ["Cerro Huexqué"], "productos": ["Leña"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Manejo Forestal", "menciones": 1, "puntaje_promedio": 11.0, "puntaje_max": 11.0, "paisajes": ["Montaña el Gigante"], "productos": ["Madera Aserrada, Poste, Leña, Ocote, Hoja de pino, Musgo, Rama de Cipres, Bromelias (Tilansias)"], "amenazas_principales": [], "servicios_principales": [{"name": "ES-bm", "count": 6}, {"name": "P1", "count": 6}, {"name": "R1", "count": 6}, {"name": "A1", "count": 6}], "familias_total": 0}, {"mdv": "Tomate", "menciones": 2, "puntaje_promedio": 7.0, "puntaje_max": 10.0, "paisajes": ["Cerro Huexqué", "Volcán de Ipala"], "productos": ["Fruto"], "amenazas_principales": [], "servicios_principales": [{"name": "Es-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "P2", "count": 3}, {"name": "R1", "count": 3}], "familias_total": 0}, {"mdv": "Bovinos", "menciones": 2, "puntaje_promedio": 8.5, "puntaje_max": 10.0, "paisajes": ["Cerro Huexqué", "Volcán de Ipala"], "productos": ["Carne", "Leche, carne, productos lacteos, cuero"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Cerdos", "menciones": 2, "puntaje_promedio": 8.5, "puntaje_max": 10.0, "paisajes": ["Cerro Huexqué", "Volcán de Ipala"], "productos": ["Carne", "Carne, embutidos, ventas de lechones"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Melón", "menciones": 1, "puntaje_promedio": 10.0, "puntaje_max": 10.0, "paisajes": ["Volcán de Ipala"], "productos": ["Fruto"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Transporte terrestre", "menciones": 1, "puntaje_promedio": 10.0, "puntaje_max": 10.0, "paisajes": ["Montaña el Gigante"], "productos": ["Personas, Materiales e insumos"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Ayote", "menciones": 1, "puntaje_promedio": 9.0, "puntaje_max": 9.0, "paisajes": ["Cerro Huexqué"], "productos": ["Alimentos"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Cilantro", "menciones": 1, "puntaje_promedio": 6.0, "puntaje_max": 6.0, "paisajes": ["Cerro Huexqué"], "productos": ["Hoja"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Chile", "menciones": 1, "puntaje_promedio": 6.0, "puntaje_max": 6.0, "paisajes": ["Cerro Huexqué"], "productos": ["Fruto"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Poste", "menciones": 1, "puntaje_promedio": 2.0, "puntaje_max": 2.0, "paisajes": ["Cerro Huexqué"], "productos": ["Poste"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Ocote", "menciones": 1, "puntaje_promedio": 2.0, "puntaje_max": 2.0, "paisajes": ["Cerro Huexqué"], "productos": ["Ocote"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "Madera aserrada", "menciones": 1, "puntaje_promedio": 0.0, "puntaje_max": 0.0, "paisajes": ["Cerro Huexqué"], "productos": ["Trozas"], "amenazas_principales": [], "servicios_principales": [], "familias_total": 0}, {"mdv": "GB-m/f", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Sequia Agricola", "count": 7}, {"name": "Aumento de Temperatura", "count": 6}, {"name": "Contaminación del agua", "count": 5}], "servicios_principales": [], "familias_total": 154829.0}, {"mdv": "MF", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Plagas y enfermedades", "count": 8}, {"name": "Incendios Forestales", "count": 7}, {"name": "Aumento de Temperatura", "count": 5}], "servicios_principales": [], "familias_total": 203829.0}, {"mdv": "H-t/m", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Sequia Agricola", "count": 4}, {"name": "Aumento de Temperatura", "count": 4}, {"name": "Deforestacion", "count": 4}], "servicios_principales": [], "familias_total": 137000.0}, {"mdv": "PP-g", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Sequia Agricola", "count": 4}, {"name": "Aumento de Temperatura", "count": 4}, {"name": "Contaminacion por desechos solidos", "count": 3}], "servicios_principales": [{"name": "ES-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "A2", "count": 3}, {"name": "R7", "count": 3}], "familias_total": 83000.0}, {"mdv": "Bm", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Fuertes Vientos", "count": 2}], "servicios_principales": [], "familias_total": 6000.0}, {"mdv": "GB-mf", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Fuertes Vientos", "count": 1}], "servicios_principales": [], "familias_total": 3000.0}, {"mdv": "H-tm", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Fuertes Vientos", "count": 1}], "servicios_principales": [], "familias_total": 3000.0}, {"mdv": "T", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Contaminacion por desechos solidos", "count": 3}], "servicios_principales": [], "familias_total": 9000.0}, {"mdv": "CF", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [{"name": "Incendios Forestales", "count": 7}, {"name": "Mala distribución de las lluvias", "count": 5}, {"name": "Plagas y enfermedades", "count": 5}], "servicios_principales": [], "familias_total": 186000.0}, {"mdv": "GB-m", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "ES-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "A2", "count": 3}, {"name": "R7", "count": 3}], "familias_total": 0}, {"mdv": "GB-f", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "ES-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "A2", "count": 3}, {"name": "R7", "count": 3}], "familias_total": 0}, {"mdv": "MF-pr", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "ES-bm", "count": 3}, {"name": "P2", "count": 3}, {"name": "P3", "count": 3}, {"name": "R1", "count": 3}], "familias_total": 0}, {"mdv": "MF-l", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "ES-bm", "count": 3}, {"name": "P2", "count": 3}], "familias_total": 0}, {"mdv": "Maiz", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "Es-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "P2", "count": 3}, {"name": "R1", "count": 3}], "familias_total": 0}, {"mdv": "Melon", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "Es-ag", "count": 3}, {"name": "P1", "count": 3}, {"name": "P2", "count": 3}, {"name": "R1", "count": 3}], "familias_total": 0}, {"mdv": "Proteccion de bosque/ Turismo", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "ES-ac", "count": 3}, {"name": "P3", "count": 3}, {"name": "P1", "count": 3}, {"name": "C2", "count": 3}], "familias_total": 0}, {"mdv": "Migración", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "MO-P1", "count": 3}, {"name": "C2", "count": 3}], "familias_total": 0}, {"mdv": "Transporte", "menciones": 0, "puntaje_promedio": null, "puntaje_max": null, "paisajes": [], "productos": [], "amenazas_principales": [], "servicios_principales": [{"name": "T-p", "count": 3}, {"name": "mp", "count": 3}, {"name": "P1", "count": 3}, {"name": "C2", "count": 3}], "familias_total": 0}], "ecosystems": [{"ecosistema": "Agropecuarios", "tipo": "Producción de animales y cultivos", "salud": 2.0, "causas": "Erosión del suelo, uso excesivo de agroquimicos, sequias, lluvias excesivas, altas temperaturas, compactación del suelo, condiciones fitosanitarias", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "servicios": ["SE-P1", "P2", "R3", "R6", "R7", "C2", "C4", "A1", "A2"], "mdvs": ["Café", "Hortalizas", "Producción pecuaria", "Granos básicos", "Frutales"], "obs_id": "a32bb6e1c32479d9"}, {"ecosistema": "Bosque mixto", "tipo": "Pino, encino, roble", "salud": 2.0, "causas": "Incendios forestales, deforestación, tala ilegal, cambio de uso del suelo, plagas y enfermedades, pastoreo de ganado y extracción de ocote", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "servicios": ["P2", "P3", "R1", "R2", "R3", "R7", "A1", "C1", "C2"], "mdvs": ["Protección", "Leña", "ganadería"], "obs_id": "b470e4487bf2cb16"}, {"ecosistema": "Bosque Mixto", "tipo": "Pino, encino, roble", "salud": 1.0, "causas": "Tala ilegal, Cambio uso del suelo, Erosión del suelo, Incendios forestales, Plagas y enfermedades, Sobreexplotación, Perdida de especies nativas.", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "servicios": ["SE-P2", "P3", "R1", "R6", "R7", "C2", "A1", "A2"], "mdvs": ["Aprovechamiento forestal", "Plantaciones forestales", "protección forestal"], "obs_id": "5c165c95ad94d5db"}, {"ecosistema": "Bosque Mixto", "tipo": "encino, cedro, madrecacao, pino ocarpa, conacaste, san andres, amate, ceiba, guachipilin, naranjillo, lomoncillo, pito", "salud": 2.0, "causas": "Tala ilegal, pastoreo de ganado", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "servicios": ["P1", "P3", "R1", "C2", "C4", "A1", "A2"], "mdvs": ["Manejo Forestal", "Granos básicos", "Ganadería"], "obs_id": "771af743e1418380"}, {"ecosistema": "Acuaticos", "tipo": "Lagunas y ríos", "salud": 3.0, "causas": "Extracción de agua por parte del municipio de agua blanca, contaminación de agua por desechos sólidos", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "servicios": ["P3", "P1", "C2", "R1"], "mdvs": ["Protección forestal y turismo"], "obs_id": "b292187ca773c93e"}, {"ecosistema": "Agropecuario", "tipo": "Producción de animales y cultivos", "salud": 2.0, "causas": "Contaminación de fuentes de agua por uso excesivo de productos químicos, desechos sólidos, malas prácticas de conservación de suelos, rosas no controladas,  avance de frontera agrícola", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "servicios": ["P1", "P2", "R1"], "mdvs": ["Gallinas", "Maiz", "Frijol", "Tomate y Melón"], "obs_id": "a8e9b142b434e00a"}, {"ecosistema": "Agropecuario", "tipo": "Producción de animales y cultivos", "salud": 2.0, "causas": "Producción de monocultivos, variabilidad climática (sequia), no hay prácticas de conservación, uso excesivo de plaguicidas", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "servicios": ["P1", "A2", "R7"], "mdvs": ["Maíz", "frijol y gallinas"], "obs_id": "1bc6a1621d9421f0"}], "threats": [{"amenaza": "Contaminación del agua", "tipo": "no-climática", "magnitud": 5.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 10.0, "severidad": "muy alta", "sitios": "Nacimientos y ríos del área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 13}, {"amenaza": "Deforestación", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Toda el área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 0}, {"amenaza": "Degradación del suelo", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Toda el área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 5}, {"amenaza": "Plagas y enfermedades", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Toda el área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 26}, {"amenaza": "Uso desmedido de agroquimicos", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Toda el área de cultivos", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 14}, {"amenaza": "Aumento de Temperatura", "tipo": "climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Zonas agricolas, Bosques naturales, Plantaciones forestales", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 33}, {"amenaza": "Mala distribución de lluvias", "tipo": "climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Zonas agricolas, Bosques naturales, Plantaciones forestales, Fuentes de agua", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 0}, {"amenaza": "Contaminacion por desechos solidos", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Centros poblados, Carreteras, sitios de trabajo, Corrientes de agua superficial", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 22}, {"amenaza": "Plagas y enfermedades", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 9.0, "severidad": "muy alta", "sitios": "Zonas agropecuarias, bosques naturales y plantaciones forestales", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 26}, {"amenaza": "Sequia Agricola", "tipo": "climática", "magnitud": 4.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 8.0, "severidad": "muy alta", "sitios": "Toda el área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 22}, {"amenaza": "Uso desmedido de agroquimicos", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 8.0, "severidad": "muy alta", "sitios": "Todo el Sitio", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "relaciones": 14}, {"amenaza": "Plagas y enfermedades", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 3.0, "tendencia": 2.0, "suma": 8.0, "severidad": "muy alta", "sitios": "Todo el Sitio", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "relaciones": 26}, {"amenaza": "Sequia Agricola", "tipo": "climática", "magnitud": 4.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 8.0, "severidad": "muy alta", "sitios": "Zonas agricolas, Bosques naturales, Plantaciones forestales, Fuentes de agua para consumo humano", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 22}, {"amenaza": "Incendios Forestales", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 8.0, "severidad": "muy alta", "sitios": "Bosques naturales, plantaciones forestales y zonas agricolas", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 17}, {"amenaza": "Desconocimiento de BPA", "tipo": "no-climática", "magnitud": 4.0, "frecuencia": 3.0, "tendencia": 1.0, "suma": 8.0, "severidad": "muy alta", "sitios": "Zonas agricolas", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 8}, {"amenaza": "Aumento de Temperatura", "tipo": "climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 7.0, "severidad": "alta", "sitios": "Toda el área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 33}, {"amenaza": "Cambio de uso de suelo", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 7.0, "severidad": "alta", "sitios": "Toda el área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 0}, {"amenaza": "Sequia Agricola", "tipo": "climática", "magnitud": 4.0, "frecuencia": 2.0, "tendencia": 1.0, "suma": 7.0, "severidad": "alta", "sitios": "Del Centro de Casco Urbano hacia Cececapa", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "relaciones": 22}, {"amenaza": "Deforestación", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 7.0, "severidad": "alta", "sitios": "De san Isidro hacia Cececapa", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "relaciones": 0}, {"amenaza": "Hundimientos", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 2.0, "suma": 7.0, "severidad": "alta", "sitios": "Centros poblados y carreteras", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 0}, {"amenaza": "Urbanización", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 1.0, "suma": 6.0, "severidad": "alta", "sitios": "El Rincón, Los Simientos, parte baja de San José La Arada", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 0}, {"amenaza": "Incendios Forestales", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 3.0, "tendencia": 0.0, "suma": 6.0, "severidad": "alta", "sitios": "Toda el área", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 17}, {"amenaza": "Fuertes Vientos", "tipo": "climática", "magnitud": 3.0, "frecuencia": 2.0, "tendencia": 1.0, "suma": 6.0, "severidad": "alta", "sitios": "Del sauce hacia Cececapa", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "relaciones": 10}, {"amenaza": "Aumento de Temperatura", "tipo": "climática", "magnitud": 3.0, "frecuencia": 3.0, "tendencia": 0.0, "suma": 6.0, "severidad": "alta", "sitios": "Todo el Sitio", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "relaciones": 33}, {"amenaza": "Contaminacion por desechos solidos", "tipo": "no-climática", "magnitud": 3.0, "frecuencia": 3.0, "tendencia": -1.0, "suma": 5.0, "severidad": "media", "sitios": "Todo el Sitio", "paisaje": "Volcán de Ipala", "grupo": "Ipala", "relaciones": 22}, {"amenaza": "Fuertes lluvias", "tipo": "climática", "magnitud": 3.0, "frecuencia": 1.0, "tendencia": -1.0, "suma": 5.0, "severidad": "media", "sitios": "Zonas agricolas, Bosques naturales, Plantaciones forestales, Carreteras e infraestructura", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 0}, {"amenaza": "Indundaciones", "tipo": "climática", "magnitud": 2.0, "frecuencia": 1.0, "tendencia": 1.0, "suma": 4.0, "severidad": "media", "sitios": "Parte baja, quebrada de Santa Rosa, Guacamaya, Rodeo, 3Ceibas", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada", "relaciones": 7}, {"amenaza": "Fuertes Vientos", "tipo": "climática", "magnitud": 3.0, "frecuencia": 1.0, "tendencia": 0.0, "suma": 4.0, "severidad": "media", "sitios": "Zonas agricolas, Bosques naturales, Plantaciones forestales", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula", "relaciones": 10}], "actors": [{"actor": "Tecnicos del INAB encargados los municipios de Ipala, San josé La Arada y Chiqumula 2 personas", "tipo": "Institucional", "rol": "Autoriza manejo forestal, otorga incentivos forestales", "poder": 8.0, "interes": 8.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "CONAP, Jutiapa, asesor profesional del SIGAP, 1 persona", "tipo": "Institucional", "rol": "Monitoreo en áreas protegidas", "poder": 8.0, "interes": 8.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"actor": "MAGA, Técnicos de DAR, de los tres municipios, 3 personas", "tipo": "Institucional", "rol": "Asistencia técnica y ejecución de proyectos", "poder": 5.0, "interes": 7.0, "cuadrante": "Baja influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Técnicos de UGAM de los tres municipios, 3 personas", "tipo": "Institucional", "rol": "Formular, evaluar y ejecutar proyectos ambientales", "poder": 7.0, "interes": 6.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Técnico de ANACAFÉ, 1 persona", "tipo": "Institucional", "rol": "Asistencia técnica y ejecución de proyectos", "poder": 4.0, "interes": 8.0, "cuadrante": "Baja influencia / alto interés", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"actor": "ADISO,ASEDECHI, Directores, 2 personas", "tipo": "ONG", "rol": "Coadministra área protegida Volcán de Ipala, ejecuta proyectos y gestionan financiamiento", "poder": 8.0, "interes": 8.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Presidentes de COCODES de las comunidades, El Durazno, Plan del Guineo, Tierra Blanca, Matasano, El Anonal La Joya, El Rincón, Los Cimientos, Chparroncito, Suyate, La Torera, Tontoles y La Chorrera, 13 personas", "tipo": "Comunitarios", "rol": "Cordinan, gestionan proyectos, autorizan ejecución de proyectos", "poder": 9.0, "interes": 8.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Osvaldo Suchini, Productores de café en la zona, 1 persona", "tipo": "Privado", "rol": "Producen y exportan café,", "poder": 4.0, "interes": 4.0, "cuadrante": "Baja influencia / bajo interés", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"actor": "Propietarios de bosque, Luis Villafuerte, 1 persona", "tipo": "Privado", "rol": "Protección y manejo forestal, beneficiario de incentivos forestales", "poder": 8.0, "interes": 10.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "CUNORI, 2 persona", "tipo": "Academia", "rol": "Investigación de RRNN", "poder": 3.0, "interes": 3.0, "cuadrante": "Baja influencia / bajo interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Asociaión de ganaderos de Ipala, 2 personas", "tipo": "privado", "rol": "Representación de ganaderos", "poder": 8.0, "interes": 3.0, "cuadrante": "Alta influencia / bajo interés", "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"actor": "MARN, 2 personas", "tipo": "institucional", "rol": "Regulación ambiental", "poder": 8.0, "interes": 7.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Genesis, COOSAJO, CASVACHI, CHIQUIMULJA, 4 persona", "tipo": "Privado", "rol": "Otorgar créditos agopecuarios", "poder": 8.0, "interes": 7.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"actor": "Propietarios de terrenos agropecuarios de Chiquimula", "tipo": "Comunitarios", "rol": "Defensa de territorio", "poder": 7.0, "interes": 10.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"actor": "Propietarios de terrenos agropecuarios de Zacapa", "tipo": "Comunitarios", "rol": "Defensa de territorio", "poder": 7.0, "interes": 10.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"actor": "Cierra Pacifica S.A", "tipo": "Privada", "rol": "Exploración de minerales", "poder": 5.0, "interes": 9.0, "cuadrante": "Baja influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Empresa minera el Pato", "tipo": "Privada", "rol": "Explotación de minerales", "poder": 7.0, "interes": 9.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"actor": "Comunidades del municipio de Agua Blanca: La Parada, San Cayetano, El Platillo, Caserío la Laguna", "tipo": "Comunitarios e Institucional", "rol": "Extraccción de agua dulce para consumo humano", "poder": 10.0, "interes": 10.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"actor": "Extractores de leña de la comunidad del Rodeo, Quebrada Santa Rosa, La Torera, Los Cimientos, El Rincón", "tipo": "Comunitarios", "rol": "Extracción de leña", "poder": 6.0, "interes": 8.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"actor": "Ganaderos de pastoreo abierto", "tipo": "Productores", "rol": "Uso de fuego para rebrote de pasto natural", "poder": 6.0, "interes": 8.0, "cuadrante": "Alta influencia / alto interés", "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}], "dialogue": [{"nombre": "Dialogo entre lideres comunitarios por empresa minera", "tipo": "informal", "alcance": "Local", "funcion": "Sabotaje de explotación minera", "incidencia": "alto", "fortalezas": "Unión comunitaria, coordinación con alcalde municipal y toma de decisiones", "debilidades": "Falta de respaldo legal", "actores": ["Lideres comunitarios"], "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"nombre": "Acuerdos entre extractores de leña y ganaderos para quemas forestales", "tipo": "informal", "alcance": "local", "funcion": "Aprovechamiento de leña y pasto por los incendios provocados", "incidencia": "alto", "fortalezas": "Protección del Cerro Huexqué por municipalidad, acceso a financiamiento", "debilidades": "Incumpliento de normativas, desacuerdos entre actores en protección del cerro Huexqué", "actores": ["Extractores de leña", "ganaderos"], "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"nombre": "Creación de plan maestro para extracción de agua en Laguna de Ipala", "tipo": "formal", "alcance": "Local", "funcion": "Resolución de conflicto en la extracción de agua, Conservación del ecosistema", "incidencia": "medio", "fortalezas": "Diversidad de actores, acceso financiero", "debilidades": "Incumpliento de normativas, burocracia", "actores": ["Municipalidades de Ipala y Agua Blanca", "comunidades", "ADISO y CONAP"], "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"nombre": "Mesa de dialogo de limites territoriales entre Zacapa y Chiquimula", "tipo": "formal", "alcance": "Local", "funcion": "Resolución de conflicto por acceso de las tierras", "incidencia": "bajo", "fortalezas": "Diversidad de actores, articulación de gobernaciones", "debilidades": "Falta de respaldo legal, acuerdos no vinculantes, burocracia, poca participación", "actores": ["Municipalidades de Zacapa y Chiquimula", "Lideres comunitarios", "Gobernación de Zacapa y Chiquimula"], "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"nombre": "Dialogo entre lideres comunitarios por empresa minera", "tipo": "informal", "alcance": "Local", "funcion": "Sabotaje y amenzas a trabajadores", "incidencia": "alto", "fortalezas": "Unión comunitaria, coordinación con alcalde municipal y toma de decisiones, otorgamiento de licencias de explotación y licencias ambientales", "debilidades": "Falta de respaldo legal, falta de información confiable", "actores": ["Municipalidad de Chiquimula", "Ministerio de Energía y Minas", "Ministerio de Ambiente y Recursos naturales", "comunidades"], "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}], "conflicts": [{"year": 1891.0, "code": "CZ", "event": "Conflicto territorial, limite territorial con Zacapa desde el año 1,891", "suma": -2.0, "diferencias": -1.0, "cooperacion": -1.0, "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"year": 1900.0, "code": "CZ", "event": "Violencia entre comunidades Zacapa-Chiquimula", "suma": -2.0, "diferencias": -1.0, "cooperacion": -1.0, "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"year": 1990.0, "code": "CZ", "event": "Extracción de agua de la Laguna del Volcán de Ipala", "suma": 2.0, "diferencias": 1.0, "cooperacion": 1.0, "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"year": 2001.0, "code": "CZ", "event": "Se hizo el plan maestro y se acordo que iban a darles 2 años para poder retirar la extraccion de agua de la laguna", "suma": 2.0, "diferencias": 1.0, "cooperacion": 1.0, "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"year": 2002.0, "code": "CA1", "event": "Inicio de exploración de los recursos del cerro Huaxqué por personas provenientes de Cobán (utilización de herramientas como piocha, pala, barra). Se tomaron muestras de suelo para analizarlos en laboratorio xx", "suma": 1.0, "diferencias": 1.0, "cooperacion": 0.0, "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"year": 2003.0, "code": "CZ", "event": "Bajo el nivel del agua, llegando a un acuerdo que el alcalde de ipala iba realizar un pozo para que se abasteciera de agua del pozo los de agua blanca e ipala  y no del volcan de ipala,  el pozo lo hizo unicamente ipala y la unica extraccion de agua que hay son los de la comunidades de jutiapa", "suma": -1.0, "diferencias": -1.0, "cooperacion": 0.0, "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"year": 2015.0, "code": "CZ", "event": "Las comunidades de sector de agua blanca demandan a ADISO que el dinero recaudado por el turismo que genera el area protegida se haya invertido en las comunidades aledañas del volcan", "suma": 0.0, "diferencias": -1.0, "cooperacion": 1.0, "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"year": 2015.0, "code": "CZ", "event": "Hace 10 años las comunidades afectadas pidieron apoyo a las comunidades de la parte alta de Chiquimula", "suma": 2.0, "diferencias": 1.0, "cooperacion": 1.0, "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"year": 2020.0, "code": "CZ", "event": "El problema es con la comunidad de Santa Rosalia Zacapa", "suma": 0.0, "diferencias": -1.0, "cooperacion": 1.0, "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}, {"year": 2021.0, "code": "CA2", "event": "19 años después, regresan a explorar  el área del cerro Huexqué, ahora con maquinaria especial. Contactan a 3 personas del lugar para iniciar trabajos de exploración minera", "suma": 0.0, "diferencias": 0.0, "cooperacion": 0.0, "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"year": 2022.0, "code": "CA3", "event": "Comunitarios de la Joya y El Ricón, se agrupan para protestar por exploración minera realizada por Cierra Pacifica S.A., lo que provocó el incendio de vehículos y maquinaria de la empresa.", "suma": -2.0, "diferencias": -1.0, "cooperacion": -1.0, "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"year": 2023.0, "code": "CA4", "event": "la población se opuso a la empresa y pidieron el apoyo del alcalde para que intervinieran en expulsar  la empresa del Cerro Huexqué", "suma": -2.0, "diferencias": -1.0, "cooperacion": -1.0, "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"year": 2024.0, "code": "CA5", "event": "Se genera división entre pobladores de la Joya y El Ricón, existiendo un 13% de personas que apoyan a la explotación minera y un 87% en contra.", "suma": -1.0, "diferencias": 0.0, "cooperacion": -1.0, "paisaje": "Cerro Huexqué", "grupo": "San José La Arada"}, {"year": 2024.0, "code": "CZ", "event": "Le asignaron por el consejo de desarrollo de jutiapa los fondos para la ampliacion del pozo, desde aldea monterrico hacia aldea san cayetano subiran el agua para distribuir el agua por gravedad, sin embargo se hara un sistema de emergencia para abastecerse de agua del volcan en casos eventuales. Agua blanca esta comenzando a cumplir con el acuerdo hecho en el 2003.", "suma": 0.0, "diferencias": -1.0, "cooperacion": 1.0, "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"year": 2025.0, "code": "CA6", "event": "La empresa Cierra Pacifica S.A. es expulsada del Cerro Huexqué", "suma": 1.0, "diferencias": 1.0, "cooperacion": 0.0, "paisaje": "", "grupo": "San José La Arada"}, {"year": 2025.0, "code": "CZ", "event": "se espera que este año agua blanca deje de extraer agua de la laguna de Ipala", "suma": 0.0, "diferencias": 0.0, "cooperacion": 0.0, "paisaje": "Volcán de Ipala", "grupo": "Ipala"}, {"year": 2025.0, "code": "CZ", "event": "Actualmente no hay conflicto debido a que la persona que promovia el conflicto fallecio.", "suma": 2.0, "diferencias": 1.0, "cooperacion": 1.0, "paisaje": "Montaña el Gigante", "grupo": "Chiquimula"}], "caDims": [{"dimension": "Innovación", "avg": 2.881944444444444, "n": 48, "label": "medio", "min": 0.0, "max": 5.0}, {"dimension": "Necesidades básicas", "avg": 2.814583333333333, "n": 80, "label": "medio", "min": 0.0, "max": 5.0}, {"dimension": "Acción", "avg": 2.6256510416666665, "n": 32, "label": "medio", "min": 0.0, "max": 4.5}]};
+const tooltip=document.getElementById('tooltip');
+document.querySelectorAll('.matrix-cell').forEach(cell=>{
+  cell.addEventListener('mousemove',e=>{tooltip.textContent=cell.dataset.tip||'';tooltip.style.display='block';tooltip.style.left=(e.clientX+14)+'px';tooltip.style.top=(e.clientY+14)+'px';});
+  cell.addEventListener('mouseleave',()=>tooltip.style.display='none');
+  cell.addEventListener('click',e=>{tooltip.textContent=cell.dataset.tip||'';tooltip.style.display='block';tooltip.style.left=(e.clientX+14)+'px';tooltip.style.top=(e.clientY+14)+'px';setTimeout(()=>tooltip.style.display='none',2200);});
+});
+function applyLandscapeFilter(value){
+  const selectors=['.livelihood-card','.eco-card','.threat-card','.dialogue-card','.timeline-item'];
+  selectors.forEach(sel=>document.querySelectorAll(sel).forEach(el=>{
+    const l=(el.dataset.landscape||'');
+    if(value==='Todos'||l.includes(value)) el.classList.remove('hidden'); else el.classList.add('hidden');
+  }));
+}
+const landscapeFilter=document.getElementById('landscapeFilter');
+if(landscapeFilter) landscapeFilter.addEventListener('change',e=>applyLandscapeFilter(e.target.value));
+const reset=document.getElementById('resetFilters');
+if(reset) reset.addEventListener('click',()=>{landscapeFilter.value='Todos';applyLandscapeFilter('Todos');});
+const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting) entry.target.animate([{opacity:.2, transform:'translateY(12px)'},{opacity:1, transform:'translateY(0)'}],{duration:420,easing:'ease-out',fill:'both'});})},{threshold:.08});
+document.querySelectorAll('.story-card,.eco-card,.threat-card,.capacity-card,.dialogue-card,.conflict-card,.insight-card,.universe-tile,.headline-card').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

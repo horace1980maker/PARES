@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard territorial | Fundación Comunitaria Puca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&family=Oswald:wght@200;300;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===============================
+       Sistema visual PARES / Dashboard
+       =============================== */
+    :root {
+      --neutral:#001F89;
+      --primary:#009EE2;
+      --regional:#B71373;
+      --regional-2:#751851;
+      --ink:#102034;
+      --muted:#5c6b80;
+      --paper:#f7f9ff;
+      --card:#ffffff;
+      --line:rgba(0,31,137,.16);
+      --soft-blue:rgba(0,158,226,.11);
+      --soft-magenta:rgba(183,19,115,.11);
+      --soft-purple:rgba(117,24,81,.12);
+      --shadow:0 18px 45px rgba(0,31,137,.12);
+      --radius:24px;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(0,158,226,.22), transparent 34%),
+        radial-gradient(circle at 86% 4%, rgba(183,19,115,.18), transparent 33%),
+        linear-gradient(180deg,#f9fbff 0%,#eef3ff 42%,#fff 100%);
+      font-family:'Noto Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+      line-height:1.55;
+    }
+    a { color:inherit; }
+    h1,h2,h3 {
+      font-family:'Oswald', Impact, sans-serif;
+      letter-spacing:.02em;
+      line-height:1.05;
+      margin:0;
+    }
+    h1,h2 { text-transform:uppercase; }
+    h1 {
+      font-size:clamp(3rem, 9vw, 7.8rem);
+      color:#fff;
+      max-width:1050px;
+      text-wrap:balance;
+    }
+    h2 {
+      font-size:clamp(2rem, 4.2vw, 4.2rem);
+      color:var(--neutral);
+      margin-bottom:.55rem;
+    }
+    h3 {
+      font-size:1.4rem;
+      color:var(--neutral);
+      margin-bottom:.4rem;
+    }
+    p { margin:.4rem 0 1rem; }
+    .muted { color:var(--muted); }
+    .mini, small { color:var(--muted); font-size:.86rem; }
+    .mini-upper, .eyebrow {
+      font-family:'Oswald', sans-serif;
+      font-weight:300;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      color:var(--regional);
+    }
+    .dashboard-shell { overflow:hidden; }
+    .sticky-nav {
+      position:sticky;
+      top:0;
+      z-index:100;
+      display:flex;
+      gap:.6rem;
+      padding:.65rem 1rem;
+      background:rgba(255,255,255,.83);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line);
+      overflow-x:auto;
+      box-shadow:0 8px 24px rgba(0,31,137,.06);
+    }
+    .sticky-nav a, .button, .tab-button, .filter-btn {
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--neutral);
+      border-radius:999px;
+      padding:.58rem .9rem;
+      text-decoration:none;
+      font-family:'Oswald', sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-size:.86rem;
+      cursor:pointer;
+      transition:transform .18s ease, background .18s ease, color .18s ease;
+      white-space:nowrap;
+    }
+    .sticky-nav a:hover, .button:hover, .tab-button:hover, .filter-btn:hover {
+      transform:translateY(-1px);
+      background:var(--neutral);
+      color:#fff;
+    }
+    .hero {
+      position:relative;
+      min-height:92vh;
+      display:grid;
+      align-items:end;
+      padding:8rem clamp(1rem,4vw,4rem) 3rem;
+      color:#fff;
+      background:
+        linear-gradient(135deg, rgba(0,31,137,.96), rgba(0,158,226,.82) 48%, rgba(117,24,81,.95)),
+        radial-gradient(circle at 78% 32%, rgba(255,255,255,.22), transparent 28%);
+    }
+    .hero::before {
+      content:"";
+      position:absolute;
+      inset:-20% -10% auto auto;
+      width:60vw;
+      height:60vw;
+      min-width:520px;
+      min-height:520px;
+      border-radius:46% 54% 64% 36% / 46% 32% 68% 54%;
+      border:2px solid rgba(255,255,255,.25);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.09), transparent 55%),
+        repeating-linear-gradient(42deg, rgba(255,255,255,.14), rgba(255,255,255,.14) 1px, transparent 1px, transparent 16px);
+      opacity:.95;
+    }
+    .hero::after {
+      content:"PUCA";
+      position:absolute;
+      right:7vw;
+      top:19vh;
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(5rem, 18vw, 17rem);
+      font-weight:600;
+      color:rgba(255,255,255,.06);
+      letter-spacing:.08em;
+    }
+    .hero-content { position:relative; z-index:2; }
+    .hero-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:.7rem;
+      color:#fff;
+      font-family:'Oswald', sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      margin-bottom:1rem;
+    }
+    .hero-kicker::before {
+      content:"";
+      width:54px;
+      height:2px;
+      background:#fff;
+      opacity:.8;
+    }
+    .hero-summary {
+      max-width:980px;
+      font-size:clamp(1rem, 1.8vw, 1.35rem);
+      color:rgba(255,255,255,.9);
+    }
+    .hero-stats {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(150px,1fr));
+      gap:1rem;
+      margin-top:2rem;
+      max-width:1180px;
+    }
+    .hero-stat {
+      padding:1.05rem;
+      border:1px solid rgba(255,255,255,.26);
+      border-radius:22px;
+      background:rgba(255,255,255,.11);
+      backdrop-filter:blur(10px);
+    }
+    .hero-stat strong {
+      display:block;
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(2.2rem, 6vw, 5rem);
+      line-height:.95;
+    }
+    .hero-stat span {
+      display:block;
+      font-family:'Oswald', sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+    .hero-stat small { color:rgba(255,255,255,.75); }
+    .section {
+      padding:6rem clamp(1rem, 4vw, 4rem);
+      max-width:1440px;
+      margin:auto;
+    }
+    .section-header {
+      display:grid;
+      grid-template-columns:minmax(260px,.65fr) 1fr;
+      gap:2rem;
+      align-items:end;
+      margin-bottom:2rem;
+    }
+    .section-header p {
+      max-width:820px;
+      font-size:1.08rem;
+      color:#34445a;
+    }
+    .infographic-grid {
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:1.2rem;
+    }
+    .panel, .data-block, .livelihood-card, .eco-card, .service-card, .threat-card, .capacity-tile, .capacity-mini-card, .actor-card, .dialogue-card, .quadrant, .conf-actor-card, .synthesis-card {
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .panel { padding:1.4rem; }
+    .wide { grid-column:span 8; }
+    .narrow { grid-column:span 4; }
+    .full { grid-column:1/-1; }
+    .territory-card {
+      grid-column:span 7;
+      padding:2rem;
+      min-height:420px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.86)),
+        radial-gradient(circle at 64% 30%, var(--soft-magenta), transparent 38%);
+      position:relative;
+      overflow:hidden;
+    }
+    .territory-card::after {
+      content:"";
+      position:absolute;
+      right:-80px;
+      bottom:-95px;
+      width:360px;
+      height:360px;
+      border-radius:45% 55% 65% 35% / 35% 40% 60% 65%;
+      border:2px dashed rgba(0,31,137,.24);
+      background:
+        linear-gradient(135deg, rgba(0,158,226,.13), rgba(117,24,81,.14)),
+        repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(0,31,137,.05) 15px);
+    }
+    .map-symbol {
+      position:relative;
+      width:min(520px, 100%);
+      min-height:220px;
+      margin:1.6rem 0 1rem;
+      border-radius:40% 60% 54% 46% / 36% 34% 66% 64%;
+      background:linear-gradient(135deg, rgba(0,31,137,.92), rgba(0,158,226,.72) 55%, rgba(183,19,115,.8));
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.2), 0 28px 60px rgba(0,31,137,.22);
+    }
+    .map-point {
+      position:absolute;
+      left:56%;
+      top:45%;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 0 0 12px rgba(255,255,255,.24), 0 0 0 24px rgba(0,158,226,.18);
+    }
+    .map-label {
+      position:absolute;
+      left:60%;
+      top:36%;
+      background:#fff;
+      color:var(--neutral);
+      padding:.65rem .9rem;
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      max-width:240px;
+      font-weight:700;
+    }
+    .territory-facts {
+      grid-column:span 5;
+      display:grid;
+      gap:1rem;
+    }
+    .fact-strip {
+      padding:1.4rem;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+    }
+    .fact-strip strong {
+      display:block;
+      font-family:'Oswald', sans-serif;
+      font-size:2.2rem;
+      color:var(--regional);
+    }
+    .data-universe {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:1rem;
+    }
+    .data-block { padding:1.2rem; min-height:190px; }
+    .data-count {
+      display:inline-grid;
+      place-items:center;
+      width:44px; height:44px;
+      border-radius:50%;
+      background:var(--neutral);
+      color:#fff;
+      font-family:'Oswald', sans-serif;
+      font-size:1.2rem;
+      margin-bottom:.9rem;
+    }
+    .chip {
+      display:inline-flex;
+      align-items:center;
+      border:1px solid rgba(0,31,137,.16);
+      background:rgba(0,158,226,.08);
+      color:var(--neutral);
+      border-radius:999px;
+      padding:.3rem .55rem;
+      margin:.15rem .12rem;
+      font-size:.78rem;
+      font-weight:600;
+    }
+    .service-chip { background:rgba(0,158,226,.11); }
+    .mdv-chip { background:rgba(183,19,115,.1); color:var(--regional); }
+    .actor-chip { background:rgba(117,24,81,.11); color:var(--regional-2); }
+    .muted-chip { background:#f3f5fb; color:var(--muted); }
+    .livelihood-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1rem;
+    }
+    .livelihood-card {
+      padding:1.2rem;
+      min-height:280px;
+      display:flex;
+      flex-direction:column;
+      gap:.7rem;
+    }
+    .card-topline, .dependency-row, .signal-row, .dialogue-head, .actor-scores, .impact-pair {
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:center;
+    }
+    .rank-label, .pill, .tag {
+      font-family:'Oswald', sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-size:.78rem;
+      border-radius:999px;
+      padding:.25rem .55rem;
+      background:var(--soft-purple);
+      color:var(--regional-2);
+    }
+    .pill { background:var(--soft-blue); color:var(--neutral); }
+    .criteria-strip {
+      display:grid;
+      gap:.35rem;
+      margin:.3rem 0;
+    }
+    .criterion {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:.35rem .55rem;
+      border-radius:12px;
+      background:#f6f8ff;
+      font-size:.83rem;
+    }
+    .dots {
+      color:var(--regional);
+      letter-spacing:.08em;
+      font-family:'Oswald', sans-serif;
+    }
+    .ecosystem-stack {
+      display:grid;
+      gap:1rem;
+    }
+    .eco-card {
+      display:grid;
+      grid-template-columns:96px 1fr;
+      gap:1rem;
+      padding:1.2rem;
+      align-items:center;
+    }
+    .eco-orb {
+      width:92px;height:92px;border-radius:50%;
+      display:grid;place-items:center;
+      background:radial-gradient(circle at 30% 20%, #fff, rgba(0,158,226,.25) 42%, rgba(0,31,137,.95));
+      color:#fff;
+      font-family:'Oswald', sans-serif;
+      box-shadow:0 20px 40px rgba(0,31,137,.2);
+    }
+    .eco-chain {
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      gap:.6rem;
+      margin-top:.8rem;
+    }
+    .arrow {
+      color:var(--regional);
+      font-family:'Oswald',sans-serif;
+      font-size:1.8rem;
+    }
+    .service-grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:1rem;
+    }
+    .service-card {
+      padding:1.2rem;
+      position:relative;
+      overflow:hidden;
+    }
+    .service-card::before {
+      content:"";
+      position:absolute;
+      inset:0 auto 0 0;
+      width:7px;
+      background:linear-gradient(180deg,var(--primary),var(--regional));
+    }
+    .service-code {
+      font-family:'Oswald',sans-serif;
+      font-size:2.4rem;
+      color:var(--regional);
+    }
+    .two-col-mini {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:.8rem;
+      margin:1rem 0;
+    }
+    .two-col-mini span, .dependency-row span, .signal-row span {
+      display:block;
+      font-family:'Oswald',sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.07em;
+      font-size:.78rem;
+      color:var(--muted);
+    }
+    details {
+      border-top:1px solid var(--line);
+      margin-top:.8rem;
+      padding-top:.8rem;
+    }
+    summary {
+      cursor:pointer;
+      font-family:'Oswald',sans-serif;
+      color:var(--neutral);
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+    .threat-toolbar {
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      margin-bottom:1rem;
+    }
+    .threat-grid {
+      display:grid;
+      grid-template-columns:repeat(7, minmax(150px, 1fr));
+      gap:1rem;
+    }
+    .threat-card {
+      padding:1rem;
+      min-height:240px;
+      display:grid;
+      grid-template-rows:auto 1fr;
+      gap:.8rem;
+      transition:opacity .2s ease, transform .2s ease;
+    }
+    .threat-card.is-hidden { display:none; }
+    .threat-score {
+      width:74px;height:74px;border-radius:50%;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--regional),var(--regional-2));
+      color:#fff;
+      font-family:'Oswald',sans-serif;
+      font-size:2rem;
+    }
+    .tag.climatica { background:rgba(0,158,226,.13); color:var(--neutral); }
+    .tag.no-climatica { background:rgba(183,19,115,.13); color:var(--regional); }
+    .signal-grid {
+      display:grid;
+      gap:.3rem;
+      margin-top:.7rem;
+      font-size:.85rem;
+    }
+    .matrix-tabs {
+      display:flex;
+      gap:.6rem;
+      flex-wrap:wrap;
+      margin:0 0 1rem;
+    }
+    .tab-button.active, .filter-btn.active {
+      background:var(--neutral);
+      color:#fff;
+    }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .matrix-wrap {
+      overflow:auto;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+    }
+    .matrix {
+      display:grid;
+      min-width:900px;
+    }
+    .matrix-corner, .matrix-head, .matrix-rowhead, .matrix-cell {
+      border:1px solid rgba(0,31,137,.08);
+      min-height:58px;
+      padding:.5rem;
+    }
+    .matrix-corner, .matrix-head, .matrix-rowhead {
+      background:#f5f7ff;
+      color:var(--neutral);
+      font-family:'Oswald', sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-size:.82rem;
+    }
+    .matrix-rowhead { display:flex; align-items:center; }
+    .matrix-cell {
+      border-radius:0;
+      border:1px solid rgba(255,255,255,.75);
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .matrix-cell span { display:block; }
+    .heat-none { background:#edf1f7; color:#6c7789; }
+    .heat-low { background:rgba(0,158,226,.52); }
+    .heat-mid { background:rgba(183,19,115,.72); }
+    .heat-high { background:rgba(117,24,81,.94); }
+    .inspector {
+      margin-top:1rem;
+      padding:1rem 1.2rem;
+      border-radius:18px;
+      background:linear-gradient(135deg,rgba(0,31,137,.92),rgba(117,24,81,.86));
+      color:#fff;
+    }
+    .capacity-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1rem;
+      margin-bottom:1rem;
+    }
+    .capacity-tile {
+      padding:1.2rem;
+      text-align:center;
+    }
+    .capacity-tile span {
+      display:block;
+      font-family:'Oswald',sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--regional);
+    }
+    .capacity-tile strong {
+      display:block;
+      font-family:'Oswald',sans-serif;
+      font-size:3.2rem;
+      color:var(--neutral);
+    }
+    .capacity-mini-grid {
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:1rem;
+    }
+    .capacity-mini-card {
+      padding:1rem;
+      text-align:center;
+    }
+    .capacity-mini-card strong {
+      display:block;
+      font-family:'Oswald',sans-serif;
+      color:var(--regional);
+      font-size:2rem;
+    }
+    .quadrant-grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:1rem;
+    }
+    .quadrant {
+      min-height:180px;
+      padding:1.2rem;
+      background:linear-gradient(180deg,#fff,rgba(0,158,226,.05));
+    }
+    .actor-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1rem;
+    }
+    .actor-card, .dialogue-card, .conf-actor-card { padding:1.1rem; }
+    .dialogue-grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:1rem;
+    }
+    .timeline {
+      position:relative;
+      display:grid;
+      gap:.8rem;
+    }
+    .timeline::before {
+      content:"";
+      position:absolute;
+      left:76px;
+      top:0;
+      bottom:0;
+      width:2px;
+      background:linear-gradient(180deg,var(--primary),var(--regional));
+      opacity:.55;
+    }
+    .timeline-item {
+      position:relative;
+      display:grid;
+      grid-template-columns:120px 1fr;
+      gap:1rem;
+      align-items:start;
+    }
+    .timeline-item time {
+      position:relative;
+      z-index:2;
+      display:grid;
+      place-items:center;
+      width:82px;height:82px;border-radius:50%;
+      background:#fff;
+      color:var(--neutral);
+      border:2px solid var(--primary);
+      font-family:'Oswald',sans-serif;
+      font-size:1.2rem;
+      box-shadow:var(--shadow);
+    }
+    .timeline-item > div {
+      padding:1rem;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+    }
+    .conflict-negative time { border-color:var(--regional); }
+    .conflict-positive time { border-color:var(--primary); }
+    .conflict-neutral time { border-color:#9ba7bd; }
+    .conf-actor-grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:1rem;
+    }
+    .synthesis-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:1rem;
+    }
+    .synthesis-card {
+      padding:1.35rem;
+      min-height:220px;
+      background:
+        linear-gradient(180deg,#fff,rgba(0,158,226,.04));
+    }
+    .synthesis-card strong {
+      display:inline-grid;
+      place-items:center;
+      width:42px;height:42px;border-radius:50%;
+      background:var(--regional);
+      color:#fff;
+      margin-bottom:.8rem;
+      font-family:'Oswald',sans-serif;
+    }
+    .quality-panel {
+      background:linear-gradient(135deg,rgba(0,31,137,.05),rgba(183,19,115,.04));
+      padding:1.2rem;
+      border-radius:24px;
+      border:1px solid var(--line);
+    }
+    .qa-list p {
+      margin:.5rem 0;
+      padding:.55rem .7rem;
+      border-radius:12px;
+      background:#fff;
+    }
+    .print-note {
+      display:none;
+    }
+    @media (max-width:1100px) {
+      .hero-stats { grid-template-columns:repeat(2,1fr); }
+      .section-header { grid-template-columns:1fr; }
+      .territory-card,.territory-facts,.wide,.narrow { grid-column:1/-1; }
+      .data-universe, .livelihood-grid, .actor-grid, .synthesis-grid { grid-template-columns:repeat(2,1fr); }
+      .threat-grid { grid-template-columns:repeat(3,1fr); }
+      .capacity-mini-grid { grid-template-columns:repeat(3,1fr); }
+    }
+    @media (max-width:760px) {
+      .hero { min-height:auto; padding-top:6rem; }
+      .hero-stats, .data-universe, .livelihood-grid, .service-grid, .threat-grid, .capacity-grid, .capacity-mini-grid, .quadrant-grid, .actor-grid, .dialogue-grid, .conf-actor-grid, .synthesis-grid { grid-template-columns:1fr; }
+      .eco-card { grid-template-columns:1fr; }
+      .eco-chain { grid-template-columns:1fr; }
+      .arrow { transform:rotate(90deg); width:max-content; }
+      .timeline::before { left:38px; }
+      .timeline-item { grid-template-columns:70px 1fr; }
+      .timeline-item time { width:66px;height:66px;font-size:.95rem; }
+      .section { padding:4rem 1rem; }
+    }
+    @media print {
+      body { background:#fff; }
+      .sticky-nav, .threat-toolbar, .matrix-tabs, .button { display:none !important; }
+      .hero { min-height:auto; padding:2rem; color:#001F89; background:#fff; border-bottom:2px solid #001F89; }
+      .hero h1, .hero-summary { color:#001F89; }
+      .hero-stat { color:#001F89; background:#fff; border:1px solid #ccd4ec; }
+      .section { padding:2rem 0; }
+      .panel, .data-block, .livelihood-card, .eco-card, .service-card, .threat-card, .capacity-tile, .capacity-mini-card, .actor-card, .dialogue-card, .quadrant, .conf-actor-card, .synthesis-card { box-shadow:none; break-inside:avoid; }
+      .print-note { display:block; }
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-shell">
+  <!-- Navegación fija -->
+  <nav class="sticky-nav" aria-label="Navegación del dashboard">
+    <a href="#identidad">Identidad territorial</a>
+    <a href="#universo">Universo de datos</a>
+    <a href="#mdv">Medios de vida</a>
+    <a href="#ecosistemas">Ecosistemas</a>
+    <a href="#amenazas">Amenazas</a>
+    <a href="#matrices">Matrices</a>
+    <a href="#capacidad">Capacidad</a>
+    <a href="#gobernanza">Gobernanza</a>
+    <a href="#conflictos">Conflictos</a>
+    <a href="#sintesis">Síntesis</a>
+    <a href="#calidad">Calidad</a>
+  </nav>
+
+  <!-- Hero / apertura territorial -->
+  <header class="hero" id="inicio">
+    <div class="hero-content">
+      <div class="hero-kicker">Dashboard socio-ecológico territorial</div>
+      <h1>Fundación Comunitaria Puca</h1>
+      <p class="hero-summary">
+        Lectura interactiva del archivo de análisis para el <strong>Refugio de Vida Silvestre Puca</strong>, Honduras.
+        El dashboard integra medios de vida, ecosistemas, servicios ecosistémicos, amenazas, gobernanza, conflictos y capacidad adaptativa,
+        usando únicamente la información registrada en el Excel.
+      </p>
+      <div class="hero-stats"><article class="hero-stat">
+        <strong>1</strong>
+        <span>país</span>
+        <small>Honduras</small>
+    </article><article class="hero-stat">
+        <strong>1</strong>
+        <span>paisaje</span>
+        <small>Refugio de Vida Silvestre Puca</small>
+    </article><article class="hero-stat">
+        <strong>10</strong>
+        <span>medios de vida priorizados</span>
+        <small>Tabla 3.2</small>
+    </article><article class="hero-stat">
+        <strong>3</strong>
+        <span>ecosistemas caracterizados</span>
+        <small>Tabla 3.4</small>
+    </article><article class="hero-stat">
+        <strong>7</strong>
+        <span>amenazas con nombre</span>
+        <small>Tabla 4.1</small>
+    </article><article class="hero-stat">
+        <strong>9</strong>
+        <span>actores del paisaje</span>
+        <small>Tabla 5.1</small>
+    </article><article class="hero-stat">
+        <strong>4</strong>
+        <span>espacios de diálogo</span>
+        <small>Tabla 5.2</small>
+    </article><article class="hero-stat">
+        <strong>21</strong>
+        <span>eventos de conflicto</span>
+        <small>Tabla 6.1</small>
+    </article></div>
+    </div>
+  </header>
+
+  <!-- Identidad territorial -->
+  <section class="section" id="identidad">
+    <div class="section-header">
+      <div><span class="eyebrow">01 · Lectura espacial</span><h2>Identidad territorial</h2></div>
+      <p>El archivo ubica el análisis en Honduras y concentra la lectura en el Refugio de Vida Silvestre Puca. No se registran coordenadas; por eso se usa una visualización esquemática y no un mapa exacto.</p>
+    </div>
+    <div class="infographic-grid">
+      <article class="territory-card">
+        <span class="eyebrow">País identificado</span>
+        <h3>Honduras · Refugio de Vida Silvestre Puca</h3>
+        <div class="map-symbol" role="img" aria-label="Mapa esquemático de Honduras con punto territorial de referencia">
+          <span class="map-point"></span>
+          <span class="map-label">RVS Puca<br><small>Referencia territorial no georreferenciada</small></span>
+        </div>
+        <p>El registro combina el nombre completo del paisaje con la abreviación “RVS Puca”. Para efectos del dashboard se tratan como la misma unidad territorial.</p>
+      </article>
+      <div class="territory-facts">
+        <article class="fact-strip"><strong>2025-06-11/12</strong><span>Fechas registradas en las herramientas base.</span></article>
+        <article class="fact-strip"><strong>FC Puca</strong><span>Grupo/organización reportada en la base.</span></article>
+        <article class="fact-strip"><strong>Sin coordenadas</strong><span>La visualización territorial es simbólica; no delimita polígonos ni puntos reales.</span></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Universo de datos -->
+  <section class="section" id="universo">
+    <div class="section-header">
+      <div><span class="eyebrow">02 · Huella de información</span><h2>Universo de datos</h2></div>
+      <p>El archivo contiene hojas originales, tablas limpias TIDY, catálogos LOOKUP y hojas QA. Esta estructura permite construir relaciones sin depender de gráficos convencionales.</p>
+    </div>
+    <div class="data-universe">
+    <article class="data-block">
+      <span class="data-count">3</span>
+      <h3>Base territorial</h3>
+      <p>País, paisaje, grupos y fecha de trabajo.</p>
+      <div><span class="chip ">variables</span> <span class="chip ">LOOKUP_GEO</span> <span class="chip ">LOOKUP_CONTEXT</span></div>
+    </article>
+    <article class="data-block">
+      <span class="data-count">4</span>
+      <h3>Medios de vida</h3>
+      <p>Priorización y caracterización productiva.</p>
+      <div><span class="chip ">3.1</span> <span class="chip ">3.2</span> <span class="chip ">3.3 A–D</span> <span class="chip ">TIDY_3_3_CAR_LONG</span></div>
+    </article>
+    <article class="data-block">
+      <span class="data-count">4</span>
+      <h3>Ecosistemas y SE</h3>
+      <p>Relación ecosistema–servicio–medio de vida.</p>
+      <div><span class="chip ">3.4</span> <span class="chip ">3.5</span> <span class="chip ">TIDY_3_4</span> <span class="chip ">TIDY_3_5</span></div>
+    </article>
+    <article class="data-block">
+      <span class="data-count">3</span>
+      <h3>Amenazas</h3>
+      <p>Amenazas climáticas/no climáticas e impactos.</p>
+      <div><span class="chip ">4.1</span> <span class="chip ">4.2.1</span> <span class="chip ">4.2.2</span></div>
+    </article>
+    <article class="data-block">
+      <span class="data-count">2</span>
+      <h3>Gobernanza</h3>
+      <p>Actores, relaciones y espacios de diálogo.</p>
+      <div><span class="chip ">5.1</span> <span class="chip ">5.2</span></div>
+    </article>
+    <article class="data-block">
+      <span class="data-count">2</span>
+      <h3>Conflictos</h3>
+      <p>Evolución de conflictos y actores involucrados.</p>
+      <div><span class="chip ">6.1</span> <span class="chip ">6.2</span></div>
+    </article>
+    <article class="data-block">
+      <span class="data-count">2</span>
+      <h3>Capacidad adaptativa</h3>
+      <p>Resultados agregados por dimensión y medio de vida.</p>
+      <div><span class="chip ">7.1</span> <span class="chip ">TIDY_7_1_CAPACITY</span></div>
+    </article>
+    <article class="data-block">
+      <span class="data-count">1</span>
+      <h3>Calidad de datos</h3>
+      <p>Resumen de estructura, duplicados y valores faltantes.</p>
+      <div><span class="chip ">QA_*</span></div>
+    </article></div>
+  </section>
+
+  <!-- Medios de vida -->
+  <section class="section" id="mdv">
+    <div class="section-header">
+      <div><span class="eyebrow">03 · Sistemas productivos</span><h2>Medios de vida</h2></div>
+      <p>La priorización identifica 10 medios de vida. La caficultura alcanza el mayor puntaje total de priorización; granos básicos combina alta importancia para seguridad alimentaria con señales de exposición en los cruces de amenazas.</p>
+    </div>
+    <div class="livelihood-grid">
+    <article class="livelihood-card" data-name="Caficultura">
+      <div class="card-topline"><span class="rank-label">Prioridad 12/15</span><span class="pill">Capacidad: 3,25</span></div>
+      <h3>Caficultura</h3>
+      <p>Café pergamino, café oro, café tostado y molido</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●●●</span></span><span class="criterion"><b>Área</b><span class="dots">●●○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●●●</span></span><span class="criterion"><b>Ambiente</b><span class="dots">●○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●●●</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip service-chip">BoNu-P3</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>7,71</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Granos básicos">
+      <div class="card-topline"><span class="rank-label">Prioridad 10/15</span><span class="pill">Capacidad: 2,47</span></div>
+      <h3>Granos básicos</h3>
+      <p>Maíz, frijoles</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●●●</span></span><span class="criterion"><b>Área</b><span class="dots">●●○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●●○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">●○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●●○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip service-chip">BoSe-R6</span> <span class="chip service-chip">BoNu-P3</span> <span class="chip service-chip">BoSe-P1</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>8,43</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Avicultura">
+      <div class="card-topline"><span class="rank-label">Prioridad 9/15</span><span class="pill">Capacidad: 2,87</span></div>
+      <h3>Avicultura</h3>
+      <p>Pollo de engorde, huevos, gallinas ponedoras</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●●○</span></span><span class="criterion"><b>Área</b><span class="dots">●○○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●○○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">●●○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●●●</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip service-chip">BoSe-R6</span> <span class="chip service-chip">BoNu-P3</span> <span class="chip service-chip">BoPiEn-P2</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>3,20</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Apicultura">
+      <div class="card-topline"><span class="rank-label">Prioridad 9/15</span><span class="pill">Capacidad: 2,96</span></div>
+      <h3>Apicultura</h3>
+      <p>Miel de abeja, polen, propóleo, cera de abeja, jalea real</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●●○</span></span><span class="criterion"><b>Área</b><span class="dots">●○○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●○○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">●●●</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●●○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip service-chip">BoSe-R6</span> <span class="chip service-chip">BoPiEn-P2</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>7,23</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Ganadería">
+      <div class="card-topline"><span class="rank-label">Prioridad 7/15</span><span class="pill">Capacidad: 3,09</span></div>
+      <h3>Ganadería</h3>
+      <p>Carne, leche, lácteos</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●●○</span></span><span class="criterion"><b>Área</b><span class="dots">●●○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●●○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">○○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●○○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip service-chip">BoSe-R6</span> <span class="chip service-chip">BoNu-P3</span> <span class="chip service-chip">BoPiEn-P2</span> <span class="chip service-chip">BoSe-P1</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>8,43</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Ecoturismo">
+      <div class="card-topline"><span class="rank-label">Prioridad 6/15</span><span class="pill">Capacidad: no evaluado</span></div>
+      <h3>Ecoturismo</h3>
+      <p>Hospedaje, alimentación típica, tours ecológicos, guianza y senderismo</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●○○</span></span><span class="criterion"><b>Área</b><span class="dots">●○○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●●○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">○○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●●○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip muted-chip">sin vínculo registrado</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>sin cruce</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Horticultura">
+      <div class="card-topline"><span class="rank-label">Prioridad 5/15</span><span class="pill">Capacidad: no evaluado</span></div>
+      <h3>Horticultura</h3>
+      <p>Lechuga, repollo, tomate, chile dulce, pepino, zanahoria, rábano, remolacha, culantro, albahaca, orégano</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●○○</span></span><span class="criterion"><b>Área</b><span class="dots">●○○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●○○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">○○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●●○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip muted-chip">sin vínculo registrado</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>sin cruce</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Cañal">
+      <div class="card-topline"><span class="rank-label">Prioridad 5/15</span><span class="pill">Capacidad: no evaluado</span></div>
+      <h3>Cañal</h3>
+      <p>Miel, jugo, panela o rapadura, bagazo (residuo para combustible o alimento animal)</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●○○</span></span><span class="criterion"><b>Área</b><span class="dots">●○○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●○○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">●○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●○○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip muted-chip">sin vínculo registrado</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>sin cruce</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Extracción de materiales">
+      <div class="card-topline"><span class="rank-label">Prioridad 4/15</span><span class="pill">Capacidad: no evaluado</span></div>
+      <h3>Extracción de materiales</h3>
+      <p>Arena, grava, piedra, tierra para relleno o adobes, rocas ornamentales o para construcción</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●○○</span></span><span class="criterion"><b>Área</b><span class="dots">●●○</span></span><span class="criterion"><b>Des. local</b><span class="dots">●○○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">○○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">○○○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip muted-chip">sin vínculo registrado</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>sin cruce</strong></div>
+    </article>
+    <article class="livelihood-card" data-name="Piscicultura">
+      <div class="card-topline"><span class="rank-label">Prioridad 3/15</span><span class="pill">Capacidad: no evaluado</span></div>
+      <h3>Piscicultura</h3>
+      <p>Tilapia</p>
+      <div class="criteria-strip"><span class="criterion"><b>Seg. alimentaria</b><span class="dots">●○○</span></span><span class="criterion"><b>Área</b><span class="dots">○○○</span></span><span class="criterion"><b>Des. local</b><span class="dots">○○○</span></span><span class="criterion"><b>Ambiente</b><span class="dots">●○○</span></span><span class="criterion"><b>Inclusión</b><span class="dots">●○○</span></span></div>
+      <div class="dependency-row"><span>Servicios vinculados</span><div><span class="chip muted-chip">sin vínculo registrado</span></div></div>
+      <div class="dependency-row"><span>Señal de exposición</span><strong>sin cruce</strong></div>
+    </article></div>
+  </section>
+
+  <!-- Ecosistemas y servicios ecosistémicos -->
+  <section class="section" id="ecosistemas">
+    <div class="section-header">
+      <div><span class="eyebrow">04 · Base ecológica</span><h2>Ecosistemas y servicios</h2></div>
+      <p>La base caracteriza tres ecosistemas y sus vínculos con medios de vida. Los servicios ecosistémicos aparecen como códigos porque el archivo no incluye una tabla de nombres descriptivos completos para cada código.</p>
+    </div>
+    <div class="infographic-grid">
+      <div class="panel wide">
+        <h3>Ecosistemas caracterizados</h3>
+        <div class="ecosystem-stack">
+    <article class="eco-card">
+      <div class="eco-orb"><span>BoSe</span></div>
+      <div>
+        <h3>Bosque seco</h3>
+        <p><strong>Salud:</strong> funcionalidad moderada · <strong>Causas de degradación:</strong> Sobreexplotación de los recursos, contaminación por químicos, incendios</p>
+        <div class="eco-chain">
+          <div><span class="chip service-chip">P1</span> <span class="chip service-chip">P2</span> <span class="chip service-chip">R6</span></div>
+          <span class="arrow">→</span>
+          <div><span class="chip mdv-chip">Ganadería</span> <span class="chip mdv-chip">Granos básicos</span> <span class="chip mdv-chip">Avicultura</span> <span class="chip mdv-chip">Apicultura</span></div>
+        </div>
+      </div>
+    </article>
+    <article class="eco-card">
+      <div class="eco-orb"><span>BoPiEn</span></div>
+      <div>
+        <h3>Bosque pino-encino</h3>
+        <p><strong>Salud:</strong> funcionalidad adecuada · <strong>Causas de degradación:</strong> Incendios, cambio de uso del suelo</p>
+        <div class="eco-chain">
+          <div><span class="chip service-chip">P1</span> <span class="chip service-chip">P2</span> <span class="chip service-chip">R6</span></div>
+          <span class="arrow">→</span>
+          <div><span class="chip mdv-chip">Ganadería</span> <span class="chip mdv-chip">Granos básicos</span> <span class="chip mdv-chip">Avicultura</span> <span class="chip mdv-chip">Apicultura. Caficultura</span></div>
+        </div>
+      </div>
+    </article>
+    <article class="eco-card">
+      <div class="eco-orb"><span>BoNu</span></div>
+      <div>
+        <h3>Bosque nuboso</h3>
+        <p><strong>Salud:</strong> funcionalidad adecuada · <strong>Causas de degradación:</strong> Cambio de uso del suelo, contaminación química</p>
+        <div class="eco-chain">
+          <div><span class="chip service-chip">P1</span> <span class="chip service-chip">P3</span> <span class="chip service-chip">R6</span></div>
+          <span class="arrow">→</span>
+          <div><span class="chip mdv-chip">Ganadería</span> <span class="chip mdv-chip">Caficultura</span></div>
+        </div>
+      </div>
+    </article></div>
+      </div>
+      <div class="panel narrow">
+        <h3>Lectura rápida</h3>
+        <p>El bosque seco, el bosque pino-encino y el bosque nuboso conectan con servicios codificados y medios de vida productivos. Las causas de degradación registradas incluyen sobreexplotación, incendios, cambio de uso del suelo y contaminación química.</p>
+        <p class="mini">Escala de salud del archivo: 1 = funcionalidad adecuada; 2 = funcionalidad moderada; 3 = poco funcional.</p>
+      </div>
+      <div class="full">
+        <div class="service-grid">
+    <article class="service-card">
+      <div class="service-code">BoSe-R6</div>
+      <h3>Servicio ecosistémico codificado</h3>
+      <p class="mini">Código conservado porque el archivo no incluye el nombre descriptivo completo del servicio.</p>
+      <div class="two-col-mini">
+        <div><span>Elementos</span><span class="chip service-chip">demanda</span> <span class="chip service-chip">flujo</span> <span class="chip service-chip">provisión</span></div>
+        <div><span>Medios de vida</span><span class="chip mdv-chip">Apicultura</span> <span class="chip mdv-chip">Avicultura</span> <span class="chip mdv-chip">Ganadería</span> <span class="chip mdv-chip">Granos básicos</span></div>
+      </div>
+      <div class="signal-row"><span>Acceso reportado</span><strong>Disminuye</strong></div>
+      <div class="signal-row"><span>Usuarios/familias reportadas</span><strong>7.600</strong></div>
+      <details><summary>Barreras y calendario</summary>
+        <p><strong>Barreras:</strong> Quemas , tala uso de pesticidas; Disminucion del mercado; Costos de Producción</p>
+        <p><strong>Contribuye más:</strong> Abril, Mayo , Junio · <strong>Falta:</strong> Julio y Agosto</p>
+      </details>
+    </article>
+    <article class="service-card">
+      <div class="service-code">BoNu-P3</div>
+      <h3>Servicio ecosistémico codificado</h3>
+      <p class="mini">Código conservado porque el archivo no incluye el nombre descriptivo completo del servicio.</p>
+      <div class="two-col-mini">
+        <div><span>Elementos</span><span class="chip service-chip">demanda</span> <span class="chip service-chip">flujo</span> <span class="chip service-chip">provisión</span></div>
+        <div><span>Medios de vida</span><span class="chip mdv-chip">Avicultura</span> <span class="chip mdv-chip">Caficultura</span> <span class="chip mdv-chip">Ganadería</span> <span class="chip mdv-chip">Granos básicos</span></div>
+      </div>
+      <div class="signal-row"><span>Acceso reportado</span><strong>Disminuye</strong></div>
+      <div class="signal-row"><span>Usuarios/familias reportadas</span><strong>7.600</strong></div>
+      <details><summary>Barreras y calendario</summary>
+        <p><strong>Barreras:</strong> Deforestacion, incendios,aumento de la poblacion; Depresiación del sistema,alto costo de materiales ferreteros; Aumento de la población</p>
+        <p><strong>Contribuye más:</strong> Junio a Marzo · <strong>Falta:</strong> Abril y Mayo</p>
+      </details>
+    </article>
+    <article class="service-card">
+      <div class="service-code">BoPiEn-P2</div>
+      <h3>Servicio ecosistémico codificado</h3>
+      <p class="mini">Código conservado porque el archivo no incluye el nombre descriptivo completo del servicio.</p>
+      <div class="two-col-mini">
+        <div><span>Elementos</span><span class="chip service-chip">demanda</span> <span class="chip service-chip">flujo</span> <span class="chip service-chip">provisión</span></div>
+        <div><span>Medios de vida</span><span class="chip mdv-chip">Apicultura</span> <span class="chip mdv-chip">Avicultura</span> <span class="chip mdv-chip">Ganadería</span></div>
+      </div>
+      <div class="signal-row"><span>Acceso reportado</span><strong>Disminuye</strong></div>
+      <div class="signal-row"><span>Usuarios/familias reportadas</span><strong>7.448</strong></div>
+      <details><summary>Barreras y calendario</summary>
+        <p><strong>Barreras:</strong> Sobreexplotación; Tenencia de la tierra; Construcción, leña</p>
+        <p><strong>Contribuye más:</strong> Febrero a Mayo · <strong>Falta:</strong> Junio a Septiembre</p>
+      </details>
+    </article>
+    <article class="service-card">
+      <div class="service-code">BoSe-P1</div>
+      <h3>Servicio ecosistémico codificado</h3>
+      <p class="mini">Código conservado porque el archivo no incluye el nombre descriptivo completo del servicio.</p>
+      <div class="two-col-mini">
+        <div><span>Elementos</span><span class="chip service-chip">demanda</span> <span class="chip service-chip">flujo</span> <span class="chip service-chip">provisión</span></div>
+        <div><span>Medios de vida</span><span class="chip mdv-chip">Ganadería</span> <span class="chip mdv-chip">Granos básicos</span></div>
+      </div>
+      <div class="signal-row"><span>Acceso reportado</span><strong>Se mantiene</strong></div>
+      <div class="signal-row"><span>Usuarios/familias reportadas</span><strong>4.560</strong></div>
+      <details><summary>Barreras y calendario</summary>
+        <p><strong>Barreras:</strong> Coalaca, La Cañada,Mongual, Las Flores La estancia , Las Asomada,Zapote, La Lima , San Jose del Alto , El sile, Guanas, Quelacasque</p>
+        <p><strong>Contribuye más:</strong> Junio a Diciembre · <strong>Falta:</strong> Enero a Mayo</p>
+      </details>
+    </article></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Amenazas -->
+  <section class="section" id="amenazas">
+    <div class="section-header">
+      <div><span class="eyebrow">05 · Presiones territoriales</span><h2>Amenazas</h2></div>
+      <p>Las amenazas se presentan según el puntaje total registrado en 4.1. Contaminación obtiene el puntaje más alto; sequías y tormentas tropicales siguen con puntajes altos y localización diferenciada por zona baja y zona alta.</p>
+    </div>
+    <div class="threat-toolbar" role="toolbar" aria-label="Filtro de amenazas">
+      <button class="filter-btn active" data-filter="todas">Todas</button>
+      <button class="filter-btn" data-filter="climática">Climáticas</button>
+      <button class="filter-btn" data-filter="no-climática">No climáticas</button>
+      <button class="filter-btn" id="resetFilters">Restablecer</button>
+    </div>
+    <div class="threat-grid">
+    <article class="threat-card" data-type="no-climática">
+      <div class="threat-score">9</div>
+      <div>
+        <span class="tag no-climatica">no-climática</span>
+        <h3>Contaminación</h3>
+        <p>En todo el paisaje</p>
+        <div class="signal-grid">
+          <span>Magnitud <span class="dots">●●●●○</span></span>
+          <span>Frecuencia <span class="dots">●●●</span></span>
+          <span>Tendencia <span class="dots">●●○</span></span>
+        </div>
+      </div>
+    </article>
+    <article class="threat-card" data-type="climática">
+      <div class="threat-score">8</div>
+      <div>
+        <span class="tag climatica">climática</span>
+        <h3>Sequías</h3>
+        <p>En todo el paisaje, pero mas en la zona baja</p>
+        <div class="signal-grid">
+          <span>Magnitud <span class="dots">●●●●○</span></span>
+          <span>Frecuencia <span class="dots">●●○</span></span>
+          <span>Tendencia <span class="dots">●●○</span></span>
+        </div>
+      </div>
+    </article>
+    <article class="threat-card" data-type="climática">
+      <div class="threat-score">8</div>
+      <div>
+        <span class="tag climatica">climática</span>
+        <h3>Tormentas tropicales</h3>
+        <p>En todo el paisaje, pero mas en la zona alta</p>
+        <div class="signal-grid">
+          <span>Magnitud <span class="dots">●●●●○</span></span>
+          <span>Frecuencia <span class="dots">●●○</span></span>
+          <span>Tendencia <span class="dots">●●○</span></span>
+        </div>
+      </div>
+    </article>
+    <article class="threat-card" data-type="no-climática">
+      <div class="threat-score">7</div>
+      <div>
+        <span class="tag no-climatica">no-climática</span>
+        <h3>Incendios</h3>
+        <p>En todo el paisaje</p>
+        <div class="signal-grid">
+          <span>Magnitud <span class="dots">●●●○○</span></span>
+          <span>Frecuencia <span class="dots">●●●</span></span>
+          <span>Tendencia <span class="dots">●○○</span></span>
+        </div>
+      </div>
+    </article>
+    <article class="threat-card" data-type="no-climática">
+      <div class="threat-score">7</div>
+      <div>
+        <span class="tag no-climatica">no-climática</span>
+        <h3>Deforestación</h3>
+        <p>En todo el paisaje</p>
+        <div class="signal-grid">
+          <span>Magnitud <span class="dots">●●●○○</span></span>
+          <span>Frecuencia <span class="dots">●●●</span></span>
+          <span>Tendencia <span class="dots">●○○</span></span>
+        </div>
+      </div>
+    </article>
+    <article class="threat-card" data-type="climática">
+      <div class="threat-score">6</div>
+      <div>
+        <span class="tag climatica">climática</span>
+        <h3>Cambios de los patrones estacionales de lluvia</h3>
+        <p>En todo el paisaje</p>
+        <div class="signal-grid">
+          <span>Magnitud <span class="dots">●●●○○</span></span>
+          <span>Frecuencia <span class="dots">●●○</span></span>
+          <span>Tendencia <span class="dots">●○○</span></span>
+        </div>
+      </div>
+    </article>
+    <article class="threat-card" data-type="climática">
+      <div class="threat-score">5</div>
+      <div>
+        <span class="tag climatica">climática</span>
+        <h3>Deslizamientos y derrumbes</h3>
+        <p>En todo el paisaje, pero mas en la zona alta</p>
+        <div class="signal-grid">
+          <span>Magnitud <span class="dots">●●○○○</span></span>
+          <span>Frecuencia <span class="dots">●●○</span></span>
+          <span>Tendencia <span class="dots">●○○</span></span>
+        </div>
+      </div>
+    </article></div>
+  </section>
+
+  <!-- Matrices de relación -->
+  <section class="section" id="matrices">
+    <div class="section-header">
+      <div><span class="eyebrow">06 · Cruces críticos</span><h2>Matrices de impacto</h2></div>
+      <p>Las matrices usan intensidad visual por celda, no gráficos convencionales. Los valores son promedios de los campos de impacto disponibles por seguridad económica, alimentaria, sanitaria, ambiental, personal, comunitaria y política.</p>
+    </div>
+    <div class="matrix-tabs" role="tablist">
+      <button class="tab-button active" data-tab="mdv-matrix">Amenazas × medios de vida</button>
+      <button class="tab-button" data-tab="se-matrix">Amenazas × servicios</button>
+      <button class="tab-button" data-tab="cap-matrix">Capacidad × medios de vida</button>
+    </div>
+    <div class="tab-panel active" id="mdv-matrix"><div class="matrix-wrap"><div class="matrix" style="grid-template-columns:minmax(170px, 1.2fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr)"><div class="matrix-corner">Relación</div><div class="matrix-head">Contaminación</div><div class="matrix-head">Deforestación</div><div class="matrix-head">Deslizamientos</div><div class="matrix-head">Incendios</div><div class="matrix-head">Sequía</div><div class="matrix-head">Tormentas tropicales</div><div class="matrix-rowhead">Ganaderia y Granos Basicos</div><button class="matrix-cell heat-none" data-cell="Ganaderia y Granos Basicos × Contaminación: 0,00 / 3 (sin dato)" aria-label="Ganaderia y Granos Basicos × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="Ganaderia y Granos Basicos × Deforestación: 1,57 / 3 (media)" aria-label="Ganaderia y Granos Basicos × Deforestación: 1,57 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-mid" data-cell="Ganaderia y Granos Basicos × Deslizamientos: 1,57 / 3 (media)" aria-label="Ganaderia y Granos Basicos × Deslizamientos: 1,57 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-mid" data-cell="Ganaderia y Granos Basicos × Incendios: 1,57 / 3 (media)" aria-label="Ganaderia y Granos Basicos × Incendios: 1,57 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-mid" data-cell="Ganaderia y Granos Basicos × Sequía: 1,57 / 3 (media)" aria-label="Ganaderia y Granos Basicos × Sequía: 1,57 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-mid" data-cell="Ganaderia y Granos Basicos × Tormentas tropicales: 2,14 / 3 (media)" aria-label="Ganaderia y Granos Basicos × Tormentas tropicales: 2,14 / 3 (media)"><span>2,1</span></button><div class="matrix-rowhead">Caficultura</div><button class="matrix-cell heat-none" data-cell="Caficultura × Contaminación: 0,00 / 3 (sin dato)" aria-label="Caficultura × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-high" data-cell="Caficultura × Deforestación: 2,86 / 3 (alta)" aria-label="Caficultura × Deforestación: 2,86 / 3 (alta)"><span>2,9</span></button><button class="matrix-cell heat-none" data-cell="Caficultura × Deslizamientos: 0,00 / 3 (sin dato)" aria-label="Caficultura × Deslizamientos: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="Caficultura × Incendios: 0,00 / 3 (sin dato)" aria-label="Caficultura × Incendios: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-high" data-cell="Caficultura × Sequía: 2,29 / 3 (media)" aria-label="Caficultura × Sequía: 2,29 / 3 (media)"><span>2,3</span></button><button class="matrix-cell heat-high" data-cell="Caficultura × Tormentas tropicales: 2,57 / 3 (alta)" aria-label="Caficultura × Tormentas tropicales: 2,57 / 3 (alta)"><span>2,6</span></button><div class="matrix-rowhead">Apicultura</div><button class="matrix-cell heat-mid" data-cell="Apicultura × Contaminación: 1,50 / 3 (media)" aria-label="Apicultura × Contaminación: 1,50 / 3 (media)"><span>1,5</span></button><button class="matrix-cell heat-mid" data-cell="Apicultura × Deforestación: 1,40 / 3 (baja)" aria-label="Apicultura × Deforestación: 1,40 / 3 (baja)"><span>1,4</span></button><button class="matrix-cell heat-none" data-cell="Apicultura × Deslizamientos: 0,00 / 3 (sin dato)" aria-label="Apicultura × Deslizamientos: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="Apicultura × Incendios: 1,67 / 3 (media)" aria-label="Apicultura × Incendios: 1,67 / 3 (media)"><span>1,7</span></button><button class="matrix-cell heat-mid" data-cell="Apicultura × Sequía: 1,67 / 3 (media)" aria-label="Apicultura × Sequía: 1,67 / 3 (media)"><span>1,7</span></button><button class="matrix-cell heat-low" data-cell="Apicultura × Tormentas tropicales: 1,00 / 3 (baja)" aria-label="Apicultura × Tormentas tropicales: 1,00 / 3 (baja)"><span>1,0</span></button><div class="matrix-rowhead">Avicultura</div><button class="matrix-cell heat-none" data-cell="Avicultura × Contaminación: 0,00 / 3 (sin dato)" aria-label="Avicultura × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="Avicultura × Deforestación: 1,60 / 3 (media)" aria-label="Avicultura × Deforestación: 1,60 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-none" data-cell="Avicultura × Deslizamientos: 0,00 / 3 (sin dato)" aria-label="Avicultura × Deslizamientos: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="Avicultura × Incendios: 0,00 / 3 (sin dato)" aria-label="Avicultura × Incendios: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="Avicultura × Sequía: 1,60 / 3 (media)" aria-label="Avicultura × Sequía: 1,60 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-none" data-cell="Avicultura × Tormentas tropicales: 0,00 / 3 (sin dato)" aria-label="Avicultura × Tormentas tropicales: 0,00 / 3 (sin dato)"><span>—</span></button></div></div></div>
+    <div class="tab-panel" id="se-matrix"><div class="matrix-wrap"><div class="matrix" style="grid-template-columns:minmax(170px, 1.2fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr)"><div class="matrix-corner">Relación</div><div class="matrix-head">Cambios estacionales de lluvia</div><div class="matrix-head">Contaminación</div><div class="matrix-head">Deforestación</div><div class="matrix-head">Deslizamientos y derrumbes</div><div class="matrix-head">Incendios</div><div class="matrix-head">Sequía</div><div class="matrix-head">Tormentas tropicales</div><div class="matrix-rowhead">P3</div><button class="matrix-cell heat-none" data-cell="P3 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)" aria-label="P3 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="P3 × Contaminación: 0,00 / 3 (sin dato)" aria-label="P3 × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="P3 × Deforestación: 2,14 / 3 (media)" aria-label="P3 × Deforestación: 2,14 / 3 (media)"><span>2,1</span></button><button class="matrix-cell heat-none" data-cell="P3 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)" aria-label="P3 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="P3 × Incendios: 2,00 / 3 (media)" aria-label="P3 × Incendios: 2,00 / 3 (media)"><span>2,0</span></button><button class="matrix-cell heat-high" data-cell="P3 × Sequía: 2,29 / 3 (media)" aria-label="P3 × Sequía: 2,29 / 3 (media)"><span>2,3</span></button><button class="matrix-cell heat-mid" data-cell="P3 × Tormentas tropicales: 2,00 / 3 (media)" aria-label="P3 × Tormentas tropicales: 2,00 / 3 (media)"><span>2,0</span></button><div class="matrix-rowhead">P1</div><button class="matrix-cell heat-none" data-cell="P1 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)" aria-label="P1 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="P1 × Contaminación: 0,00 / 3 (sin dato)" aria-label="P1 × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="P1 × Deforestación: 1,43 / 3 (baja)" aria-label="P1 × Deforestación: 1,43 / 3 (baja)"><span>1,4</span></button><button class="matrix-cell heat-low" data-cell="P1 × Deslizamientos y derrumbes: 1,29 / 3 (baja)" aria-label="P1 × Deslizamientos y derrumbes: 1,29 / 3 (baja)"><span>1,3</span></button><button class="matrix-cell heat-mid" data-cell="P1 × Incendios: 1,43 / 3 (baja)" aria-label="P1 × Incendios: 1,43 / 3 (baja)"><span>1,4</span></button><button class="matrix-cell heat-mid" data-cell="P1 × Sequía: 1,57 / 3 (media)" aria-label="P1 × Sequía: 1,57 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-none" data-cell="P1 × Tormentas tropicales: 0,00 / 3 (sin dato)" aria-label="P1 × Tormentas tropicales: 0,00 / 3 (sin dato)"><span>—</span></button><div class="matrix-rowhead">R6</div><button class="matrix-cell heat-mid" data-cell="R6 × Cambios estacionales de lluvia: 1,60 / 3 (media)" aria-label="R6 × Cambios estacionales de lluvia: 1,60 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-none" data-cell="R6 × Contaminación: 0,00 / 3 (sin dato)" aria-label="R6 × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R6 × Deforestación: 0,00 / 3 (sin dato)" aria-label="R6 × Deforestación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-low" data-cell="R6 × Deslizamientos y derrumbes: 1,00 / 3 (baja)" aria-label="R6 × Deslizamientos y derrumbes: 1,00 / 3 (baja)"><span>1,0</span></button><button class="matrix-cell heat-none" data-cell="R6 × Incendios: 0,00 / 3 (sin dato)" aria-label="R6 × Incendios: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="R6 × Sequía: 1,43 / 3 (baja)" aria-label="R6 × Sequía: 1,43 / 3 (baja)"><span>1,4</span></button><button class="matrix-cell heat-low" data-cell="R6 × Tormentas tropicales: 1,00 / 3 (baja)" aria-label="R6 × Tormentas tropicales: 1,00 / 3 (baja)"><span>1,0</span></button><div class="matrix-rowhead">P2</div><button class="matrix-cell heat-none" data-cell="P2 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)" aria-label="P2 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="P2 × Contaminación: 0,00 / 3 (sin dato)" aria-label="P2 × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-high" data-cell="P2 × Deforestación: 2,29 / 3 (media)" aria-label="P2 × Deforestación: 2,29 / 3 (media)"><span>2,3</span></button><button class="matrix-cell heat-none" data-cell="P2 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)" aria-label="P2 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="P2 × Incendios: 2,14 / 3 (media)" aria-label="P2 × Incendios: 2,14 / 3 (media)"><span>2,1</span></button><button class="matrix-cell heat-none" data-cell="P2 × Sequía: 0,00 / 3 (sin dato)" aria-label="P2 × Sequía: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="P2 × Tormentas tropicales: 0,00 / 3 (sin dato)" aria-label="P2 × Tormentas tropicales: 0,00 / 3 (sin dato)"><span>—</span></button><div class="matrix-rowhead">R7</div><button class="matrix-cell heat-none" data-cell="R7 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)" aria-label="R7 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="R7 × Contaminación: 1,57 / 3 (media)" aria-label="R7 × Contaminación: 1,57 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-none" data-cell="R7 × Deforestación: 0,00 / 3 (sin dato)" aria-label="R7 × Deforestación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R7 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)" aria-label="R7 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R7 × Incendios: 0,00 / 3 (sin dato)" aria-label="R7 × Incendios: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R7 × Sequía: 0,00 / 3 (sin dato)" aria-label="R7 × Sequía: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R7 × Tormentas tropicales: 0,00 / 3 (sin dato)" aria-label="R7 × Tormentas tropicales: 0,00 / 3 (sin dato)"><span>—</span></button><div class="matrix-rowhead">R9</div><button class="matrix-cell heat-none" data-cell="R9 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)" aria-label="R9 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R9 × Contaminación: 0,00 / 3 (sin dato)" aria-label="R9 × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-mid" data-cell="R9 × Deforestación: 1,57 / 3 (media)" aria-label="R9 × Deforestación: 1,57 / 3 (media)"><span>1,6</span></button><button class="matrix-cell heat-none" data-cell="R9 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)" aria-label="R9 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R9 × Incendios: 0,00 / 3 (sin dato)" aria-label="R9 × Incendios: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R9 × Sequía: 0,00 / 3 (sin dato)" aria-label="R9 × Sequía: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R9 × Tormentas tropicales: 0,00 / 3 (sin dato)" aria-label="R9 × Tormentas tropicales: 0,00 / 3 (sin dato)"><span>—</span></button><div class="matrix-rowhead">R8</div><button class="matrix-cell heat-none" data-cell="R8 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)" aria-label="R8 × Cambios estacionales de lluvia: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R8 × Contaminación: 0,00 / 3 (sin dato)" aria-label="R8 × Contaminación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R8 × Deforestación: 0,00 / 3 (sin dato)" aria-label="R8 × Deforestación: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R8 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)" aria-label="R8 × Deslizamientos y derrumbes: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-low" data-cell="R8 × Incendios: 1,00 / 3 (baja)" aria-label="R8 × Incendios: 1,00 / 3 (baja)"><span>1,0</span></button><button class="matrix-cell heat-none" data-cell="R8 × Sequía: 0,00 / 3 (sin dato)" aria-label="R8 × Sequía: 0,00 / 3 (sin dato)"><span>—</span></button><button class="matrix-cell heat-none" data-cell="R8 × Tormentas tropicales: 0,00 / 3 (sin dato)" aria-label="R8 × Tormentas tropicales: 0,00 / 3 (sin dato)"><span>—</span></button></div></div></div>
+    <div class="tab-panel" id="cap-matrix"><div class="matrix-wrap"><div class="matrix" style="grid-template-columns:minmax(170px, 1.2fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr)"><div class="matrix-corner">Relación</div><div class="matrix-head">Caficultura</div><div class="matrix-head">Ganadería</div><div class="matrix-head">Apicultura</div><div class="matrix-head">Avicultura</div><div class="matrix-head">Granos básicos</div><div class="matrix-rowhead">Necesidades básicas</div><button class="matrix-cell heat-mid" data-cell="Necesidades básicas × Caficultura: 3,65 / 5 (alta)" aria-label="Necesidades básicas × Caficultura: 3,65 / 5 (alta)"><span>3,6</span></button><button class="matrix-cell heat-mid" data-cell="Necesidades básicas × Ganadería: 3,43 / 5 (alta)" aria-label="Necesidades básicas × Ganadería: 3,43 / 5 (alta)"><span>3,4</span></button><button class="matrix-cell heat-mid" data-cell="Necesidades básicas × Apicultura: 2,82 / 5 (alta)" aria-label="Necesidades básicas × Apicultura: 2,82 / 5 (alta)"><span>2,8</span></button><button class="matrix-cell heat-mid" data-cell="Necesidades básicas × Avicultura: 3,32 / 5 (alta)" aria-label="Necesidades básicas × Avicultura: 3,32 / 5 (alta)"><span>3,3</span></button><button class="matrix-cell heat-mid" data-cell="Necesidades básicas × Granos básicos: 3,13 / 5 (alta)" aria-label="Necesidades básicas × Granos básicos: 3,13 / 5 (alta)"><span>3,1</span></button><div class="matrix-rowhead">Innovación</div><button class="matrix-cell heat-mid" data-cell="Innovación × Caficultura: 3,06 / 5 (alta)" aria-label="Innovación × Caficultura: 3,06 / 5 (alta)"><span>3,1</span></button><button class="matrix-cell heat-mid" data-cell="Innovación × Ganadería: 2,61 / 5 (alta)" aria-label="Innovación × Ganadería: 2,61 / 5 (alta)"><span>2,6</span></button><button class="matrix-cell heat-mid" data-cell="Innovación × Apicultura: 3,22 / 5 (alta)" aria-label="Innovación × Apicultura: 3,22 / 5 (alta)"><span>3,2</span></button><button class="matrix-cell heat-mid" data-cell="Innovación × Avicultura: 2,67 / 5 (alta)" aria-label="Innovación × Avicultura: 2,67 / 5 (alta)"><span>2,7</span></button><button class="matrix-cell heat-low" data-cell="Innovación × Granos básicos: 1,72 / 5 (media)" aria-label="Innovación × Granos básicos: 1,72 / 5 (media)"><span>1,7</span></button><div class="matrix-rowhead">Acción</div><button class="matrix-cell heat-mid" data-cell="Acción × Caficultura: 2,55 / 5 (alta)" aria-label="Acción × Caficultura: 2,55 / 5 (alta)"><span>2,5</span></button><button class="matrix-cell heat-mid" data-cell="Acción × Ganadería: 2,94 / 5 (alta)" aria-label="Acción × Ganadería: 2,94 / 5 (alta)"><span>2,9</span></button><button class="matrix-cell heat-mid" data-cell="Acción × Apicultura: 2,95 / 5 (alta)" aria-label="Acción × Apicultura: 2,95 / 5 (alta)"><span>3,0</span></button><button class="matrix-cell heat-low" data-cell="Acción × Avicultura: 2,04 / 5 (media)" aria-label="Acción × Avicultura: 2,04 / 5 (media)"><span>2,0</span></button><button class="matrix-cell heat-low" data-cell="Acción × Granos básicos: 1,92 / 5 (media)" aria-label="Acción × Granos básicos: 1,92 / 5 (media)"><span>1,9</span></button></div></div></div>
+    <div class="inspector" id="matrixInspector">Haz clic en una celda para leer la relación y su intensidad.</div>
+  </section>
+
+  <!-- Capacidad adaptativa -->
+  <section class="section" id="capacidad">
+    <div class="section-header">
+      <div><span class="eyebrow">07 · Capacidad adaptativa</span><h2>Señales de capacidad</h2></div>
+      <p>La hoja de encuesta contiene 100 registros agregados de capacidad. No hay registros individuales en TIDY_7_1_RESPONDENTS ni TIDY_7_1_RESPONSES, por lo que la interpretación se limita a promedios por dimensión y medio de vida.</p>
+    </div>
+    <div class="capacity-grid">
+    <article class="capacity-tile">
+      <span>Necesidades básicas</span>
+      <strong>3,27</strong>
+      <small>50 registros de indicador</small>
+      <div class="ladder"><span class="dots">●●●○○</span></div>
+    </article>
+    <article class="capacity-tile">
+      <span>Innovación</span>
+      <strong>2,66</strong>
+      <small>30 registros de indicador</small>
+      <div class="ladder"><span class="dots">●●●○○</span></div>
+    </article>
+    <article class="capacity-tile">
+      <span>Acción</span>
+      <strong>2,48</strong>
+      <small>20 registros de indicador</small>
+      <div class="ladder"><span class="dots">●●○○○</span></div>
+    </article></div>
+    <div class="capacity-mini-grid">
+    <article class="capacity-mini-card">
+      <span>Caficultura</span>
+      <strong>3,25</strong>
+      <small>20 registros</small>
+    </article>
+    <article class="capacity-mini-card">
+      <span>Ganadería</span>
+      <strong>3,09</strong>
+      <small>20 registros</small>
+    </article>
+    <article class="capacity-mini-card">
+      <span>Apicultura</span>
+      <strong>2,96</strong>
+      <small>20 registros</small>
+    </article>
+    <article class="capacity-mini-card">
+      <span>Avicultura</span>
+      <strong>2,87</strong>
+      <small>20 registros</small>
+    </article>
+    <article class="capacity-mini-card">
+      <span>Granos básicos</span>
+      <strong>2,47</strong>
+      <small>20 registros</small>
+    </article></div>
+  </section>
+
+  <!-- Actores y gobernanza -->
+  <section class="section" id="gobernanza">
+    <div class="section-header">
+      <div><span class="eyebrow">08 · Arquitectura social</span><h2>Actores y gobernanza</h2></div>
+      <p>La matriz poder/interés se construye con la escala registrada en 5.1. Los actores con alto poder y alto interés aparecen como nodos clave para coordinación territorial, sin asumir roles fuera de lo documentado.</p>
+    </div>
+    <div class="infographic-grid">
+      <div class="panel wide">
+        <h3>Cuadrante poder / interés</h3>
+        <div class="quadrant-grid"><article class="quadrant"><h3>Alto poder / alto interés</h3><span class="chip actor-chip">Junta administradora de agua</span><span class="chip actor-chip">Municipalidades (Unidad municipal ambiental, Direccion de justicia)</span><span class="chip actor-chip">Instituto de Conservacion Forestal</span></article><article class="quadrant"><h3>Alto poder / bajo interés</h3><span class="chip muted-chip">sin actores registrados</span></article><article class="quadrant"><h3>Bajo poder / alto interés</h3><span class="chip actor-chip">Apicultor y meliponicultor</span><span class="chip actor-chip">Grupos organizados</span><span class="chip actor-chip">Direccion municipal de educacion</span></article><article class="quadrant"><h3>Bajo poder / bajo interés</h3><span class="chip actor-chip">Ganadero</span><span class="chip actor-chip">Caficultor</span><span class="chip actor-chip">Agricultora</span></article></div>
+      </div>
+      <div class="panel narrow">
+        <h3>Relaciones registradas</h3>
+        <p>La base contiene 40 relaciones actor–actor/tema en TIDY_5_1_RELACIONES, clasificadas como colaboración o conflicto. La lectura pública se mantiene a nivel de actores y roles para evitar sobrecargar el dashboard.</p>
+      </div>
+      <div class="full actor-grid">
+    <article class="actor-card">
+      <div><h3>Junta administradora de agua</h3><span class="tag">comunitario</span></div>
+      <p>Administracion del recurso hidrico y actividades de restauracion en zonas de recarga hidrica</p>
+      <div class="actor-scores"><span>Poder 7/10</span><span>Interés 10/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Apicultor y meliponicultor</h3><span class="tag">productor</span></div>
+      <p>manejo de colmenas y produccion de miel y subproductos para la generacion de ingresos familiares</p>
+      <div class="actor-scores"><span>Poder 5/10</span><span>Interés 10/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Ganadero</h3><span class="tag">productor</span></div>
+      <p>Produccion de ganado, lacteos y carne para consumo familiar y venta</p>
+      <div class="actor-scores"><span>Poder 4/10</span><span>Interés 6/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Caficultor</h3><span class="tag">productor</span></div>
+      <p>Produccion de café y otros alimentos (banano, frutales) para consumo y venta</p>
+      <div class="actor-scores"><span>Poder 4/10</span><span>Interés 6/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Grupos organizados</h3><span class="tag">comunitario</span></div>
+      <p>Proyectos productivos y de fortalecimiento a las comunidades</p>
+      <div class="actor-scores"><span>Poder 6/10</span><span>Interés 10/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Agricultora</h3><span class="tag">productora</span></div>
+      <p>Produccion de granos basicos para el consumo de las familias en las comunidades y para la venta y generacion de ingresos familiares</p>
+      <div class="actor-scores"><span>Poder 4/10</span><span>Interés 6/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Municipalidades (Unidad municipal ambiental, Direccion de justicia)</h3><span class="tag">gobierno local</span></div>
+      <p>Coordinar acciones de vigilancia, inspeccion y prevencion de delitos ambientales, ordenanzas municipales</p>
+      <div class="actor-scores"><span>Poder 10/10</span><span>Interés 8/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Instituto de Conservacion Forestal</h3><span class="tag">gobierno local</span></div>
+      <p>Coordinacion y ejecucion de actividades de proteccion, conservacion y gestion de proyectos comunitarios y ambientales</p>
+      <div class="actor-scores"><span>Poder 10/10</span><span>Interés 9/10</span></div>
+    </article>
+    <article class="actor-card">
+      <div><h3>Direccion municipal de educacion</h3><span class="tag">institucion publica</span></div>
+      <p>Coordinar actividades de proteccion, reforestacion y educacion ambiental</p>
+      <div class="actor-scores"><span>Poder 5/10</span><span>Interés 8/10</span></div>
+    </article></div>
+    </div>
+  </section>
+
+  <!-- Espacios de diálogo -->
+  <section class="section" id="dialogo">
+    <div class="section-header">
+      <div><span class="eyebrow">09 · Coordinación</span><h2>Espacios de diálogo</h2></div>
+      <p>El archivo registra cuatro espacios de articulación. Se presentan sus funciones, nivel de incidencia, fortalezas y debilidades como arquitectura de gobernanza territorial.</p>
+    </div>
+    <div class="dialogue-grid">
+    <article class="dialogue-card">
+      <div class="dialogue-head"><h3>Fuerza de tarea interinstitucional</h3><span class="tag">formal · paisaje</span></div>
+      <p><strong>Función:</strong> Coordinar, promover y realizar actividades de proteccion, prevencion y conservacion de los recursos naturales de las areas protegidas y hacer que se cumplan las leyes</p>
+      <p><strong>Incidencia:</strong> medio</p>
+      <details><summary>Fortalezas, debilidades y actores</summary>
+        <p><strong>Fortalezas:</strong> La mayoria de organizaciones tienen disposicion de trabajar en colaboracion con todas las organizaciones, vision de proteccion y conservacion, busqueda de espeacios de dialogo y estrategias de colaboracion</p>
+        <p><strong>Debilidades:</strong> Pocos fondos economicos para llevar a cabo ciertas tareas, organizaciones de alto poder de decision a veces no participan en espacios de dialogo y coordinacion</p>
+        <div><span class="chip actor-chip">Instituto de conservacion forestal</span> <span class="chip actor-chip">MAPANCE</span> <span class="chip actor-chip">Municipalidades</span> <span class="chip actor-chip">Fuerzas Armadas</span> <span class="chip actor-chip">Policia Nacional</span> <span class="chip actor-chip">Direccion policial de investigacion</span> <span class="chip actor-chip">FC Puca</span> <span class="chip actor-chip">Lideres comunitarios</span></div>
+      </details>
+    </article>
+    <article class="dialogue-card">
+      <div class="dialogue-head"><h3>Asociaciones y Juntas centrales de administracion de agua</h3><span class="tag">informal · local</span></div>
+      <p><strong>Función:</strong> Coordinar, promover y proteger los recursos naturales, principalmente la zona de recarga hidrica de sus miicrocuencas</p>
+      <p><strong>Incidencia:</strong> alto</p>
+      <details><summary>Fortalezas, debilidades y actores</summary>
+        <p><strong>Fortalezas:</strong> Fuerte disposicion para proteger y conservar los recursos, realizan actividades de proteccion, restauracion y vigilancia</p>
+        <p><strong>Debilidades:</strong> No estan constituidas legalmente, algunas no participan en giras de vigilancias y en las reuniones de las juntas</p>
+        <div><span class="chip actor-chip">Juntas administradoras de agua de las comunidades que se benefician de cada microcuenca</span></div>
+      </details>
+    </article>
+    <article class="dialogue-card">
+      <div class="dialogue-head"><h3>Asociacion de productores de y granos basicos</h3><span class="tag">informal · local</span></div>
+      <p><strong>Función:</strong> Buscar oportunidades que mejoren sus producciones, optando por proyectos que les fortalezcan en nuevas tecnologias</p>
+      <p><strong>Incidencia:</strong> bajo</p>
+      <details><summary>Fortalezas, debilidades y actores</summary>
+        <p><strong>Fortalezas:</strong> A pesar de que no estan constituidas legalmente, se reunen para buscar soluciones a la productividad de sus cultivos</p>
+        <p><strong>Debilidades:</strong> No estan constituidas legalmente, no facilmente reciben apoyo de proyectos ya que no realizan buenas practicas ambientales</p>
+        <div><span class="chip actor-chip">Cafetaleros</span></div>
+      </details>
+    </article>
+    <article class="dialogue-card">
+      <div class="dialogue-head"><h3>Grupos campesinos</h3><span class="tag">informal · local</span></div>
+      <p><strong>Función:</strong> Participar en acciones de conservacion, coordinar actividades de restauracion</p>
+      <p><strong>Incidencia:</strong> medio</p>
+      <details><summary>Fortalezas, debilidades y actores</summary>
+        <p><strong>Fortalezas:</strong> Lideres y lideresas comprometidas e interesadas</p>
+        <p><strong>Debilidades:</strong> Son organizaciones de sitios retirados, lo que reduce su posibilidad de participar en procesos de fortalecimiento organizacional</p>
+        <div><span class="chip actor-chip">Lideres y lideresas comunitarias</span></div>
+      </details>
+    </article></div>
+  </section>
+
+  <!-- Conflictos -->
+  <section class="section" id="conflictos">
+    <div class="section-header">
+      <div><span class="eyebrow">10 · Dinámicas de conflicto</span><h2>Conflictos y tensiones</h2></div>
+      <p>Los eventos de conflicto se concentran en apicultura, caficultura, avicultura y el conjunto granos básicos/ganadería. La narrativa del archivo destaca agroquímicos, deforestación, frontera agrícola, uso del agua y sequías.</p>
+    </div>
+    <div class="infographic-grid">
+      <div class="panel wide">
+        <h3>Línea de tiempo de eventos</h3>
+        <div class="timeline">
+    <article class="timeline-item conflict-neutral">
+      <time>1995</time>
+      <div>
+        <span class="mini-upper">APICULTURA</span>
+        <p>Implementacion de insecticidad (agroquimicos) por caficultores y agricultores</p>
+        <small>Diferencias: 1 · Cooperación: -1 · Suma: 0</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-neutral">
+      <time>2008</time>
+      <div>
+        <span class="mini-upper">CAFICULTURA</span>
+        <p>Bosque denso, alta biodiversidad</p>
+        <small>Diferencias: 0 · Cooperación: 0 · Suma: 0</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-neutral">
+      <time>2008</time>
+      <div>
+        <span class="mini-upper">AVICULTURA</span>
+        <p>Confrontamiento con uso de armas por parte de los propietarios por la delimitacion de la zona nucleo</p>
+        <small>Diferencias: -1 · Cooperación: 1 · Suma: 0</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-neutral">
+      <time>2010</time>
+      <div>
+        <span class="mini-upper">APICULTURA</span>
+        <p>en EUA se detecto del sindrome de colapso de las abejas , esto como resultado del uso de agroquimicos y afectacion en la zona</p>
+        <small>Diferencias: 1 · Cooperación: -1 · Suma: 0</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-negative">
+      <time>2011</time>
+      <div>
+        <span class="mini-upper">CAFICULTURA</span>
+        <p>Cambio de Uso de Suelo, expropiación de terreto, deterioro de la tierra perdida de especies nativas de altura</p>
+        <small>Diferencias: -1 · Cooperación: s/d · Suma: -1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2014</time>
+      <div>
+        <span class="mini-upper">CAFICULTURA</span>
+        <p>Demarcación de los limites del RVS Puca, Se contuvo la deforestación</p>
+        <small>Diferencias: 1 · Cooperación: 1 · Suma: 2</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2014</time>
+      <div>
+        <span class="mini-upper">Granos Basicos y Ganderia</span>
+        <p>Sequia severa provocanod najas en la produccion de granos basicos en las Flores Lempira</p>
+        <small>Diferencias: 1 · Cooperación: 0 · Suma: 1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-negative">
+      <time>2015</time>
+      <div>
+        <span class="mini-upper">APICULTURA</span>
+        <p>Problemas de mortalidad de las abejas atribuiasa al uso de agroquimicos , aparece la rolla, fumigacion masiva, y tambien la plaga de broca , utilizaban endosulfan</p>
+        <small>Diferencias: 0 · Cooperación: -1 · Suma: -1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-negative">
+      <time>2015</time>
+      <div>
+        <span class="mini-upper">CAFICULTURA</span>
+        <p>En la zona baja, se raciono el agua pro presencia de fincas en la Zona alta del RVS Puca</p>
+        <small>Diferencias: -1 · Cooperación: 0 · Suma: -1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-negative">
+      <time>2018</time>
+      <div>
+        <span class="mini-upper">APICULTURA</span>
+        <p>Apicultores desarrollan estrategia de conservacion de las abejas y eliminar el uso de agroquimicos</p>
+        <small>Diferencias: 0 · Cooperación: -1 · Suma: -1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-neutral">
+      <time>2018</time>
+      <div>
+        <span class="mini-upper">AVICULTURA</span>
+        <p>demarcacion en campo para frenar frontera agricola</p>
+        <small>Diferencias: 0 · Cooperación: 0 · Suma: 0</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2018</time>
+      <div>
+        <span class="mini-upper">Granos Basicos y Ganderia</span>
+        <p>Sequia severa provocando bajas en la produccion de granos basicos y productos lacteos</p>
+        <small>Diferencias: 1 · Cooperación: 0 · Suma: 1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2019</time>
+      <div>
+        <span class="mini-upper">CAFICULTURA</span>
+        <p>Aplicación de mecanismod eCompensacion en MC Guerguerense, para comprade tierra y evitar deforestacion.</p>
+        <small>Diferencias: 0 · Cooperación: 1 · Suma: 1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2021</time>
+      <div>
+        <span class="mini-upper">CAFICULTURA</span>
+        <p>Avance de la frontera agricola en limites de la zona nucleo y perdida de especies nativas</p>
+        <small>Diferencias: 1 · Cooperación: 1 · Suma: 2</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-negative">
+      <time>2022</time>
+      <div>
+        <span class="mini-upper">APICULTURA</span>
+        <p>Aumenta venta de tecnologias para la dispersion de agroquimicos</p>
+        <small>Diferencias: -1 · Cooperación: -1 · Suma: -2</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2023</time>
+      <div>
+        <span class="mini-upper">Granos Basicos y Ganderia</span>
+        <p>Sequia severa provocando bajos en la produccion de granos basicos y productos lacteos</p>
+        <small>Diferencias: 1 · Cooperación: 0 · Suma: 1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2024</time>
+      <div>
+        <span class="mini-upper">Granos Basicos y Ganderia</span>
+        <p>Sequia por la prolongacion del verano provocando vaqriacion en las fechas de siembra</p>
+        <small>Diferencias: 1 · Cooperación: 0 · Suma: 1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-neutral">
+      <time>2025</time>
+      <div>
+        <span class="mini-upper">APICULTURA</span>
+        <p>El conflico se agudiza</p>
+        <small>Diferencias: s/d · Cooperación: s/d · Suma: 0</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-positive">
+      <time>2025</time>
+      <div>
+        <span class="mini-upper">CAFICULTURA</span>
+        <p>Actualmente algunos pocos implementan practicas amigables</p>
+        <small>Diferencias: 1 · Cooperación: 1 · Suma: 2</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-negative">
+      <time>2025</time>
+      <div>
+        <span class="mini-upper">AVICULTURA</span>
+        <p>Familias dentro de zona nucleo realizando cultivos agricolas afectando la produccion de agua con deforestacion -juntas de agua compran tierras en microcuencas pero hay invasion de tierras</p>
+        <small>Diferencias: -1 · Cooperación: 0 · Suma: -1</small>
+      </div>
+    </article>
+    <article class="timeline-item conflict-negative">
+      <time>Sin año</time>
+      <div>
+        <span class="mini-upper">AVICULTURA</span>
+        <p>Inicia la Primer iniciativa para frenar el aumento de la frontera agricola ( el confrlicto inica en el año 2000 y se mantiene hasta la actualidad</p>
+        <small>Diferencias: -1 · Cooperación: -1 · Suma: -2</small>
+      </div>
+    </article></div>
+      </div>
+      <div class="panel narrow">
+        <h3>Actores en conflicto</h3>
+        <p>En 6.2 se registran 29 relaciones actor–conflicto. En los impactos sobre actores predominan registros negativos (15), seguidos por neutros (8) y positivos (6).</p>
+        <p>Sobre la influencia de actores en el conflicto, la base contiene 12 registros negativos, 11 positivos y 6 neutros.</p>
+      </div>
+      <div class="full conf-actor-grid">
+    <article class="conf-actor-card">
+      <h3>Agrucultores</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>positivo</b></span><span>Influencia en conflicto: <b>negativo</b></span></div>
+      <p>Aumenenta la productividad y reduce la mano de obra</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Apicultores</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>negativo</b></span><span>Influencia en conflicto: <b>positivo</b></span></div>
+      <p>Aumento en la mortalidad de las abejas</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>SENASA</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>neutro</b></span><span>Influencia en conflicto: <b>neutro</b></span></div>
+      <p>Al ser los encargados de la regulacion del uso de agroquimicos no los afecta</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Exportadores</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>positivo</b></span><span>Influencia en conflicto: <b>negativo</b></span></div>
+      <p>Aumento de la produccion de granos</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Municipalidad</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>neutro</b></span><span>Influencia en conflicto: <b>neutro</b></span></div>
+      <p>no se involucran</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>SAG Bonos tecnologicos</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>neutro</b></span><span>Influencia en conflicto: <b>negativo</b></span></div>
+      <p>Promueve el uso de agroquimicos</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>FC Puca</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>negativo</b></span><span>Influencia en conflicto: <b>positivo</b></span></div>
+      <p>Falta de conciencia por parte de los grupos que hacen uso de todos los agroquimicos</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Caficultores</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>positivo</b></span><span>Influencia en conflicto: <b>negativo</b></span></div>
+      <p>Aumento zona de tierras , Aumento de ingresos</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Ganaderos</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>positivo</b></span><span>Influencia en conflicto: <b>negativo</b></span></div>
+      <p>Aumento zonas de tierras , aumento de ingresos</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>FC Puca</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>negativo</b></span><span>Influencia en conflicto: <b>positivo</b></span></div>
+      <p>Mayor trabajo causado por la disminucion en zonas de recarga , Contaminacion</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>JAA+ Fuerzas Vivas</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>negativo</b></span><span>Influencia en conflicto: <b>positivo</b></span></div>
+      <p>Reduccion de Caudal de Agua Perdida de Flora y Fauna</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Municipalidad de Lepaera</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>negativo</b></span><span>Influencia en conflicto: <b>neutro</b></span></div>
+      <p>Se beneficia del agua que viene del RVS Puca</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Municipalidad Las Flores</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>negativo</b></span><span>Influencia en conflicto: <b>positivo</b></span></div>
+      <p>Se beneficia del agua que viene del RVS Puca</p>
+    </article>
+    <article class="conf-actor-card">
+      <h3>Municipalidad La Iguala</h3>
+      <div class="impact-pair"><span>Impacto en actor: <b>neutro</b></span><span>Influencia en conflicto: <b>negativo</b></span></div>
+      <p>Se beneficia del agua que viene del RVS Puca</p>
+    </article></div>
+    </div>
+  </section>
+
+  <!-- Síntesis territorial integrada -->
+  <section class="section" id="sintesis">
+    <div class="section-header">
+      <div><span class="eyebrow">11 · Lectura integrada</span><h2>Síntesis territorial</h2></div>
+      <p>Esta síntesis traduce los cruces del archivo en señales de decisión. No introduce datos externos ni prioriza intervenciones que no estén sustentadas por las relaciones registradas.</p>
+    </div>
+    <div class="synthesis-grid">
+      <article class="synthesis-card"><strong>1</strong><h3>Dependencia ecológica visible</h3><p>Los tres ecosistemas caracterizados sostienen medios de vida productivos mediante servicios codificados. BoSe-R6 y BoNu-P3 conectan con cuatro medios de vida y reportan hasta 7.600 usuarios/familias, pero el archivo conserva estos datos como registros por servicio y no como conteos agregables.</p></article>
+      <article class="synthesis-card"><strong>2</strong><h3>Presiones no climáticas fuertes</h3><p>Contaminación obtiene el puntaje más alto de amenazas. Incendios y deforestación también aparecen con puntajes relevantes y se vinculan con degradación ecosistémica, servicios y conflictos.</p></article>
+      <article class="synthesis-card"><strong>3</strong><h3>Clima como presión transversal</h3><p>Sequías y tormentas tropicales tienen puntajes altos. Las sequías se reportan con mayor énfasis en zona baja y las tormentas tropicales en zona alta, según el campo de sitios afectados.</p></article>
+      <article class="synthesis-card"><strong>4</strong><h3>Medios de vida estratégicos</h3><p>Caficultura tiene el mayor puntaje de priorización. Granos básicos combina relevancia alimentaria con exposición registrada en amenazas junto con ganadería. Apicultura destaca por el puntaje ambiental y por su presencia en la narrativa de conflicto asociada a agroquímicos.</p></article>
+      <article class="synthesis-card"><strong>5</strong><h3>Gobernanza con nodos claros</h3><p>Juntas administradoras de agua, municipalidades e Instituto de Conservación Forestal aparecen en el cuadrante de alto poder y alto interés. Esto indica una base institucional/comunitaria relevante para coordinación, sin asumir niveles de efectividad no documentados.</p></article>
+      <article class="synthesis-card"><strong>6</strong><h3>Capacidad con brechas internas</h3><p>Necesidades básicas presenta el promedio más alto de capacidad, mientras que Acción aparece como la dimensión más baja. Entre medios de vida evaluados, caficultura tiene el promedio más alto y granos básicos el más bajo.</p></article>
+    </div>
+  </section>
+
+  <!-- Calidad y limitaciones -->
+  <section class="section" id="calidad">
+    <div class="section-header">
+      <div><span class="eyebrow">12 · Transparencia analítica</span><h2>Calidad y limitaciones</h2></div>
+      <p>El dashboard usa exclusivamente el Excel cargado. Las notas siguientes explican dónde se aplicaron criterios conservadores para no sobreinterpretar la información.</p>
+    </div>
+    <div class="quality-panel">
+      <h3>Supuestos aplicados</h3>
+      <ul>
+        <li>“Refugio de Vida Silvestre Puca” y “RVS Puca” se trataron como una misma unidad territorial.</li>
+        <li>Las abreviaturas de medios de vida se expandieron solo cuando el archivo incluía códigos equivalentes: GN, GB, AP, AV, API y AVI.</li>
+        <li>Los códigos de servicios ecosistémicos se mantienen como códigos porque no hay una tabla con nombres descriptivos completos de P1, P2, P3, R6, R7, R8 y R9.</li>
+        <li>Los valores de usuarios/familias en servicios ecosistémicos se presentan como máximos reportados por servicio, no como suma, para evitar duplicar registros repetidos por provisión, flujo y demanda.</li>
+        <li>Las matrices de impacto promedian únicamente los campos numéricos disponibles por fila; las celdas vacías no se imputaron.</li>
+      </ul>
+      <h3>Limitaciones detectadas</h3>
+      <ul>
+        <li>TIDY_7_1_RESPONDENTS y TIDY_7_1_RESPONSES no contienen registros, aunque existe una tabla agregada de capacidad adaptativa.</li>
+        <li>La hoja 4.1 incluye filas vacías en el rango; para los conteos públicos se usaron solo amenazas con nombre.</li>
+        <li>Hay duplicados o identificadores faltantes en algunas tablas QA, listados abajo. Esto no impide el uso descriptivo, pero limita agregaciones finas por ID.</li>
+        <li>No hay coordenadas ni geometrías; la identidad territorial es esquemática.</li>
+      </ul>
+      <details><summary>Llaves primarias con duplicados (7)</summary><div class="qa-list"><p><strong>table:</strong> LOOKUP_AMENAZA · <strong>pk:</strong> amenaza_id · <strong>duplicate_rows:</strong> 8</p><p><strong>table:</strong> LOOKUP_GEO · <strong>pk:</strong> geo_id · <strong>duplicate_rows:</strong> 4</p><p><strong>table:</strong> TIDY_3_3_CAR_A · <strong>pk:</strong> car_a_id · <strong>duplicate_rows:</strong> 12</p><p><strong>table:</strong> TIDY_3_3_CAR_LONG · <strong>pk:</strong> car_long_id · <strong>duplicate_rows:</strong> 240</p><p><strong>table:</strong> TIDY_3_5_SE_INCLUSION · <strong>pk:</strong> se_inclusion_id · <strong>duplicate_rows:</strong> 108</p><p><strong>table:</strong> TIDY_3_5_SE_MONTHS · <strong>pk:</strong> se_month_id · <strong>duplicate_rows:</strong> 288</p><p><strong>table:</strong> TIDY_4_1_AMENAZAS · <strong>pk:</strong> amenaza_obs_id · <strong>duplicate_rows:</strong> 31</p></div></details><details><summary>Identificadores faltantes (5)</summary><div class="qa-list"><p><strong>table:</strong> TIDY_3_2_PRIORIZACION · <strong>col:</strong> mdv_id · <strong>missing:</strong> 1</p><p><strong>table:</strong> TIDY_3_5_SE_MDV · <strong>col:</strong> ecosistema_id · <strong>missing:</strong> 36</p><p><strong>table:</strong> TIDY_4_1_AMENAZAS · <strong>col:</strong> amenaza_id · <strong>missing:</strong> 31</p><p><strong>table:</strong> TIDY_4_2_2_AMENAZA_SE · <strong>col:</strong> se_id · <strong>missing:</strong> 1</p><p><strong>table:</strong> TIDY_6_2_CONFLICTO_ACTOR · <strong>col:</strong> conflicto_id · <strong>missing:</strong> 21</p></div></details><details><summary>Llaves foráneas (0)</summary><div class="qa-list"><p>No se registran problemas en esta categoría.</p></div></details>
+      <p class="print-note">Versión impresa: algunas interacciones se ocultan para mejorar legibilidad.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+  /* ===============================
+     Interacciones standalone vanilla JS
+     =============================== */
+  const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
+  const threatCards = document.querySelectorAll('.threat-card');
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      threatCards.forEach(card => {
+        const match = filter === 'todas' || card.dataset.type === filter;
+        card.classList.toggle('is-hidden', !match);
+      });
+    });
+  });
+  const reset = document.getElementById('resetFilters');
+  if (reset) reset.addEventListener('click', () => {
+    document.querySelector('.filter-btn[data-filter="todas"]').click();
+  });
+
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  const inspector = document.getElementById('matrixInspector');
+  document.querySelectorAll('.matrix-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      inspector.textContent = cell.dataset.cell || 'Celda sin descripción.';
+      inspector.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  });
+
+  document.querySelectorAll('.livelihood-card, .threat-card, .actor-card, .service-card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('is-selected'));
+  });
+</script>
+</body>
+</html>

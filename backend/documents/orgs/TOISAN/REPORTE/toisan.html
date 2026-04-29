@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard socio-ecológico TOISAN · ACUSMIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&family=Oswald:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --neutral:#001F89;
+  --primary:#009EE2;
+  --accent:#B71373;
+  --accent2:#751851;
+  --ink:#07112e;
+  --muted:#5c6685;
+  --paper:#f6f8ff;
+  --panel:#ffffff;
+  --line:rgba(0,31,137,.13);
+  --soft-blue:rgba(0,158,226,.10);
+  --soft-pink:rgba(183,19,115,.10);
+  --soft-violet:rgba(117,24,81,.12);
+  --soft-dark:rgba(0,31,137,.08);
+  --shadow:0 24px 60px rgba(0,31,137,.12);
+  --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(0,158,226,.15), transparent 30rem),
+    radial-gradient(circle at top right, rgba(183,19,115,.13), transparent 28rem),
+    linear-gradient(180deg,#f9fbff 0%,#eef3ff 45%,#f9fbff 100%);
+  font-family:'Noto Sans', Arial, sans-serif;
+  line-height:1.48;
+}
+a{color:inherit}
+.wrap{width:min(1240px,92vw);margin:0 auto}
+.hero{
+  position:relative;
+  overflow:hidden;
+  min-height:86vh;
+  padding:32px 0 54px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(0,158,226,.80), transparent 18rem),
+    radial-gradient(circle at 84% 14%, rgba(183,19,115,.72), transparent 24rem),
+    linear-gradient(135deg, var(--neutral) 0%, #04286f 48%, var(--accent2) 100%);
+}
+.hero:before{
+  content:"";
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom, #000, transparent 82%);
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  width:720px;height:720px;border:1px solid rgba(255,255,255,.18);
+  border-radius:50%;
+  right:-260px;bottom:-340px;
+  box-shadow: inset 0 0 90px rgba(255,255,255,.05);
+}
+.hero-inner{position:relative;z-index:2}
+.kicker{
+  font-family:'Oswald', sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  font-weight:300;
+  opacity:.88;
+  font-size:.95rem;
+}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:end;margin-top:72px}
+h1,h2,h3,h4,.nav-title,.big-num,.section-label{font-family:'Oswald', sans-serif;text-transform:uppercase;line-height:1}
+h1{
+  margin:0;
+  font-weight:600;
+  font-size:clamp(4rem,10vw,9.3rem);
+  letter-spacing:.02em;
+}
+.hero-subtitle{
+  max-width:840px;
+  margin:18px 0 0;
+  font-size:clamp(1.12rem,2vw,1.55rem);
+  font-weight:300;
+  color:rgba(255,255,255,.88);
+}
+.hero-location{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:24px;
+}
+.hero-pill{
+  border:1px solid rgba(255,255,255,.24);
+  background:rgba(255,255,255,.11);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  border-radius:999px;
+  padding:9px 14px;
+  font-size:.92rem;
+}
+.hero-card{
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.11);
+  backdrop-filter:blur(16px);
+  border-radius:32px;
+  padding:24px;
+  box-shadow:0 24px 80px rgba(0,0,0,.16);
+}
+.hero-card h2{font-size:1.5rem;margin:0 0 14px;font-weight:400;letter-spacing:.05em}
+.hero-card p{margin:0;color:rgba(255,255,255,.83);font-weight:300}
+.headline-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:42px}
+.headline{
+  min-height:150px;
+  border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+  border-radius:24px;
+  padding:18px;
+  position:relative;
+  overflow:hidden;
+}
+.headline:after{
+  content:"";
+  position:absolute;right:-34px;bottom:-48px;width:116px;height:116px;border-radius:50%;
+  background:rgba(255,255,255,.08);
+}
+.big-num{font-size:clamp(2.65rem,5vw,5.2rem);font-weight:600;margin:0;color:#fff}
+.headline .label{font-family:'Oswald';text-transform:uppercase;letter-spacing:.08em;font-weight:300;color:rgba(255,255,255,.9);font-size:.9rem}
+.headline .detail{font-size:.78rem;color:rgba(255,255,255,.68);margin-top:10px}
+.sticky-nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:68px}
+.nav-title{font-size:1.05rem;letter-spacing:.09em;color:var(--neutral);font-weight:500}
+.nav-links{display:flex;gap:8px;overflow:auto;padding:10px 0}
+.nav-links a{
+  text-decoration:none;
+  color:var(--muted);
+  font-size:.82rem;
+  white-space:nowrap;
+  border:1px solid transparent;
+  border-radius:999px;
+  padding:8px 10px;
+}
+.nav-links a:hover{color:var(--neutral);border-color:var(--line);background:#fff}
+.filterbar{
+  margin:22px auto 0;
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
+  padding:12px;border-radius:22px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);
+}
+.filterbar label{font-family:'Oswald';text-transform:uppercase;letter-spacing:.1em;color:var(--neutral);font-size:.82rem}
+select,button{
+  font:inherit;
+}
+select{
+  border:1px solid var(--line);border-radius:999px;padding:10px 14px;background:#f8faff;color:var(--ink);min-width:220px;
+}
+.btn{
+  border:0;border-radius:999px;background:var(--neutral);color:#fff;padding:10px 14px;cursor:pointer;
+}
+.btn.secondary{background:var(--soft-blue);color:var(--neutral);border:1px solid rgba(0,158,226,.25)}
+.section{
+  padding:80px 0 0;
+}
+.section-header{
+  display:grid;grid-template-columns:minmax(220px,.52fr) minmax(320px,1fr);gap:28px;align-items:end;margin-bottom:24px;
+}
+.section-label{
+  color:var(--accent);
+  font-weight:300;
+  letter-spacing:.16em;
+  font-size:.92rem;
+}
+.section h2{
+  margin:7px 0 0;
+  color:var(--neutral);
+  font-size:clamp(2.2rem,5vw,4.7rem);
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.section-intro{
+  color:var(--muted);
+  font-size:1.02rem;
+  max-width:780px;
+  margin:0;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:var(--shadow);
+}
+.card.flat{box-shadow:none}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mosaic{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.territory-panel{
+  display:grid;grid-template-columns:1fr 1.2fr;gap:18px;align-items:stretch;
+}
+.map-card{
+  min-height:430px;
+  position:relative;overflow:hidden;color:#fff;
+  background:
+    radial-gradient(circle at 40% 18%, rgba(0,158,226,.35), transparent 15rem),
+    linear-gradient(135deg,var(--neutral),var(--accent2));
+}
+.map-shape{
+  position:absolute;inset:40px 34px 36px;
+  border:2px solid rgba(255,255,255,.5);
+  border-radius:42% 58% 48% 52% / 34% 42% 58% 66%;
+  transform:rotate(-10deg);
+  background:linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+}
+.map-shape:before{
+  content:"ACUSMIT";
+  position:absolute;right:18%;top:43%;
+  font-family:'Oswald';letter-spacing:.12em;font-size:1.3rem;
+  border:1px solid rgba(255,255,255,.32);
+  background:rgba(183,19,115,.58);
+  border-radius:999px;padding:10px 16px;
+  transform:rotate(10deg);
+}
+.map-dot{
+  position:absolute;width:16px;height:16px;border-radius:50%;
+  background:#fff;box-shadow:0 0 0 8px rgba(0,158,226,.28);
+}
+.dot1{left:31%;top:36%}.dot2{left:48%;top:30%}.dot3{left:55%;top:49%}.dot4{left:38%;top:59%}.dot5{left:62%;top:66%}
+.map-card .caption{position:absolute;left:24px;bottom:24px;right:24px}
+.map-card h3{font-size:2.5rem;margin:0 0 8px}
+.map-card p{color:rgba(255,255,255,.8);margin:0}
+.micro-list{display:grid;gap:12px}
+.micro-card{
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#fff, #f8faff);
+  border-radius:22px;
+  padding:18px;
+  position:relative;
+  overflow:hidden;
+}
+.micro-card:before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;width:7px;background:linear-gradient(var(--primary),var(--accent));
+}
+.micro-card h3{font-size:1.55rem;color:var(--neutral);margin:0 0 8px}
+.micro-meta{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  border-radius:999px;
+  padding:5px 9px;
+  background:var(--soft-dark);
+  color:var(--neutral);
+  font-size:.76rem;
+  font-weight:600;
+  margin:2px;
+}
+.chip.blue{background:var(--soft-blue);color:#005980}
+.chip.pink{background:var(--soft-pink);color:var(--accent)}
+.chip.violet{background:var(--soft-violet);color:var(--accent2)}
+.chip.dark{background:rgba(0,31,137,.12)}
+.chip.warn{background:rgba(183,19,115,.14);color:var(--accent)}
+.data-universe{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sheet-card{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.sheet-card .sheet-name{font-family:'Oswald';font-size:1.05rem;text-transform:uppercase;color:var(--neutral)}
+.sheet-card .sheet-meta{display:flex;gap:10px;margin-top:10px;color:var(--muted);font-size:.78rem}
+.status{font-weight:700;border-radius:999px;padding:4px 8px;background:var(--soft-blue);color:var(--neutral);font-size:.72rem}
+.status.Parcial{background:var(--soft-pink);color:var(--accent)}
+.story-card{
+  position:relative;overflow:hidden;min-height:210px;
+}
+.story-card h3{margin:0 0 10px;color:var(--neutral);font-size:1.75rem}
+.story-card p{color:var(--muted);margin:0 0 12px}
+.score-pill{
+  position:absolute;right:18px;top:18px;
+  font-family:'Oswald';font-size:2.3rem;color:var(--accent);line-height:1;
+}
+.meter{
+  height:10px;border-radius:999px;background:rgba(0,31,137,.08);overflow:hidden;margin-top:14px;
+}
+.meter span{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:999px}
+.matrix-wrap{
+  overflow:auto;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow)
+}
+.matrix{
+  min-width:900px;
+  display:grid;
+}
+.matrix-row{display:grid;grid-template-columns:240px repeat(var(--cols), minmax(120px,1fr))}
+.matrix-cell,.matrix-head,.matrix-stub{
+  border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+  padding:12px;
+  min-height:68px;
+}
+.matrix-head{
+  font-family:'Oswald';text-transform:uppercase;letter-spacing:.08em;color:var(--neutral);font-size:.82rem;background:#f6f8ff;position:sticky;top:0;z-index:3;
+}
+.matrix-stub{
+  font-weight:700;color:var(--neutral);background:#fff;position:sticky;left:0;z-index:2;
+}
+.matrix-cell{
+  background:rgba(0,158,226,calc(var(--intensity)*.15));
+  position:relative;
+}
+.matrix-cell.high{background:rgba(183,19,115,calc(.13 + var(--intensity)*.18));}
+.matrix-cell.mid{background:rgba(0,158,226,calc(.09 + var(--intensity)*.12));}
+.matrix-cell.low{background:rgba(0,31,137,calc(.04 + var(--intensity)*.07));}
+.matrix-cell.empty{background:#fafbff;color:#a3abc5}
+.matrix-score{font-family:'Oswald';font-size:1.5rem;color:var(--neutral)}
+.matrix-note{font-size:.72rem;color:var(--muted);margin-top:3px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+.tab-btn{
+  border:1px solid var(--line);background:#fff;color:var(--muted);padding:10px 14px;border-radius:999px;cursor:pointer;
+}
+.tab-btn.active{background:var(--neutral);color:#fff;border-color:var(--neutral)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.quadrant-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+}
+.quadrant{
+  min-height:260px;border-radius:22px;border:1px dashed rgba(0,31,137,.25);padding:16px;background:#fff;
+}
+.quadrant h3{font-size:1.25rem;color:var(--neutral);margin:0 0 10px}
+.actor-mini{padding:10px;border-radius:16px;background:#f8faff;border:1px solid var(--line);margin:8px 0}
+.actor-mini strong{display:block;color:var(--ink)}
+.actor-mini span{font-size:.76rem;color:var(--muted)}
+.dialogue-card h3{font-size:1.35rem;color:var(--neutral);margin:0 0 8px}
+.dialogue-card p{margin:8px 0;color:var(--muted)}
+.timeline{
+  position:relative;
+  display:grid;
+  gap:14px;
+  padding-left:24px;
+}
+.timeline:before{
+  content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:linear-gradient(var(--primary),var(--accent));
+}
+.timeline-item{
+  position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;
+}
+.timeline-item:before{
+  content:"";position:absolute;left:-24px;top:22px;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px rgba(183,19,115,.12);
+}
+.timeline-year{font-family:'Oswald';font-size:1.15rem;color:var(--accent);letter-spacing:.05em}
+.timeline-item h3{font-size:1.25rem;line-height:1.15;color:var(--neutral);margin:4px 0 8px}
+.timeline-item p{margin:6px 0;color:var(--muted);font-size:.92rem}
+.synthesis-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.synthesis{
+  background:linear-gradient(180deg,#fff,#f8faff);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:22px;
+}
+.synthesis .num{font-family:'Oswald';font-size:3.2rem;color:var(--accent);line-height:1}
+.synthesis h3{font-size:1.45rem;color:var(--neutral);margin:8px 0}
+.synthesis p{color:var(--muted);margin:0}
+.details-note{
+  border-radius:20px;background:#fff;border:1px solid var(--line);padding:16px;
+}
+details summary{
+  cursor:pointer;
+  font-family:'Oswald';text-transform:uppercase;letter-spacing:.07em;color:var(--neutral);
+}
+.quality-list{columns:2;column-gap:30px;color:var(--muted)}
+.quality-list li{break-inside:avoid;margin:0 0 10px}
+.filtered-out{
+  opacity:.25;
+  filter:saturate(.2);
+}
+.hidden-by-filter{display:none !important}
+.footer{
+  margin-top:90px;
+  padding:38px 0;
+  color:#fff;background:linear-gradient(135deg,var(--neutral),var(--accent2));
+}
+.footer p{margin:0;color:rgba(255,255,255,.76)}
+@media (max-width: 980px){
+  .hero-grid,.section-header,.territory-panel,.mosaic,.grid-2,.grid-3,.synthesis-grid{grid-template-columns:1fr}
+  .headline-grid,.data-universe,.grid-4{grid-template-columns:repeat(2,1fr)}
+  .quadrant-grid{grid-template-columns:1fr}
+}
+@media (max-width: 640px){
+  .headline-grid,.data-universe,.grid-4{grid-template-columns:1fr}
+  .hero{min-height:auto}
+  .hero-grid{margin-top:42px}
+  .section{padding-top:58px}
+  .quality-list{columns:1}
+  .nav-row{display:block;padding:10px 0}
+}
+@media print{
+  .sticky-nav,.filterbar,.tabs{display:none}
+  body{background:#fff}
+  .hero{min-height:auto;color:#111;background:#fff}
+  .hero:before,.hero:after{display:none}
+  .headline,.hero-card,.card,.matrix-wrap{box-shadow:none}
+  .section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="hero" id="inicio">
+  <div class="wrap hero-inner">
+    <div class="kicker">Lectura socio-ecológica participativa · PARES/CEAP</div>
+    <div class="hero-grid">
+      <div>
+        <h1 id="hero-title">TOISAN</h1>
+        <p class="hero-subtitle" id="hero-subtitle"></p>
+        <div class="hero-location" id="hero-location"></div>
+      </div>
+      <div class="hero-card">
+        <h2>SÍNTESIS TERRITORIAL</h2>
+        <p id="hero-synthesis"></p>
+      </div>
+    </div>
+    <div class="headline-grid" id="headline-grid"></div>
+  </div>
+</header>
+
+<nav class="sticky-nav">
+  <div class="wrap nav-row">
+    <div class="nav-title">TOISAN · ACUSMIT</div>
+    <div class="nav-links">
+      <a href="#territorio">Territorio</a>
+      <a href="#universo">Datos</a>
+      <a href="#medios">Medios de vida</a>
+      <a href="#ecosistemas">Ecosistemas</a>
+      <a href="#amenazas">Amenazas</a>
+      <a href="#capacidad">Capacidad adaptativa</a>
+      <a href="#gobernanza">Gobernanza</a>
+      <a href="#conflictos">Conflictos</a>
+      <a href="#sintesis">Síntesis</a>
+      <a href="#calidad">Calidad</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="filterbar">
+    <label for="groupFilter">Filtro territorial</label>
+    <select id="groupFilter"></select>
+    <button class="btn secondary" id="resetFilter">Restablecer</button>
+    <span class="chip violet" id="filterStatus">Vista general</span>
+  </div>
+</div>
+
+<main>
+  <section class="section" id="territorio">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">01 · Identidad territorial</div>
+          <h2>UN PAISAJE, CINCO MICROCUENCAS</h2>
+        </div>
+        <p class="section-intro">La base ubica el análisis en Ecuador, dentro del paisaje ACUSMIT. El tablero no inventa coordenadas: usa una representación esquemática para ubicar el foco territorial y organizar la lectura por microcuencas.</p>
+      </div>
+      <div class="territory-panel">
+        <div class="card map-card">
+          <div class="map-shape">
+            <span class="map-dot dot1"></span><span class="map-dot dot2"></span><span class="map-dot dot3"></span><span class="map-dot dot4"></span><span class="map-dot dot5"></span>
+          </div>
+          <div class="caption">
+            <h3>ECUADOR · ACUSMIT</h3>
+            <p>Mapa simbólico: representa el foco territorial sin coordenadas exactas.</p>
+          </div>
+        </div>
+        <div class="micro-list" id="micro-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="universo">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">02 · Huella de información</div>
+          <h2>QUÉ ANALIZA EL DASHBOARD</h2>
+        </div>
+        <p class="section-intro">El archivo contiene bloques de medios de vida, ecosistemas, servicios ecosistémicos, amenazas, gobernanza, conflictos y capacidad adaptativa. Las tarjetas muestran la cobertura por hoja y permiten detectar dónde hay mayor densidad de información.</p>
+      </div>
+      <div class="data-universe" id="data-universe"></div>
+    </div>
+  </section>
+
+  <section class="section" id="medios">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">03 · Sistemas productivos</div>
+          <h2>MEDIOS DE VIDA Y PRIORIDAD</h2>
+        </div>
+        <p class="section-intro">Los medios de vida se consolidaron por familias de nombres equivalentes, manteniendo el vínculo con las microcuencas y con los puntajes de priorización cuando están disponibles.</p>
+      </div>
+      <div class="grid-3" id="livelihood-cards"></div>
+    </div>
+  </section>
+
+  <section class="section" id="ecosistemas">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">04 · Base ecosistémica</div>
+          <h2>ECOSISTEMAS, SERVICIOS Y DEPENDENCIAS</h2>
+        </div>
+        <p class="section-intro">Bosque nublado, sistemas hídricos y agroecosistemas aparecen como la base ecológica recurrente del paisaje. Cuando los servicios están codificados, se muestran los códigos porque el archivo no trae nombres completos para cada código.</p>
+      </div>
+      <div class="grid-3" id="ecosystem-cards"></div>
+      <div style="height:18px"></div>
+      <div class="matrix-wrap" id="eco-matrix"></div>
+    </div>
+  </section>
+
+  <section class="section" id="amenazas">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">05 · Presiones y exposición</div>
+          <h2>AMENAZAS CLIMÁTICAS Y NO CLIMÁTICAS</h2>
+        </div>
+        <p class="section-intro">La lectura combina frecuencia de mención y severidad registrada en magnitud, frecuencia y tendencia. Las matrices usan intensidad visual para ubicar amenazas críticas sin convertir el tablero en un gráfico convencional.</p>
+      </div>
+      <div class="grid-3" id="threat-cards"></div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="threat-by-area">Amenazas × microcuencas</button>
+        <button class="tab-btn" data-tab="threat-by-livelihood">Amenazas × medios de vida</button>
+        <button class="tab-btn" data-tab="threat-by-service">Amenazas × servicios codificados</button>
+      </div>
+      <div class="tab-panel active" id="threat-by-area"><div class="matrix-wrap" id="threat-matrix"></div></div>
+      <div class="tab-panel" id="threat-by-livelihood"><div class="matrix-wrap" id="impact-liv-matrix"></div></div>
+      <div class="tab-panel" id="threat-by-service"><div class="matrix-wrap" id="impact-se-matrix"></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="capacidad">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">06 · Encuesta CA</div>
+          <h2>SEÑALES DE CAPACIDAD ADAPTATIVA</h2>
+        </div>
+        <p class="section-intro">La encuesta usa rangos porcentuales por medio de vida. Para sintetizar, cada rango se convirtió a punto medio; por eso los valores deben leerse como señales comparativas, no como mediciones exactas de hogares.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-top:0;color:var(--neutral)">Promedio por microcuenca</h3>
+          <div id="capacity-groups"></div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;color:var(--neutral)">Medios de vida con señales más altas</h3>
+          <div id="capacity-livs"></div>
+        </div>
+      </div>
+      <div style="height:18px"></div>
+      <div class="matrix-wrap" id="capacity-matrix"></div>
+      <div style="height:18px"></div>
+      <div class="grid-2">
+        <div class="card flat">
+          <h3 style="color:var(--accent);margin-top:0">Señales más bajas</h3>
+          <div id="weak-signals"></div>
+        </div>
+        <div class="card flat">
+          <h3 style="color:var(--primary);margin-top:0">Señales más altas</h3>
+          <div id="strong-signals"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="gobernanza">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">07 · Actores y coordinación</div>
+          <h2>CONSTELACIÓN DE GOBERNANZA</h2>
+        </div>
+        <p class="section-intro">El mapa de actores usa una matriz de influencia/interés con umbral 7/10. Esta lectura ayuda a diferenciar actores estratégicos, actores de oportunidad y espacios formales de coordinación reportados por el archivo.</p>
+      </div>
+      <div class="grid-4" id="actor-types"></div>
+      <div style="height:18px"></div>
+      <div class="quadrant-grid" id="quadrants"></div>
+      <div style="height:18px"></div>
+      <h3 class="section-label">Espacios de diálogo</h3>
+      <div class="grid-3" id="dialogue-spaces"></div>
+    </div>
+  </section>
+
+  <section class="section" id="conflictos">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">08 · Conflicto y cooperación</div>
+          <h2>HISTORIA DE TENSIONES TERRITORIALES</h2>
+        </div>
+        <p class="section-intro">La hoja de evolución de conflictos combina eventos negativos y señales de cooperación. Se presenta como línea de tiempo para resaltar secuencias, no como relato sensacionalista.</p>
+      </div>
+      <div class="grid-3" id="conflict-types"></div>
+      <div style="height:18px"></div>
+      <div class="timeline" id="conflict-timeline"></div>
+    </div>
+  </section>
+
+  <section class="section" id="sintesis">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">09 · Lectura integrada</div>
+          <h2>QUÉ SUGIERE EL TERRITORIO</h2>
+        </div>
+        <p class="section-intro">La síntesis cruza los bloques del archivo para convertir la información participativa en una lectura ejecutiva sobre dependencias, exposición, gobernanza y posibles entradas para soluciones basadas en la naturaleza.</p>
+      </div>
+      <div class="synthesis-grid" id="synthesis-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="calidad">
+    <div class="wrap">
+      <div class="section-header">
+        <div>
+          <div class="section-label">10 · Transparencia</div>
+          <h2>CALIDAD Y LÍMITES DE INTERPRETACIÓN</h2>
+        </div>
+        <p class="section-intro">El tablero privilegia la claridad sin ocultar problemas de codificación. Las consolidaciones realizadas se documentan para que el equipo pueda validarlas o corregirlas en la base.</p>
+      </div>
+      <div class="details-note">
+        <details open>
+          <summary>Notas de calidad de datos y supuestos</summary>
+          <ul class="quality-list" id="quality-list"></ul>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>Dashboard autónomo generado a partir del archivo Excel cargado. No usa servidor ni librerías externas de gráficos; solo HTML, CSS y JavaScript.</p>
+  </div>
+</footer>
+
+<script>
+const DATA = {"meta": {"org": "TOISAN", "country": "Ecuador", "paisaje": "ACUSMIT", "microcuencas": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"]}, "headline": [{"label": "microcuencas analizadas", "value": 5, "detail": "Río Aguagrún, Río Chalguayaco, Río Cristopamba, Río Magdalena, Río Nangulví"}, {"label": "medios de vida consolidados", "value": 9, "detail": "A partir de lluvia, priorización y relaciones SE–MdV"}, {"label": "ecosistemas recurrentes", "value": 3, "detail": "Agroecosistemas, Bosque nublado, Sistemas hídricos: ríos, vertientes y quebradas"}, {"label": "amenazas únicas consolidadas", "value": 19, "detail": "Climáticas y no climáticas"}, {"label": "actores registrados", "value": 41, "detail": "Registros únicos por nombre"}, {"label": "espacios de diálogo", "value": 7, "detail": "Todos reportados como formales"}, {"label": "eventos de conflicto", "value": 35, "detail": "Serie histórica registrada en la herramienta 6.1"}, {"label": "respuestas codificadas CA", "value": 1149, "detail": "Valores de rangos convertidos a punto medio para síntesis"}], "profiles": [{"grupo": "Río Aguagrún", "livelihoods": ["Agricultura", "Agroindustria", "Animales menores", "Ganadería", "Huertas familiares", "Piscicultura / pesca", "Producción forestal"], "top_priorities": [{"livelihood": "Huertas familiares", "score": 12.0}, {"livelihood": "Agricultura", "score": 11.0}, {"livelihood": "Agricultura", "score": 10.0}, {"livelihood": "Ganadería", "score": 10.0}], "ecosystems": ["Agroecosistemas", "Bosque nublado", "Sistemas hídricos: ríos, vertientes y quebradas"], "top_threats": [{"amenaza": "Concesiones mineras", "score": 10.0, "tipo": "no-climática"}, {"amenaza": "Debilidad institucional en la aplicación de normativa ambiental", "score": 9.0, "tipo": "no-climática"}, {"amenaza": "Sequía", "score": 7.0, "tipo": "climática"}, {"amenaza": "Lluvias extremas", "score": 7.0, "tipo": "climática"}], "actor_count": 13, "conflict_events": 7, "adaptive_avg": 43.1}, {"grupo": "Río Chalguayaco", "livelihoods": ["Agricultura", "Agroindustria", "Animales menores", "Ganadería", "Huertas familiares", "Producción forestal", "Turismo"], "top_priorities": [{"livelihood": "Huertas familiares", "score": 10.0}, {"livelihood": "Turismo", "score": 10.0}, {"livelihood": "Agricultura", "score": 9.0}, {"livelihood": "Ganadería", "score": 8.0}], "ecosystems": ["Agroecosistemas", "Bosque nublado", "Sistemas hídricos: ríos, vertientes y quebradas"], "top_threats": [{"amenaza": "Sequía", "score": 8.0, "tipo": "climática"}, {"amenaza": "Inestabilidad climática", "score": 8.0, "tipo": "climática"}, {"amenaza": "Lluvias extremas", "score": 8.0, "tipo": "climática"}, {"amenaza": "Concesiones mineras", "score": 8.0, "tipo": "no-climática"}], "actor_count": 13, "conflict_events": 7, "adaptive_avg": 39.3}, {"grupo": "Río Cristopamba", "livelihoods": ["Agricultura", "Animales menores", "Ganadería", "Huertas familiares", "Producción forestal"], "top_priorities": [{"livelihood": "Agricultura", "score": 13.0}, {"livelihood": "Agricultura", "score": 11.0}, {"livelihood": "Agricultura", "score": 11.0}, {"livelihood": "Agricultura", "score": 11.0}], "ecosystems": ["Agroecosistemas", "Bosque nublado", "Sistemas hídricos: ríos, vertientes y quebradas"], "top_threats": [{"amenaza": "Inestabilidad climática", "score": 10.0, "tipo": "climática"}, {"amenaza": "Concesiones mineras", "score": 10.0, "tipo": "no-climática"}, {"amenaza": "Uso excesivo de agroquímicos", "score": 9.0, "tipo": "no-climática"}, {"amenaza": "Sequía", "score": 8.0, "tipo": "climática"}], "actor_count": 13, "conflict_events": 7, "adaptive_avg": 43.9}, {"grupo": "Río Magdalena", "livelihoods": ["Agricultura", "Animales menores", "Ganadería", "Huertas familiares", "Piscicultura / pesca", "Turismo"], "top_priorities": [{"livelihood": "Turismo", "score": 14.0}, {"livelihood": "Huertas familiares", "score": 12.0}, {"livelihood": "Agricultura", "score": 11.0}, {"livelihood": "Ganadería", "score": 11.0}], "ecosystems": ["Agroecosistemas", "Bosque nublado", "Sistemas hídricos: ríos, vertientes y quebradas"], "top_threats": [{"amenaza": "Concesiones mineras", "score": 10.0, "tipo": "no-climática"}, {"amenaza": "Comportamiento inadecuado de los humanos", "score": 9.0, "tipo": "no-climática"}, {"amenaza": "Pérdida de biodiversidad", "score": 8.0, "tipo": "climática"}, {"amenaza": "Uso excesivo de agroquímicos", "score": 8.0, "tipo": "no-climática"}], "actor_count": 13, "conflict_events": 7, "adaptive_avg": 31.7}, {"grupo": "Río Nangulví", "livelihoods": ["Agricultura", "Agroindustria", "Animales menores", "Ganadería", "Huertas familiares", "Piscicultura / pesca", "Producción forestal", "Turismo"], "top_priorities": [{"livelihood": "Huertas familiares", "score": 13.0}, {"livelihood": "Turismo", "score": 11.0}, {"livelihood": "Agricultura", "score": 10.0}, {"livelihood": "Ganadería", "score": 10.0}], "ecosystems": ["Agroecosistemas", "Bosque nublado", "Sistemas hídricos: ríos, vertientes y quebradas"], "top_threats": [{"amenaza": "Expansión de la frontera agrícola", "score": 10.0, "tipo": "no-climática"}, {"amenaza": "Concesiones mineras", "score": 9.0, "tipo": "no-climática"}, {"amenaza": "Desvío del cauce natural del agua", "score": 9.0, "tipo": "no-climática"}, {"amenaza": "Sequía", "score": 8.0, "tipo": "climática"}], "actor_count": 11, "conflict_events": 7, "adaptive_avg": 43.4}], "sheet_overview": [{"sheet": "3.1. Lluvia MdV&SE", "rows": 50, "columns": 7, "status": "Completa", "missing": []}, {"sheet": "3.2. Priorización", "rows": 37, "columns": 12, "status": "Completa", "missing": []}, {"sheet": "3.3. Car_A", "rows": 28, "columns": 12, "status": "Completa", "missing": []}, {"sheet": "3.3. Car_B", "rows": 48, "columns": 8, "status": "Completa", "missing": []}, {"sheet": "3.3. Car_C", "rows": 71, "columns": 11, "status": "Completa", "missing": []}, {"sheet": "3.3. Car_D", "rows": 94, "columns": 10, "status": "Completa", "missing": []}, {"sheet": "3.4. Ecosistemas", "rows": 15, "columns": 11, "status": "Completa", "missing": []}, {"sheet": "3.5. SE y MdV", "rows": 156, "columns": 14, "status": "Completa", "missing": []}, {"sheet": "4.1. Amenazas", "rows": 50, "columns": 12, "status": "Completa", "missing": []}, {"sheet": "4.2.1. Amenazas_MdV", "rows": 59, "columns": 26, "status": "Completa", "missing": []}, {"sheet": "4.2.2. Amenazas_SE", "rows": 48, "columns": 26, "status": "Completa", "missing": []}, {"sheet": "5.1. Actores", "rows": 63, "columns": 10, "status": "Completa", "missing": []}, {"sheet": "5.2. Diálogo", "rows": 7, "columns": 12, "status": "Completa", "missing": []}, {"sheet": "6.1. Evolución_conflict", "rows": 35, "columns": 12, "status": "Completa", "missing": []}, {"sheet": "6.2. Actores_conflict", "rows": 60, "columns": 10, "status": "Completa", "missing": []}, {"sheet": "7.1. Encuesta CA", "rows": 324, "columns": 12, "status": "Completa", "missing": []}], "livelihoods": [{"name": "Turismo", "records_31": 3, "priority_records": 3, "groups": ["Río Chalguayaco", "Río Magdalena", "Río Nangulví"], "uses": {"comercial": 3}, "avg_priority": 11.7, "max_priority": 14.0, "top_groups": [{"grupo": "Río Magdalena", "score": 14.0}, {"grupo": "Río Nangulví", "score": 11.0}, {"grupo": "Río Chalguayaco", "score": 10.0}], "products": ["Ecoturismo", "Turismo: cientifico y ecologico en el bosque protector los cedros", "Aguas termales, alojamiento, alimentacion, centro cultural- GUALIMAN"]}, {"name": "Huertas familiares", "records_31": 5, "priority_records": 5, "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "uses": {"autoconsumo": 5}, "avg_priority": 11.6, "max_priority": 13.0, "top_groups": [{"grupo": "Río Nangulví", "score": 13.0}, {"grupo": "Río Aguagrún", "score": 12.0}, {"grupo": "Río Magdalena", "score": 12.0}], "products": ["Varios: yuca, frutas, verduras, granos secos, peces, animales menores, hortalizas plantas medicinales", "Policultivos asociados"]}, {"name": "Piscicultura / pesca", "records_31": 4, "priority_records": 1, "groups": ["Río Aguagrún", "Río Magdalena", "Río Nangulví"], "uses": {"comercial": 2, "autoconsumo": 2}, "avg_priority": 10.0, "max_priority": 10.0, "top_groups": [{"grupo": "Río Magdalena", "score": 10.0}], "products": ["Pesca artesanal en la cuenca y crianza de tilapia"]}, {"name": "Ganadería", "records_31": 5, "priority_records": 5, "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "uses": {"comercial": 5}, "avg_priority": 9.2, "max_priority": 11.0, "top_groups": [{"grupo": "Río Magdalena", "score": 11.0}, {"grupo": "Río Aguagrún", "score": 10.0}, {"grupo": "Río Nangulví", "score": 10.0}], "products": ["Carne", "Ganadería de carane", "carne, leche", "Carne, leche, queso"]}, {"name": "Agricultura", "records_31": 5, "priority_records": 18, "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "uses": {"comercial": 5}, "avg_priority": 8.4, "max_priority": 13.0, "top_groups": [{"grupo": "Río Cristopamba", "score": 13.0}, {"grupo": "Río Aguagrún", "score": 11.0}, {"grupo": "Río Cristopamba", "score": 11.0}], "products": ["Naranjilla", "Granadilla", "Café en agroforesteria", "Frutales: granadilla, tomate de arbol, aguacate, caña de azucar, predomina la granadilla,"]}, {"name": "Producción forestal", "records_31": 4, "priority_records": 3, "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Nangulví"], "uses": {"comercial": 4}, "avg_priority": 6.7, "max_priority": 8.0, "top_groups": [{"grupo": "Río Cristopamba", "score": 8.0}, {"grupo": "Río Nangulví", "score": 8.0}, {"grupo": "Río Aguagrún", "score": 4.0}], "products": ["Aliso", "Aliso y artesania de madera", "Aliso, balsa, laurel, fresno, viveros forestales, artesanias de madera, carpinteria"]}, {"name": "Bosque primario", "records_31": 0, "priority_records": 2, "groups": ["Río Chalguayaco", "Río Cristopamba"], "uses": {}, "avg_priority": 5.0, "max_priority": 6.0, "top_groups": [{"grupo": "Río Cristopamba", "score": 6.0}, {"grupo": "Río Chalguayaco", "score": 4.0}], "products": ["Madera", "Madera nativa"]}, {"name": "Animales menores", "records_31": 6, "priority_records": 0, "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "uses": {"autoconsumo": 5, "comercial": 1}, "avg_priority": null, "max_priority": null, "top_groups": [], "products": []}, {"name": "Agroindustria", "records_31": 3, "priority_records": 0, "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Nangulví"], "uses": {"comercial": 3}, "avg_priority": null, "max_priority": null, "top_groups": [], "products": []}], "ecosystems": [{"ecosistema": "Bosque nublado", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "service_codes": {"P3": 5, "R1": 5, "R3": 4, "C2": 4, "P2": 3, "R2": 3, "C1": 3, "C4": 3, "P4": 2, "C3": 2, "P1": 1, "A1": 1}, "livelihoods": {"Ganadería": 5, "Huertas familiares": 4, "Agricultura": 4, "Producción forestal": 3, "Turismo": 3, "etc": 1}, "records": 5}, {"ecosistema": "Agroecosistemas", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "service_codes": {"P1": 5, "C2": 4, "R1": 3, "R3": 3, "C1": 3, "C3": 3, "C4": 3, "P2": 2, "P4": 2, "R2": 2, "P3": 2, "A1": 1}, "livelihoods": {"Agricultura": 5, "Huertas familiares": 5, "Turismo": 3, "Ganadería": 3, "Producción forestal": 2}, "records": 5}, {"ecosistema": "Sistemas hídricos: ríos, vertientes y quebradas", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "service_codes": {"P1": 5, "P3": 5, "C2": 4, "R1": 3, "C1": 3, "C3": 3, "C4": 3, "P4": 2, "R3": 1}, "livelihoods": {"Agricultura": 5, "Ganadería": 5, "Huertas familiares": 5, "Turismo": 3, "Producción forestal": 2, "etc": 1}, "records": 5}], "eco_matrix": [{"ecosistema": "Bosque nublado", "cells": [{"grupo": "Río Aguagrún", "count": 2, "codes": "P3, R1", "livelihoods": "Ganadería, Producción forestal"}, {"grupo": "Río Chalguayaco", "count": 10, "codes": "C1, C2, C3, C4, P2, P3, P4, R1, R2, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Producción forestal, Turismo"}, {"grupo": "Río Cristopamba", "count": 9, "codes": "C1, C2, C4, P1, P2, P3, R1, R2, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares"}, {"grupo": "Río Magdalena", "count": 4, "codes": "C2, P3, R1, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Turismo, etc"}, {"grupo": "Río Nangulví", "count": 11, "codes": "A1, C1, C2, C3, C4, P2, P3, P4, R1, R2, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Producción forestal, Turismo"}]}, {"ecosistema": "Agroecosistemas", "cells": [{"grupo": "Río Aguagrún", "count": 1, "codes": "P1", "livelihoods": "Agricultura, Huertas familiares"}, {"grupo": "Río Chalguayaco", "count": 10, "codes": "C1, C2, C3, C4, P1, P2, P4, R1, R2, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Producción forestal, Turismo"}, {"grupo": "Río Cristopamba", "count": 6, "codes": "C1, C2, C3, C4, P1, P3", "livelihoods": "Agricultura, Huertas familiares"}, {"grupo": "Río Magdalena", "count": 5, "codes": "C2, P1, P3, R1, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Turismo"}, {"grupo": "Río Nangulví", "count": 11, "codes": "A1, C1, C2, C3, C4, P1, P2, P4, R1, R2, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Producción forestal, Turismo"}]}, {"ecosistema": "Sistemas hídricos: ríos, vertientes y quebradas", "cells": [{"grupo": "Río Aguagrún", "count": 2, "codes": "P1, P3", "livelihoods": "Agricultura, Ganadería, Huertas familiares"}, {"grupo": "Río Chalguayaco", "count": 8, "codes": "C1, C2, C3, C4, P1, P3, P4, R1", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Producción forestal, Turismo"}, {"grupo": "Río Cristopamba", "count": 6, "codes": "C1, C2, C3, C4, P1, P3", "livelihoods": "Agricultura, Ganadería, Huertas familiares"}, {"grupo": "Río Magdalena", "count": 5, "codes": "C2, P1, P3, R1, R3", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Turismo, etc"}, {"grupo": "Río Nangulví", "count": 8, "codes": "C1, C2, C3, C4, P1, P3, P4, R1", "livelihoods": "Agricultura, Ganadería, Huertas familiares, Producción forestal, Turismo"}]}], "access_counts": {"D: Aumenta": 37, "F: Complicado": 31, "P: Disminuye": 29, "F: Mantiene": 19, "P:Disminuye": 13, "D: Disminuye": 10, "P: Mantiene": 8, "D: Mantiene": 4, "F: Disminuye": 2, "P:Aumenta": 2, "D: Complicado": 1}, "threats": [{"amenaza": "Concesiones mineras", "tipo": "no-climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "records41": 5, "avg_score": 9.4, "max_score": 10.0, "sites": ["Toda la microcuenca", "Todos", "La microcuenca"], "mentions_all": 16}, {"amenaza": "Desvío del cauce natural del agua", "tipo": "no-climática", "groups": ["Río Nangulví"], "records41": 1, "avg_score": 9.0, "max_score": 9.0, "sites": ["Praiso, El Mirador,Nangulvi Al, Nangulvi B."], "mentions_all": 4}, {"amenaza": "Comportamiento inadecuado de los humanos", "tipo": "no-climática", "groups": ["Río Magdalena"], "records41": 1, "avg_score": 9.0, "max_score": 9.0, "sites": ["Toda la microcuenca"], "mentions_all": 3}, {"amenaza": "Debilidad institucional en la aplicación de normativa ambiental", "tipo": "no-climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "records41": 5, "avg_score": 8.0, "max_score": 9.0, "sites": ["Toda la microcuenca", "Todos", "Alrededor de la microcuenca"], "mentions_all": 16}, {"amenaza": "Pérdida de biodiversidad", "tipo": "climática", "groups": ["Río Magdalena"], "records41": 1, "avg_score": 8.0, "max_score": 8.0, "sites": ["Alrededor de la microcuenca"], "mentions_all": 3}, {"amenaza": "Inestabilidad climática", "tipo": "climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Nangulví"], "records41": 4, "avg_score": 7.8, "max_score": 10.0, "sites": ["Toda la microcuenca", "Todos", "Praiso, El Mirador,Nangulvi Al, Nangulvi B."], "mentions_all": 13}, {"amenaza": "Uso excesivo de agroquímicos", "tipo": "no-climática", "groups": ["Río Chalguayaco", "Río Cristopamba", "Río Magdalena"], "records41": 3, "avg_score": 7.7, "max_score": 9.0, "sites": ["Todos", "Toda la microcuenca", "Alrededor de la microcuenca"], "mentions_all": 7}, {"amenaza": "Sequía", "tipo": "climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "records41": 5, "avg_score": 7.6, "max_score": 8.0, "sites": ["Toda la microcuenca", "Todos", "Praiso, El Mirador,Nangulvi Al, Nangulvi B."], "mentions_all": 18}, {"amenaza": "Expansión de la frontera agrícola", "tipo": "no-climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Nangulví"], "records41": 4, "avg_score": 7.5, "max_score": 10.0, "sites": ["Partes altas de la microcuenca", "Chalguayaco y Junin", "Toda la microcuenca"], "mentions_all": 13}, {"amenaza": "Lluvias extremas", "tipo": "climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena", "Río Nangulví"], "records41": 5, "avg_score": 7.0, "max_score": 8.0, "sites": ["Vialidad de toda la microcuenca", "Todos", "Toda la microcuenca"], "mentions_all": 16}, {"amenaza": "Construcción de vías sin estudios", "tipo": "no-climática", "groups": ["Río Cristopamba"], "records41": 1, "avg_score": 7.0, "max_score": 7.0, "sites": ["Toda la microcuenca"], "mentions_all": 3}, {"amenaza": "Sobrepastoreo", "tipo": "no-climática", "groups": ["Río Magdalena"], "records41": 1, "avg_score": 7.0, "max_score": 7.0, "sites": ["Alrededor de la microcuenca"], "mentions_all": 3}, {"amenaza": "Descargas de aguas servidas", "tipo": "no-climática", "groups": ["Río Chalguayaco"], "records41": 1, "avg_score": 6.0, "max_score": 6.0, "sites": ["Chalguayaco bajo, La Armenia"], "mentions_all": 2}, {"amenaza": "Cacería", "tipo": "no-climática", "groups": ["Río Aguagrún", "Río Cristopamba", "Río Magdalena"], "records41": 3, "avg_score": 5.3, "max_score": 7.0, "sites": ["Toda la microcuenca", "Cerca de remanentes de bosque", "Alrededor de la microcuenca"], "mentions_all": 9}, {"amenaza": "Comercio injusto / condiciones de comercialización", "tipo": "no-climática", "groups": ["Río Aguagrún"], "records41": 1, "avg_score": 5.0, "max_score": 5.0, "sites": ["Toda la microcuenca"], "mentions_all": 3}, {"amenaza": "Quemas agrícolas", "tipo": "no-climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Magdalena"], "records41": 4, "avg_score": 4.0, "max_score": 7.0, "sites": ["Lugares focalizados", "Todos", "Toda la microcuenca"], "mentions_all": 12}, {"amenaza": "Incendios forestales", "tipo": "climática", "groups": ["Río Aguagrún", "Río Chalguayaco", "Río Cristopamba", "Río Nangulví"], "records41": 4, "avg_score": 2.8, "max_score": 6.0, "sites": ["Partes bajas", "Todos", "Cerca de bosques"], "mentions_all": 13}, {"amenaza": "Pesca artesanal", "tipo": "no-climática", "groups": ["Río Magdalena"], "records41": 1, "avg_score": 2.0, "max_score": 2.0, "sites": ["Rios de la microcuenca"], "mentions_all": 2}, {"amenaza": "Contaminación del agua", "tipo": "no-climática", "groups": [], "records41": 0, "avg_score": null, "max_score": null, "sites": [], "mentions_all": 1}], "threat_matrix": [{"amenaza": "Concesiones mineras", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": 10.0, "site": "Toda la microcuenca"}, {"grupo": "Río Chalguayaco", "score": 8.0, "site": "Todos"}, {"grupo": "Río Cristopamba", "score": 10.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": 10.0, "site": "La microcuenca"}, {"grupo": "Río Nangulví", "score": 9.0, "site": "Praiso, El Mirador,Nangulvi Al, Nangulvi B."}]}, {"amenaza": "Desvío del cauce natural del agua", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": null, "site": ""}, {"grupo": "Río Chalguayaco", "score": null, "site": ""}, {"grupo": "Río Cristopamba", "score": null, "site": ""}, {"grupo": "Río Magdalena", "score": null, "site": ""}, {"grupo": "Río Nangulví", "score": 9.0, "site": "Praiso, El Mirador,Nangulvi Al, Nangulvi B."}]}, {"amenaza": "Comportamiento inadecuado de los humanos", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": null, "site": ""}, {"grupo": "Río Chalguayaco", "score": null, "site": ""}, {"grupo": "Río Cristopamba", "score": null, "site": ""}, {"grupo": "Río Magdalena", "score": 9.0, "site": "Toda la microcuenca"}, {"grupo": "Río Nangulví", "score": null, "site": ""}]}, {"amenaza": "Debilidad institucional en la aplicación de normativa ambiental", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": 9.0, "site": "Toda la microcuenca"}, {"grupo": "Río Chalguayaco", "score": 7.0, "site": "Todos"}, {"grupo": "Río Cristopamba", "score": 8.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": 8.0, "site": "Alrededor de la microcuenca"}, {"grupo": "Río Nangulví", "score": 8.0, "site": "Praiso, El Mirador,Nangulvi Al, Nangulvi B."}]}, {"amenaza": "Pérdida de biodiversidad", "tipo": "climática", "cells": [{"grupo": "Río Aguagrún", "score": null, "site": ""}, {"grupo": "Río Chalguayaco", "score": null, "site": ""}, {"grupo": "Río Cristopamba", "score": null, "site": ""}, {"grupo": "Río Magdalena", "score": 8.0, "site": "Alrededor de la microcuenca"}, {"grupo": "Río Nangulví", "score": null, "site": ""}]}, {"amenaza": "Inestabilidad climática", "tipo": "climática", "cells": [{"grupo": "Río Aguagrún", "score": 5.0, "site": "Toda la microcuenca"}, {"grupo": "Río Chalguayaco", "score": 8.0, "site": "Todos"}, {"grupo": "Río Cristopamba", "score": 10.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": null, "site": ""}, {"grupo": "Río Nangulví", "score": 8.0, "site": "Praiso, El Mirador,Nangulvi Al, Nangulvi B."}]}, {"amenaza": "Uso excesivo de agroquímicos", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": null, "site": ""}, {"grupo": "Río Chalguayaco", "score": 6.0, "site": "Todos"}, {"grupo": "Río Cristopamba", "score": 9.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": 8.0, "site": "Alrededor de la microcuenca"}, {"grupo": "Río Nangulví", "score": null, "site": ""}]}, {"amenaza": "Sequía", "tipo": "climática", "cells": [{"grupo": "Río Aguagrún", "score": 7.0, "site": "Toda la microcuenca"}, {"grupo": "Río Chalguayaco", "score": 8.0, "site": "Todos"}, {"grupo": "Río Cristopamba", "score": 8.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": 7.0, "site": "Toda la microcuenca"}, {"grupo": "Río Nangulví", "score": 8.0, "site": "Praiso, El Mirador,Nangulvi Al, Nangulvi B."}]}, {"amenaza": "Expansión de la frontera agrícola", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": 5.0, "site": "Partes altas de la microcuenca"}, {"grupo": "Río Chalguayaco", "score": 8.0, "site": "Chalguayaco y Junin"}, {"grupo": "Río Cristopamba", "score": 7.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": null, "site": ""}, {"grupo": "Río Nangulví", "score": 10.0, "site": "Praiso, El Mirador,Nangulvi Al, Nangulvi B."}]}, {"amenaza": "Lluvias extremas", "tipo": "climática", "cells": [{"grupo": "Río Aguagrún", "score": 7.0, "site": "Vialidad de toda la microcuenca"}, {"grupo": "Río Chalguayaco", "score": 8.0, "site": "Todos"}, {"grupo": "Río Cristopamba", "score": 8.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": 6.0, "site": "Deslizamiento en las vias, sitios de alta pendiente"}, {"grupo": "Río Nangulví", "score": 6.0, "site": "Praiso, El Mirador,Nangulvi Al, Nangulvi B."}]}, {"amenaza": "Construcción de vías sin estudios", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": null, "site": ""}, {"grupo": "Río Chalguayaco", "score": null, "site": ""}, {"grupo": "Río Cristopamba", "score": 7.0, "site": "Toda la microcuenca"}, {"grupo": "Río Magdalena", "score": null, "site": ""}, {"grupo": "Río Nangulví", "score": null, "site": ""}]}, {"amenaza": "Sobrepastoreo", "tipo": "no-climática", "cells": [{"grupo": "Río Aguagrún", "score": null, "site": ""}, {"grupo": "Río Chalguayaco", "score": null, "site": ""}, {"grupo": "Río Cristopamba", "score": null, "site": ""}, {"grupo": "Río Magdalena", "score": 7.0, "site": "Alrededor de la microcuenca"}, {"grupo": "Río Nangulví", "score": null, "site": ""}]}], "impact_liv_matrix": [{"amenaza": "Concesiones mineras", "cells": [{"livelihood": "Ganadería", "score": 2.9, "count": 6}, {"livelihood": "Agricultura", "score": 2.9, "count": 6}, {"livelihood": "Huertas familiares", "score": 2.9, "count": 6}, {"livelihood": "Turismo", "score": 2.9, "count": 4}, {"livelihood": "Producción forestal", "score": 2.9, "count": 2}, {"livelihood": "frtales", "score": 3.0, "count": 1}, {"livelihood": "etc", "score": 2.4, "count": 1}, {"livelihood": "Agroindustria", "score": 2.9, "count": 1}]}, {"amenaza": "Desvío del cauce natural del agua", "cells": [{"livelihood": "Ganadería", "score": 1.9, "count": 2}, {"livelihood": "Agricultura", "score": 1.9, "count": 2}, {"livelihood": "Huertas familiares", "score": 1.9, "count": 2}, {"livelihood": "Turismo", "score": 1.9, "count": 2}, {"livelihood": "Producción forestal", "score": null, "count": 0}, {"livelihood": "frtales", "score": null, "count": 0}, {"livelihood": "etc", "score": null, "count": 0}, {"livelihood": "Agroindustria", "score": null, "count": 0}]}, {"amenaza": "Comportamiento inadecuado de los humanos", "cells": [{"livelihood": "Ganadería", "score": 1.7, "count": 1}, {"livelihood": "Agricultura", "score": 1.7, "count": 1}, {"livelihood": "Huertas familiares", "score": 1.7, "count": 1}, {"livelihood": "Turismo", "score": 1.7, "count": 1}, {"livelihood": "Producción forestal", "score": null, "count": 0}, {"livelihood": "frtales", "score": null, "count": 0}, {"livelihood": "etc", "score": 1.7, "count": 1}, {"livelihood": "Agroindustria", "score": null, "count": 0}]}, {"amenaza": "Debilidad institucional en la aplicación de normativa ambiental", "cells": [{"livelihood": "Ganadería", "score": 2.1, "count": 6}, {"livelihood": "Agricultura", "score": 2.1, "count": 6}, {"livelihood": "Huertas familiares", "score": 2.1, "count": 6}, {"livelihood": "Turismo", "score": 2.0, "count": 4}, {"livelihood": "Producción forestal", "score": 1.8, "count": 2}, {"livelihood": "frtales", "score": 2.9, "count": 1}, {"livelihood": "etc", "score": 2.3, "count": 1}, {"livelihood": "Agroindustria", "score": 1.7, "count": 1}]}, {"amenaza": "Pérdida de biodiversidad", "cells": [{"livelihood": "Ganadería", "score": 2.0, "count": 1}, {"livelihood": "Agricultura", "score": 2.0, "count": 1}, {"livelihood": "Huertas familiares", "score": 2.0, "count": 1}, {"livelihood": "Turismo", "score": 2.0, "count": 1}, {"livelihood": "Producción forestal", "score": null, "count": 0}, {"livelihood": "frtales", "score": null, "count": 0}, {"livelihood": "etc", "score": 2.0, "count": 1}, {"livelihood": "Agroindustria", "score": null, "count": 0}]}, {"amenaza": "Inestabilidad climática", "cells": [{"livelihood": "Ganadería", "score": 2.1, "count": 3}, {"livelihood": "Agricultura", "score": 2.5, "count": 4}, {"livelihood": "Huertas familiares", "score": 2.4, "count": 2}, {"livelihood": "Turismo", "score": 1.7, "count": 1}, {"livelihood": "Producción forestal", "score": 2.0, "count": 1}, {"livelihood": "frtales", "score": 2.7, "count": 1}, {"livelihood": "etc", "score": null, "count": 0}, {"livelihood": "Agroindustria", "score": 2.0, "count": 1}]}, {"amenaza": "Uso excesivo de agroquímicos", "cells": [{"livelihood": "Ganadería", "score": 2.5, "count": 2}, {"livelihood": "Agricultura", "score": 2.5, "count": 2}, {"livelihood": "Huertas familiares", "score": 2.5, "count": 2}, {"livelihood": "Turismo", "score": 2.0, "count": 1}, {"livelihood": "Producción forestal", "score": null, "count": 0}, {"livelihood": "frtales", "score": 3.0, "count": 1}, {"livelihood": "etc", "score": 2.0, "count": 1}, {"livelihood": "Agroindustria", "score": null, "count": 0}]}, {"amenaza": "Sequía", "cells": [{"livelihood": "Ganadería", "score": 2.5, "count": 6}, {"livelihood": "Agricultura", "score": 2.5, "count": 6}, {"livelihood": "Huertas familiares", "score": 2.4, "count": 4}, {"livelihood": "Turismo", "score": 2.2, "count": 4}, {"livelihood": "Producción forestal", "score": 2.1, "count": 1}, {"livelihood": "frtales", "score": 2.7, "count": 1}, {"livelihood": "etc", "score": 3.0, "count": 1}, {"livelihood": "Agroindustria", "score": 2.1, "count": 1}]}, {"amenaza": "Expansión de la frontera agrícola", "cells": [{"livelihood": "Ganadería", "score": 2.0, "count": 5}, {"livelihood": "Agricultura", "score": 2.0, "count": 5}, {"livelihood": "Huertas familiares", "score": 2.0, "count": 5}, {"livelihood": "Turismo", "score": 2.0, "count": 3}, {"livelihood": "Producción forestal", "score": 1.9, "count": 2}, {"livelihood": "frtales", "score": 2.0, "count": 1}, {"livelihood": "etc", "score": null, "count": 0}, {"livelihood": "Agroindustria", "score": 2.1, "count": 1}]}, {"amenaza": "Lluvias extremas", "cells": [{"livelihood": "Ganadería", "score": 2.2, "count": 6}, {"livelihood": "Agricultura", "score": 2.2, "count": 5}, {"livelihood": "Huertas familiares", "score": 2.3, "count": 3}, {"livelihood": "Turismo", "score": 2.1, "count": 4}, {"livelihood": "Producción forestal", "score": 2.1, "count": 1}, {"livelihood": "frtales", "score": 2.7, "count": 1}, {"livelihood": "etc", "score": 2.1, "count": 1}, {"livelihood": "Agroindustria", "score": 2.1, "count": 1}]}], "impact_liv_columns": ["Ganadería", "Agricultura", "Huertas familiares", "Turismo", "Producción forestal", "frtales", "etc", "Agroindustria"], "impact_se_matrix": [{"amenaza": "Concesiones mineras", "cells": [{"code": "P3", "score": 2.6, "count": 5}, {"code": "P1", "score": 2.6, "count": 3}, {"code": "P2", "score": 1.9, "count": 1}, {"code": "P4", "score": 1.9, "count": 1}, {"code": "R2", "score": 1.9, "count": 1}, {"code": "R3", "score": 1.9, "count": 1}, {"code": "C1", "score": 1.9, "count": 1}, {"code": "C2", "score": 1.9, "count": 1}]}, {"amenaza": "Desvío del cauce natural del agua", "cells": [{"code": "P3", "score": 2.7, "count": 1}, {"code": "P1", "score": 2.7, "count": 1}, {"code": "P2", "score": 2.7, "count": 1}, {"code": "P4", "score": 2.7, "count": 1}, {"code": "R2", "score": 2.7, "count": 1}, {"code": "R3", "score": 2.7, "count": 1}, {"code": "C1", "score": 2.7, "count": 1}, {"code": "C2", "score": 2.7, "count": 1}]}, {"amenaza": "Comportamiento inadecuado de los humanos", "cells": [{"code": "P3", "score": 1.7, "count": 1}, {"code": "P1", "score": null, "count": 0}, {"code": "P2", "score": null, "count": 0}, {"code": "P4", "score": null, "count": 0}, {"code": "R2", "score": null, "count": 0}, {"code": "R3", "score": null, "count": 0}, {"code": "C1", "score": null, "count": 0}, {"code": "C2", "score": null, "count": 0}]}, {"amenaza": "Debilidad institucional en la aplicación de normativa ambiental", "cells": [{"code": "P3", "score": 1.9, "count": 5}, {"code": "P1", "score": 2.1, "count": 3}, {"code": "P2", "score": 2.1, "count": 1}, {"code": "P4", "score": 2.1, "count": 1}, {"code": "R2", "score": 2.1, "count": 1}, {"code": "R3", "score": 2.1, "count": 1}, {"code": "C1", "score": 2.1, "count": 1}, {"code": "C2", "score": 2.1, "count": 1}]}, {"amenaza": "Pérdida de biodiversidad", "cells": [{"code": "P3", "score": null, "count": 0}, {"code": "P1", "score": null, "count": 0}, {"code": "P2", "score": null, "count": 0}, {"code": "P4", "score": null, "count": 0}, {"code": "R2", "score": null, "count": 0}, {"code": "R3", "score": null, "count": 0}, {"code": "C1", "score": null, "count": 0}, {"code": "C2", "score": null, "count": 0}]}, {"amenaza": "Inestabilidad climática", "cells": [{"code": "P3", "score": 2.4, "count": 4}, {"code": "P1", "score": 2.4, "count": 3}, {"code": "P2", "score": 2.6, "count": 2}, {"code": "P4", "score": 2.6, "count": 2}, {"code": "R2", "score": 2.6, "count": 2}, {"code": "R3", "score": 2.6, "count": 2}, {"code": "C1", "score": 2.6, "count": 2}, {"code": "C2", "score": 2.6, "count": 2}]}, {"amenaza": "Uso excesivo de agroquímicos", "cells": [{"code": "P3", "score": 2.2, "count": 2}, {"code": "P1", "score": 2.4, "count": 1}, {"code": "P2", "score": null, "count": 0}, {"code": "P4", "score": null, "count": 0}, {"code": "R2", "score": null, "count": 0}, {"code": "R3", "score": null, "count": 0}, {"code": "C1", "score": null, "count": 0}, {"code": "C2", "score": null, "count": 0}]}, {"amenaza": "Sequía", "cells": [{"code": "P3", "score": 2.3, "count": 5}, {"code": "P1", "score": 2.4, "count": 3}, {"code": "P2", "score": 2.4, "count": 2}, {"code": "P4", "score": 2.4, "count": 2}, {"code": "R2", "score": 2.4, "count": 2}, {"code": "R3", "score": 2.4, "count": 2}, {"code": "C1", "score": 2.4, "count": 2}, {"code": "C2", "score": 2.4, "count": 2}]}, {"amenaza": "Expansión de la frontera agrícola", "cells": [{"code": "P3", "score": 1.9, "count": 4}, {"code": "P1", "score": 1.8, "count": 3}, {"code": "P2", "score": 1.4, "count": 1}, {"code": "P4", "score": 1.4, "count": 1}, {"code": "R2", "score": 1.4, "count": 1}, {"code": "R3", "score": 1.4, "count": 1}, {"code": "C1", "score": 1.4, "count": 1}, {"code": "C2", "score": 1.4, "count": 1}]}, {"amenaza": "Lluvias extremas", "cells": [{"code": "P3", "score": 1.9, "count": 5}, {"code": "P1", "score": 1.8, "count": 3}, {"code": "P2", "score": 2.1, "count": 2}, {"code": "P4", "score": 2.1, "count": 2}, {"code": "R2", "score": 2.1, "count": 2}, {"code": "R3", "score": 2.1, "count": 2}, {"code": "C1", "score": 2.1, "count": 2}, {"code": "C2", "score": 2.1, "count": 2}]}], "impact_se_columns": ["P3", "P1", "P2", "P4", "R2", "R3", "C1", "C2"], "actors": [{"grupo": "Río Aguagrún", "name": "Junta de agua", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 8.0, "interes": 7.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "Cabildos", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 8.0, "interes": 7.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "Comunas", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "D,E", "colabor_con": "A,B,E,F,G,I,M", "poder": 9.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "Junta de agua", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "D", "colabor_con": "C,E,F,M", "poder": 10.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "ECOJUNIN", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "C,D", "colabor_con": "A,F,M", "poder": 4.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Juntas de agua", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "M", "colabor_con": "Todos excepto con M", "poder": 7.0, "interes": 6.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Cabildos Comunitarios", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "M", "colabor_con": "Todos excepto con M", "poder": 7.0, "interes": 6.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "Juntas de agua", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "En comflicto con K por conseciones mineras", "colabor_con": "Visualizar la importancia del recurso hidrico", "poder": 8.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "Cabildos Comunitarios", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "En comflicto con K por conseciones mineras", "colabor_con": "Organizacion social y facilidad de convocatoria", "poder": 8.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "MAGAP", "tipo": "Gubernamental", "rol": "Nacional", "conflicto_con": "Comunidades por apoyo a empresas mineras", "colabor_con": "Con empresas mineras", "poder": 2.0, "interes": 0.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "MAATE", "tipo": "Gubernamental", "rol": "Nacional", "conflicto_con": "Comunidades por apoyo a empresas mineras", "colabor_con": "Con empresas mineras", "poder": 1.0, "interes": 0.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "Ministerio de Agricultura", "tipo": "Gubernamental", "rol": "Nacional", "conflicto_con": "Con organizaciones locales cuando realizan actividades con empresas mineras", "colabor_con": "k", "poder": 1.0, "interes": 2.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "Ministerio del Ambiente", "tipo": "Gubernamental", "rol": "Nacional", "conflicto_con": "E,H,I,J,K,L,M", "colabor_con": "D,I", "poder": 3.0, "interes": 4.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "Ministerio de Agricultura", "tipo": "Gurnamental", "rol": "Nacional", "conflicto_con": "En comflicto con todas cuando se relacionan con J yK para favorecer a empresas mineras", "colabor_con": "Acesoria tecnica en temas de agricultura", "poder": 8.0, "interes": 3.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "Empresas mineras", "tipo": "Mixta: publico/privada", "rol": "Internacional", "conflicto_con": "Con entidades gubernamentales", "colabor_con": "Con entidades gubernamentales", "poder": 1.0, "interes": 1.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "Hidroelectricas", "tipo": "Mixtas", "rol": "Paisaje", "conflicto_con": "H", "colabor_con": "Entidades publicas", "poder": 5.0, "interes": 10.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "FAO Paisajes andinos", "tipo": "ONG", "rol": "Nacional", "conflicto_con": "En comflicto con todas cuando se relacionan con J yK para favorecer a empresas mineras", "colabor_con": "Acesoria técnica en temas de agricultura y conservacion", "poder": 8.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Asociacion de productores", "tipo": "Organizacion", "rol": "Territorial", "conflicto_con": "M,H", "colabor_con": "Todos excepto con M,H", "poder": 8.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "DECOIN", "tipo": "Organizacion de hecho", "rol": "Territorial", "conflicto_con": "M,H", "colabor_con": "Todos excepto con M,C,H,F", "poder": 6.0, "interes": 8.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "Clubs Ecologicos", "tipo": "Organizacion de hecho", "rol": "Parroquial", "conflicto_con": "Ninguno", "colabor_con": "APTNORTE y con F,D,H,A,B,C,M", "poder": 1.0, "interes": 9.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "Corporacion Toisan", "tipo": "Organizaciones socioproductivas", "rol": "Paisaje Territorial", "conflicto_con": "Empresas mineras- conseciones mineras", "colabor_con": "Apoyo a grupos organizados para el desarrollo sustentable", "poder": 7.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "Corporación Toisán", "tipo": "Organizativo", "rol": "Territorial", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 8.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "ASOPROAGUA", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "CORPROCIN", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "ASOPRONERIAGU", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 5.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "Consejero de Cuenca del ACUSMIT", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-afectacion al bosque y agua", "colabor_con": "Con todos menos con empresas mineras", "poder": 9.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "Corporacin Toisan", "tipo": "Organizativo", "rol": "Territorial", "conflicto_con": "M,L,H", "colabor_con": "Todos excepto con M", "poder": 7.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "CIPBAT", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "L", "colabor_con": "Comunas y otras organizaciones", "poder": 9.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Juntas de agua", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "H,L,M,G", "colabor_con": "Organizaciones", "poder": 10.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Grupo de mujeres Rio Magdalena", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "H,L,M,G", "colabor_con": "Organizaciones", "poder": 3.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "Talleres Gran Valle", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "H,L,M,G", "colabor_con": "Organizaciones y comunas del territorio", "poder": 3.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "Comunidades", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "G,L,M", "colabor_con": "Entidades publicas y organizaciones", "poder": 10.0, "interes": 7.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Consejo de Cuencas del ACUSMIT", "tipo": "Organizativo", "rol": "Territorial", "conflicto_con": "Ninguno", "colabor_con": "Organizaciones y comunas del territorio", "poder": 8.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Empresas mineras", "tipo": "Privadas", "rol": "Internacional", "conflicto_con": "K,A,B.D,E,F,H,I", "colabor_con": "Entidades publicas", "poder": 5.0, "interes": 10.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "Asosiacion de cervicions turisticos de Intag ASTY", "tipo": "Privadas", "rol": "Local", "conflicto_con": "En comflicto con K por conseciones mineras", "colabor_con": "Fomento de alternativas economicas sustentables", "poder": 3.0, "interes": 10.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "Asociacion agroartesanal de caficultores AACRI", "tipo": "Privadas", "rol": "Local", "conflicto_con": "En comflicto con K por conseciones mineras", "colabor_con": "Fomento de alternativas economicas sustentables", "poder": 3.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "Empresas mineras", "tipo": "Privadas", "rol": "Local Territorial", "conflicto_con": "Con todos", "colabor_con": "Manipulación, hostigamientgo, compra de conciencias para proyectos mineros", "poder": 8.0, "interes": 1.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "DECOIN", "tipo": "Privado", "rol": "Territorial", "conflicto_con": "C,D,H", "colabor_con": "F,M,I,J,K,L,M", "poder": 7.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "ASOCHAL", "tipo": "Privado", "rol": "Local", "conflicto_con": "D", "colabor_con": "E,F", "poder": 4.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "ASOPALVIDA", "tipo": "Privado", "rol": "Local", "conflicto_con": "D", "colabor_con": "M", "poder": 2.0, "interes": 3.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "Fundaciones: Yaltes y Jambatu", "tipo": "Privado", "rol": "Nacional", "conflicto_con": "D,C", "colabor_con": "J,M", "poder": 9.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "GAD Municipal", "tipo": "Publico", "rol": "Cantonal", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 7.0, "interes": 7.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "GAD Parroquial", "tipo": "Publico", "rol": "Parroquial", "conflicto_con": "Comunidades por apoyo a empresas mineras", "colabor_con": "Con empresas mineras", "poder": 4.0, "interes": 2.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "GAD Provincial", "tipo": "Publico", "rol": "Provincial", "conflicto_con": "Comunidades por apoyo a empresas mineras", "colabor_con": "Con empresas mineras", "poder": 4.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "GAD Parroquial", "tipo": "Publico", "rol": "Parroquial", "conflicto_con": "E,J,K,L,M", "colabor_con": "D,F,G,M", "poder": 2.0, "interes": 3.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "ENAMI EP", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "E,F,H,L,J,K,L,M", "colabor_con": "A,B,C,G", "poder": 2.0, "interes": 9.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "GAD Municipal", "tipo": "Publico", "rol": "Cantonal", "conflicto_con": "B,C,D", "colabor_con": "A,B,C,E,G,H,I,J,K,L,M", "poder": 7.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "GAD Provincial", "tipo": "Publico", "rol": "Provincial", "conflicto_con": "H", "colabor_con": "B,F,M", "poder": 3.0, "interes": 4.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "GADs Cuellaje y apuela", "tipo": "Publico", "rol": "Parroquial", "conflicto_con": "M", "colabor_con": "Todos excepto con M", "poder": 9.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "GAD Municipal", "tipo": "Publico", "rol": "Cantonal", "conflicto_con": "M", "colabor_con": "Todos excepto con M", "poder": 9.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "GAD Provincial", "tipo": "Publico", "rol": "Provincial", "conflicto_con": "J,A, excepto con M", "colabor_con": "Todos excepto con M,F,E,D,G", "poder": 9.0, "interes": 6.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "MAATE", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "Organizaciones Ambientales, E,D,F", "colabor_con": "A,B,C,M", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Ministerio de Agricultura", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "D,E,F por fomentar uso de agroquimicos", "colabor_con": "Todos excepto con D,F,I,E,G", "poder": 6.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "GAD Parroquial", "tipo": "Publico", "rol": "Parroquial", "conflicto_con": "I,A", "colabor_con": "Comunas", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "MAATE", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "Todos", "colabor_con": "Organizaciones y comunas del territorio", "poder": 3.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "GAD Municipal", "tipo": "Publico", "rol": "Cantonal", "conflicto_con": "L,M", "colabor_con": "Organizaciones y comunas del territorio", "poder": 9.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "GAD Provincial", "tipo": "Publico", "rol": "Provincial", "conflicto_con": "L,M", "colabor_con": "Organizaciones y comunas del territorio", "poder": 7.0, "interes": 6.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "GAD Peñaherrera", "tipo": "Publico", "rol": "Local", "conflicto_con": "En comflicto con todas cuando se relacionan con J yK para favorecer a empresas mineras", "colabor_con": "Otras instituciones gubernamentales para el desarrollo productivo", "poder": 8.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "Municipio de Cotacacchi", "tipo": "Publico", "rol": "Paisaje Territorial", "conflicto_con": "En comflicto con K por conseciones mineras", "colabor_con": "Infraestructura basica deprtes y gestion de riesgos", "poder": 8.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "Prefectura", "tipo": "Publico", "rol": "Paisaje Territorial", "conflicto_con": "En comflicto con todas cuando se relacionan con J yK para favorecer a empresas mineras", "colabor_con": "Acesoria técnica en temas de agricultura; emergencias viales", "poder": 8.0, "interes": 7.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "Empresas mineras", "tipo": "Publico/Privado", "rol": "Nacional-Internacional", "conflicto_con": "Todos", "colabor_con": "Con C,H,L", "poder": 10.0, "interes": 1.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Consejo de Cuencas del ACUSMIT", "tipo": "Representacion de microcuencas", "rol": "Territorial", "conflicto_con": "M,L,H", "colabor_con": "Todos excepto con M,H,L", "poder": 5.0, "interes": 9.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Corporacion Toisan", "tipo": "Territorial", "rol": "Parroquial", "conflicto_con": "L", "colabor_con": "Organizaciones y comunas del territorio", "poder": 8.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}], "actor_type_counts": {"Publico": 19, "Organizativo": 12, "Comunitario": 9, "Gubernamental": 4, "Privadas": 4, "Privado": 4, "Organizacion de hecho": 2, "Gurnamental": 1, "Mixta: publico/privada": 1, "Mixtas": 1, "ONG": 1, "Organizacion": 1, "Organizaciones socioproductivas": 1, "Publico/Privado": 1, "Representacion de microcuencas": 1, "Territorial": 1}, "quadrants": {"Alta influencia / alto interés": [{"grupo": "Río Chalguayaco", "name": "Junta de agua", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "D", "colabor_con": "C,E,F,M", "poder": 10.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Juntas de agua", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "H,L,M,G", "colabor_con": "Organizaciones", "poder": 10.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "Consejero de Cuenca del ACUSMIT", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-afectacion al bosque y agua", "colabor_con": "Con todos menos con empresas mineras", "poder": 9.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "Fundaciones: Yaltes y Jambatu", "tipo": "Privado", "rol": "Nacional", "conflicto_con": "D,C", "colabor_con": "J,M", "poder": 9.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "Comunas", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "D,E", "colabor_con": "A,B,E,F,G,I,M", "poder": 9.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "CIPBAT", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "L", "colabor_con": "Comunas y otras organizaciones", "poder": 9.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Consejo de Cuencas del ACUSMIT", "tipo": "Organizativo", "rol": "Territorial", "conflicto_con": "Ninguno", "colabor_con": "Organizaciones y comunas del territorio", "poder": 8.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "Corporacion Toisan", "tipo": "Organizaciones socioproductivas", "rol": "Paisaje Territorial", "conflicto_con": "Empresas mineras- conseciones mineras", "colabor_con": "Apoyo a grupos organizados para el desarrollo sustentable", "poder": 7.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Aguagrún", "name": "Corporación Toisán", "tipo": "Organizativo", "rol": "Territorial", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 8.0, "interes": 9.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Comunidades", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "G,L,M", "colabor_con": "Entidades publicas y organizaciones", "poder": 10.0, "interes": 7.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "DECOIN", "tipo": "Privado", "rol": "Territorial", "conflicto_con": "C,D,H", "colabor_con": "F,M,I,J,K,L,M", "poder": 7.0, "interes": 10.0, "quadrant": "Alta influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "GADs Cuellaje y apuela", "tipo": "Publico", "rol": "Parroquial", "conflicto_con": "M", "colabor_con": "Todos excepto con M", "poder": 9.0, "interes": 8.0, "quadrant": "Alta influencia / alto interés"}], "Baja influencia / alto interés": [{"grupo": "Río Magdalena", "name": "Hidroelectricas", "tipo": "Mixtas", "rol": "Paisaje", "conflicto_con": "H", "colabor_con": "Entidades publicas", "poder": 5.0, "interes": 10.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Magdalena", "name": "Empresas mineras", "tipo": "Privadas", "rol": "Internacional", "conflicto_con": "K,A,B.D,E,F,H,I", "colabor_con": "Entidades publicas", "poder": 5.0, "interes": 10.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "DECOIN", "tipo": "Organizacion de hecho", "rol": "Territorial", "conflicto_con": "M,H", "colabor_con": "Todos excepto con M,C,H,F", "poder": 6.0, "interes": 8.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "Consejo de Cuencas del ACUSMIT", "tipo": "Representacion de microcuencas", "rol": "Territorial", "conflicto_con": "M,L,H", "colabor_con": "Todos excepto con M,H,L", "poder": 5.0, "interes": 9.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Nangulví", "name": "Asosiacion de cervicions turisticos de Intag ASTY", "tipo": "Privadas", "rol": "Local", "conflicto_con": "En comflicto con K por conseciones mineras", "colabor_con": "Fomento de alternativas economicas sustentables", "poder": 3.0, "interes": 10.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Chalguayaco", "name": "ENAMI EP", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "E,F,H,L,J,K,L,M", "colabor_con": "A,B,C,G", "poder": 2.0, "interes": 9.0, "quadrant": "Baja influencia / alto interés"}, {"grupo": "Río Cristopamba", "name": "Clubs Ecologicos", "tipo": "Organizacion de hecho", "rol": "Parroquial", "conflicto_con": "Ninguno", "colabor_con": "APTNORTE y con F,D,H,A,B,C,M", "poder": 1.0, "interes": 9.0, "quadrant": "Baja influencia / alto interés"}], "Alta influencia / bajo interés": [{"grupo": "Río Cristopamba", "name": "GAD Provincial", "tipo": "Publico", "rol": "Provincial", "conflicto_con": "J,A, excepto con M", "colabor_con": "Todos excepto con M,F,E,D,G", "poder": 9.0, "interes": 6.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Juntas de agua", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "M", "colabor_con": "Todos excepto con M", "poder": 7.0, "interes": 6.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Cabildos Comunitarios", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "M", "colabor_con": "Todos excepto con M", "poder": 7.0, "interes": 6.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "FAO Paisajes andinos", "tipo": "ONG", "rol": "Nacional", "conflicto_con": "En comflicto con todas cuando se relacionan con J yK para favorecer a empresas mineras", "colabor_con": "Acesoria técnica en temas de agricultura y conservacion", "poder": 8.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Asociacion de productores", "tipo": "Organizacion", "rol": "Territorial", "conflicto_con": "M,H", "colabor_con": "Todos excepto con M,H", "poder": 8.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "GAD Peñaherrera", "tipo": "Publico", "rol": "Local", "conflicto_con": "En comflicto con todas cuando se relacionan con J yK para favorecer a empresas mineras", "colabor_con": "Otras instituciones gubernamentales para el desarrollo productivo", "poder": 8.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "ASOPROAGUA", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "CORPROCIN", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "MAATE", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "Organizaciones Ambientales, E,D,F", "colabor_con": "A,B,C,M", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "GAD Parroquial", "tipo": "Publico", "rol": "Parroquial", "conflicto_con": "I,A", "colabor_con": "Comunas", "poder": 7.0, "interes": 5.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "Ministerio de Agricultura", "tipo": "Gurnamental", "rol": "Nacional", "conflicto_con": "En comflicto con todas cuando se relacionan con J yK para favorecer a empresas mineras", "colabor_con": "Acesoria tecnica en temas de agricultura", "poder": 8.0, "interes": 3.0, "quadrant": "Alta influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Empresas mineras", "tipo": "Publico/Privado", "rol": "Nacional-Internacional", "conflicto_con": "Todos", "colabor_con": "Con C,H,L", "poder": 10.0, "interes": 1.0, "quadrant": "Alta influencia / bajo interés"}], "Baja influencia / bajo interés": [{"grupo": "Río Aguagrún", "name": "ASOPRONERIAGU", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "Empresas mineras-conseciones mineras", "colabor_con": "Con todos menos con empresas mineras", "poder": 5.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Cristopamba", "name": "Ministerio de Agricultura", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "D,E,F por fomentar uso de agroquimicos", "colabor_con": "Todos excepto con D,F,I,E,G", "poder": 6.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "ECOJUNIN", "tipo": "Comunitario", "rol": "Local", "conflicto_con": "C,D", "colabor_con": "A,F,M", "poder": 4.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "ASOCHAL", "tipo": "Privado", "rol": "Local", "conflicto_con": "D", "colabor_con": "E,F", "poder": 4.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Nangulví", "name": "Asociacion agroartesanal de caficultores AACRI", "tipo": "Privadas", "rol": "Local", "conflicto_con": "En comflicto con K por conseciones mineras", "colabor_con": "Fomento de alternativas economicas sustentables", "poder": 3.0, "interes": 6.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "GAD Provincial", "tipo": "Publico", "rol": "Provincial", "conflicto_con": "Comunidades por apoyo a empresas mineras", "colabor_con": "Con empresas mineras", "poder": 4.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "Grupo de mujeres Rio Magdalena", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "H,L,M,G", "colabor_con": "Organizaciones", "poder": 3.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "Talleres Gran Valle", "tipo": "Organizativo", "rol": "Local", "conflicto_con": "H,L,M,G", "colabor_con": "Organizaciones y comunas del territorio", "poder": 3.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Magdalena", "name": "MAATE", "tipo": "Publico", "rol": "Nacional", "conflicto_con": "Todos", "colabor_con": "Organizaciones y comunas del territorio", "poder": 3.0, "interes": 5.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "Ministerio del Ambiente", "tipo": "Gubernamental", "rol": "Nacional", "conflicto_con": "E,H,I,J,K,L,M", "colabor_con": "D,I", "poder": 3.0, "interes": 4.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Aguagrún", "name": "GAD Parroquial", "tipo": "Publico", "rol": "Parroquial", "conflicto_con": "Comunidades por apoyo a empresas mineras", "colabor_con": "Con empresas mineras", "poder": 4.0, "interes": 2.0, "quadrant": "Baja influencia / bajo interés"}, {"grupo": "Río Chalguayaco", "name": "ASOPALVIDA", "tipo": "Privado", "rol": "Local", "conflicto_con": "D", "colabor_con": "M", "poder": 2.0, "interes": 3.0, "quadrant": "Baja influencia / bajo interés"}]}, "dialogue_spaces": [{"name": "Asamblea Cantonal - Cumbre Cantonal", "tipo": "formal", "alcance": "Cantonal", "actores": "Organizaciones de la sociedad civil, juntas parroquiales, autoridades provinciales", "funcion": "1.- Crear mesas de trabajo, en las cuales surgen resoluciones que son mandatorias. 2.- Rendición de cuentas", "incidencia": "alto", "fortalezas": "1.- Fortalece los procesos de defensa de la naturaleza. 2.- Se vincula a la gestión territorial", "debilidades": "1.- Los cambios de gobiernos generan inestabilidad en los procesos por intereses partidistas"}, {"name": "Asamblea de presupuesto participativo", "tipo": "formal", "alcance": "Comunitario, Parroquial y Cantonal", "actores": "Comunidades, juntas de agua, organizaciones sociales (convocatoria abierta)", "funcion": "1.- Priorización de obras. 2.- Rendición de cuentas", "incidencia": "medio", "fortalezas": "Incidir en proyectos sostenibles", "debilidades": "Los cambios de gobierno, intereses partidistas de los representantes de los GADs"}, {"name": "Asambleas Zonales", "tipo": "formal", "alcance": "Territorial", "actores": "Comunidades, juntas de agua, organizaciones sociales y productivas (convocatoria abierta)", "funcion": "Analizar problemas ambientales y amenaza de proyectos extractivistas de gran escala", "incidencia": "medio", "fortalezas": "Incidir sobre la asamblea cantonal para determinar resoluciones", "debilidades": "No se realizan de forma continua y no cuenta con un presupuesto"}, {"name": "Asamblea de Concejos de Cuenca", "tipo": "formal", "alcance": "Territorial", "actores": "Representantes de juntas de agua, de GADs Parroquiales, organizaciones socioproductoras, Municipio, ONGs, Ministerio del Ambiente y Agricultura, Academía", "funcion": "1.- Articulación, seguimiento de resoluciones vinculadas a conservación del agua y biodiversidad. 2.- Velar por el cumplimiento del Plan de Manejo del ACUSMIT", "incidencia": "alto", "fortalezas": "1.- Dar sustento más amplio para la gestión de financiamiento y mecanismos de articulación. 2.- Implementar el modlelo de gestión de la cuenca", "debilidades": "Cambios de los representantes de las microcuencas por la dinámica de reemplazo se debe fortalecer más los conocimientos y empoderamiento"}, {"name": "Asambleas comunitarias", "tipo": "formal", "alcance": "Local", "actores": "Habitantes de cada comunidad", "funcion": "Deciden sobte el presupuesto participativo y otras acciones de impacto comunitario", "incidencia": "alto", "fortalezas": "Inciden principalmente sobre la asamblea de presupuesto participativo", "debilidades": "1.- Cambio de directiva cada año. 2.- Falta de proceso de transición entre representantes"}, {"name": "Asambleas de Juntas de Agua", "tipo": "formal", "alcance": "Local", "actores": "Usuarios de cada sistema de agua", "funcion": "Toma de desiciones para manejo del servicio de agua para consumo humano", "incidencia": "alto", "fortalezas": "1.- Control y nivel de convocatoria alto, se puede sancionar a lo usuarios. 2.-Cuentan con recursos económicos", "debilidades": "1.- Algunas no cuentan con el permiso de uso y aprovechamiento de agua. 2.- Cierto grado de descuido de las fuentes de agua"}, {"name": "Asamblea de la Corporación Toisan", "tipo": "formal", "alcance": "Local", "actores": "Organizaciones de base (12)", "funcion": "1.- Infromar las actividades de la Corporación Toisán, análisis y toma de desiciones en los ejes estratégicos. 2.- Gestión para incidir en acciones territoriales", "incidencia": "alto", "fortalezas": "Gestión de fondos para fortalecer las acciones del territorio y manejo de la cuenca. 2.- Dar fortalecimiento al manejo del ACUSMIT", "debilidades": "Hay organizaciones que se encuentran con poca actividad"}], "conflicts": [{"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Colonizacion y perdida de bosques", "ano": "1970-1990", "year_start": 1970, "diferencias": 1.0, "dif_factor": "Politicas de titulacion de tierras", "cooperacion": 0.0, "coop_factor": "Politicas de titulacion de tierras", "suma": 1.0}, {"grupo": "Río Magdalena", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "evento": "Llegada de Jose Decoux al Valle de los Manduriacos, en su estadia empieza a observar comflictos como la fuerte deforestcion", "ano": "1984.0", "year_start": 1984, "diferencias": 1.0, "dif_factor": "Politica de acceso a tierras", "cooperacion": -1.0, "coop_factor": "Devil control de entidades de estado", "suma": 0.0}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Motivado por el cuidado del medio Mbiente se dedica a comprar fincas a las familias que talaban con fines ganaderos y explotacion de madera", "ano": "1985.0", "year_start": 1985, "diferencias": -1.0, "dif_factor": "Conviccion de cuidado del Ambiente", "cooperacion": 1.0, "coop_factor": "Creciente concientizacion ambiental", "suma": 0.0}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Comformacion de la Fundacion CIPBAT para continuar con la adquicicion de terrenos y cuidado del Medio Ambiente; para fortalecer se firmo convenio con el Estado y se le entrego un aproximado de 6400 hectareas", "ano": "1986.0", "year_start": 1986, "diferencias": 1.0, "dif_factor": "Apoyo externo para la conservacion", "cooperacion": 1.0, "coop_factor": "Otra vision de gestion de los recursos naturales", "suma": 2.0}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "El estado declara ala Area como Bosque Protector Los Cedros, para su administracion y funcionamiento se dedica a la investigacion cientifica", "ano": "1989.0", "year_start": 1989, "diferencias": 0.0, "dif_factor": "Politica Ambiental", "cooperacion": 1.0, "coop_factor": "Estado no se empodera de la proteccion de este espacio", "suma": 1.0}, {"grupo": "Río Chalguayaco", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "evento": "Inicio de prospeccion minera en el bosque de Junin por la empresa Bishimetal", "ano": "1990-1997", "year_start": 1990, "diferencias": -1.0, "dif_factor": "Politica de estado", "cooperacion": 1.0, "coop_factor": "Politica de estado", "suma": 0.0}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Empresa minera Bishimetal realiza estudios avanzados, con incidencia del Banco Mundial", "ano": "1995.0", "year_start": 1995, "diferencias": 0.0, "dif_factor": "Inicio de propeccion minera", "cooperacion": 0.0, "coop_factor": "Desconocimiento sobre los impactos", "suma": 0.0}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "La expancion agricola empezo por invaciones de tierras (Poseciones ilegales)", "ano": "1995.0", "year_start": 1995, "diferencias": -1.0, "dif_factor": "Por el modelo de desarrollo impuesto por el gobierno", "cooperacion": -1.0, "coop_factor": "Acceso a propiedad privada", "suma": -2.0}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Invasión de tierras", "ano": "1996.0", "year_start": 1996, "diferencias": -1.0, "dif_factor": "Ingreso a la fuerza, atemorizando a la población, usando la violencia", "cooperacion": -1.0, "coop_factor": "División social", "suma": -2.0}, {"grupo": "Río Chalguayaco", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "evento": "Proceso de expulcion de empresa minera Bishimetal, generacion de alternativas positivas, fortalecimiento de la defensa del territorio, expulcion de empresa minera Canadiense Asendant Cooper, combio de la constitucion del Ecuador", "ano": "1997-2008", "year_start": 1997, "diferencias": -1.0, "dif_factor": "Politica de estado", "cooperacion": 1.0, "coop_factor": "Politica de estado", "suma": 0.0}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Empiezan intentos de invacion al bosque protector", "ano": "2000.0", "year_start": 2000, "diferencias": 1.0, "dif_factor": "Trafico de tierras", "cooperacion": 0.0, "coop_factor": "Defenza de Jose Decoux con apoyo de comunidsdes", "suma": 1.0}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Contaminacin de la red hidrica por produccion ganadera", "ano": "2000.0", "year_start": 2000, "diferencias": -1.0, "dif_factor": "Nuevos modelos de desarrollo dominantes; monocultivos y ganaderia", "cooperacion": -1.0, "coop_factor": "No hay organizaciones, trabajo individual", "suma": -2.0}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Compra y donacion de tierras para conservacion", "ano": "2006.0", "year_start": 2006, "diferencias": 0.0, "dif_factor": "Hay mas interes por conservar los recursos hidricos", "cooperacion": 0.0, "coop_factor": "Resistencia de ventas de tierras por parte de hacendsdos y continuar con ganaderia", "suma": 0.0}, {"grupo": "Río Nangulví", "code": null, "tipo": "Sin código", "evento": "Juntas de Agua se organizan y empiezan a tratar el agua, en algunos casos se potabiliza", "ano": "2008.0", "year_start": 2008, "diferencias": 0.0, "dif_factor": "Se empieza a visualizar la importancia del agua", "cooperacion": 0.0, "coop_factor": "Mingas comunitarias y Juntas de Agua", "suma": 0.0}, {"grupo": "Río Chalguayaco", "code": "C6", "tipo": "Violencia, asesinatos o presencia de grupos armados", "evento": "Creacion de ENAMI EP, acuerdo con empresa minera CODELCO de Chile, gobierno vuelve a consecionar al bosque de Junin, empieza persecucion de dirigentes", "ano": "2009-2013", "year_start": 2009, "diferencias": -1.0, "dif_factor": "Politica de estado", "cooperacion": 1.0, "coop_factor": "Politica de estado", "suma": 0.0}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Empresa minera empiezan gestion de permisos ambientales", "ano": "2010.0", "year_start": 2010, "diferencias": 0.0, "dif_factor": "Regreso de politica extractivista", "cooperacion": 0.0, "coop_factor": "Insertidumbre que se entregue las conseciones mineras en esta parroquia", "suma": 0.0}, {"grupo": "Río Magdalena", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "evento": "Se empieza a escuchar sobre una consecion minera que se sobrepone al bosque, Jose Decoux y tres comunidades gestionan el Plan de Manejo, se oficializa la consecion minera", "ano": "2012-2015-2019", "year_start": 2012, "diferencias": 1.0, "dif_factor": "Politica extractivista del Gobierno", "cooperacion": 1.0, "coop_factor": "Defenza de Jose Decoux con apoyo de comunidsdes, Municipio y Comunidad Cientifica", "suma": 2.0}, {"grupo": "Río Aguagrún", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "evento": "Perforaciones de pozos por parte de empresas mineras", "ano": "2014-2015", "year_start": 2014, "diferencias": -1.0, "dif_factor": "Perforaciones afectan a la recarga hidrica", "cooperacion": -1.0, "coop_factor": "División social", "suma": -2.0}, {"grupo": "Río Chalguayaco", "code": "C6", "tipo": "Violencia, asesinatos o presencia de grupos armados", "evento": "Empresas mineras ENAMI y CODELCO invaden junin con apoyo de 370 policias, el GAD Provincial, Parroquial y el apoyo del govirno de Correa, hacen exploracion avanzada, Organizaciones docomentan los impacto de la exploracion avanzada, contralori emite imforme", "ano": "2014-2018", "year_start": 2014, "diferencias": -1.0, "dif_factor": "Politica de estado", "cooperacion": 1.0, "coop_factor": "Politica de estado", "suma": 0.0}, {"grupo": "Río Cristopamba", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "evento": "Entrega de conseciones mineras que se sobreponen sobre toda la parroqui", "ano": "2017.0", "year_start": 2017, "diferencias": -1.0, "dif_factor": "Intento de imposicion de politica extractivista", "cooperacion": 1.0, "coop_factor": "Intento de imposicion de politica extractivista", "suma": 0.0}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Fortalecimiento de la defenza del territorio, acciones de socializacion agroproductiva", "ano": "2017.0", "year_start": 2017, "diferencias": -1.0, "dif_factor": "Intento de imposicion de politica extractivista", "cooperacion": 1.0, "coop_factor": "Intento de imposicion de politica extractivista", "suma": 0.0}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Articulacion con el gobierno Parroquial en la defenza y proteccion del Medio Ambiente", "ano": "2017.0", "year_start": 2017, "diferencias": -1.0, "dif_factor": "Intento de imposicion de politica extractivista", "cooperacion": 1.0, "coop_factor": "Intento de imposicion de politica extractivista", "suma": 0.0}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "No aceptacion de la ampliacion para exploracion avanzada, Comuna Cerro Pelado inicia a sentir disminucion del caudal del agua para consumo humano", "ano": "2018.0", "year_start": 2018, "diferencias": 0.0, "dif_factor": "Union social y demanda legal", "cooperacion": 0.0, "coop_factor": "Union social", "suma": 0.0}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Brotes de inicio de mineria ilegal en la Comuna El Rosario", "ano": "2018.0", "year_start": 2018, "diferencias": -1.0, "dif_factor": "Intento de imposicion de politica extractivista", "cooperacion": 1.0, "coop_factor": "Intento de imposicion de politica extractivista", "suma": 0.0}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Articulacion y ratificacion del NO a la mineria, situscion que cinsta en el Plan de Desarrollo y Ordenamiento Territorial", "ano": "2018-2025", "year_start": 2018, "diferencias": -1.0, "dif_factor": "Intento de imposicion de politica extractivista", "cooperacion": 1.0, "coop_factor": "Intento de imposicion de politica extractivista", "suma": 0.0}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Municipio de Cotacachi, interpone accion de proteccion, La Corte Constitucional ratifica sentencia favorable a la Accion de Proteccion interpuesta yempresas mineras deben avandonar", "ano": "2018-2019", "year_start": 2018, "diferencias": 1.0, "dif_factor": "Accion de Proteccion por derechos colectivos y de la naturaleza vulnerados", "cooperacion": 1.0, "coop_factor": "Defenza de Jose Decoux con apoyo de comunidsdes, Municipio y Comunidad Cientifica", "suma": 2.0}, {"grupo": "Río Aguagrún", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "evento": "Se agudiza problemas de abastecimiento de agua para consumo de humano en Cerro Pelado; hay problemas por caseria", "ano": "2019-2020", "year_start": 2019, "diferencias": 1.0, "dif_factor": "Designacion de representantes de la cuenca hidrica", "cooperacion": 1.0, "coop_factor": "Aprobacin de la ordenanza del ACUSMIT", "suma": 2.0}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Campañas de consientizacion gracias a la ordenanza del ACUSMIT", "ano": "2019.0", "year_start": 2019, "diferencias": 1.0, "dif_factor": "Mas participacion mayor toma de decicion", "cooperacion": 1.0, "coop_factor": "Mas apoyo intrnacional, mayor conciencia conservacionista", "suma": 2.0}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Se gana accion de proteccion interpuesta al proyecto minero Llurimagua, a la empresa minera se le retira licencia Ambiental", "ano": "2023.0", "year_start": 2023, "diferencias": 0.0, "dif_factor": "Victoria judicial en segunda instancia, se gana accion de proteccion", "cooperacion": 0.0, "coop_factor": "Union social para victoria judicial", "suma": 0.0}, {"grupo": "Río Chalguayaco", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "evento": "Recoleccion de documentacion de inicio de accion de proteccion en los ataribunales del Ecuador; el 29 de Marzo del 2023 se obtiene la victoria Jidicial y se retira estudio de impacto Ambiental a la empresa minera", "ano": "218-2023", "year_start": 2023, "diferencias": -1.0, "dif_factor": "Ejercicio de pleno de derecho", "cooperacion": 1.0, "coop_factor": "Ejercicio de pleno de derecho", "suma": 0.0}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Fortalecimiento de los consejeros de para evitar la deforestacion en el ACUSMIT", "ano": "2023.0", "year_start": 2023, "diferencias": 1.0, "dif_factor": "Capacitacion en governanza y derechos; actualizacion de Cnsejo de Cuencas", "cooperacion": 1.0, "coop_factor": "Apoyo con la Corporacion Toisan y aliados asi como con el Municipio de Cotacachi", "suma": 2.0}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Se activa la secretaria tecnica del ACUSMIT y se crea la declaratoria Intag Santuario de Vida", "ano": "2023-2024", "year_start": 2023, "diferencias": 1.0, "dif_factor": "Reconocimiento del ACUSMIT nivel Nacional, declaratoria de Intag Santuario de Vida", "cooperacion": 1.0, "coop_factor": "Mas apoyo por parte del Municipio y las ONG internacionales para la conservacion y la resistencia a la mineria", "suma": 2.0}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Compra de tierras por parte de la empresa minera", "ano": "2024.0", "year_start": 2024, "diferencias": -1.0, "dif_factor": "Compra de tierras por parte de empresas mineras con trato de que se queden ahi trabajando", "cooperacion": -1.0, "coop_factor": "División social", "suma": -2.0}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "evento": "Declaratoria de Intag Santuario de Vida y continuacion de generacion de alternativas sustentables", "ano": "2024-2025", "year_start": 2024, "diferencias": 1.0, "dif_factor": "Busqueda de formas de conservacion", "cooperacion": 1.0, "coop_factor": "Union Social", "suma": 2.0}, {"grupo": "Río Chalguayaco", "code": null, "tipo": "Sin código", "evento": "23 de Octubre del 2024 Consejo Municipal declara Intag Santuario de Vida", "ano": "2024.0", "year_start": 2024, "diferencias": 1.0, "dif_factor": "Ejercicio de pleno de derecho", "cooperacion": 1.0, "coop_factor": "Ejercicio de pleno de derecho", "suma": 2.0}], "conflict_type_counts": {"Competencia por recursos naturales": 23, "Marginalización, tensión comunitaria o disturbios sociales": 7, "Violencia, asesinatos o presencia de grupos armados": 2, "Sin código": 2, "Instituciones frágiles o ineficientes": 1}, "conflict_actor_records": [{"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Corporacion Toisan", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Junta de agua", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "actor": "Cabildos", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "ASOPROAGUA", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "CORPROCIN", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "ASOPRONERIAGU", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "GAD Municipal", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "GAD Parroquial", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Division social po politicas extractivistas"}, {"grupo": "Río Aguagrún", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "MAGAP", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Division social po politicas extractivistas"}, {"grupo": "Río Aguagrún", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "MAATE", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Division social po politicas extractivistas"}, {"grupo": "Río Aguagrún", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Consejero de Cuenca del ACUSMIT", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defenza del territorio"}, {"grupo": "Río Aguagrún", "code": "C4", "tipo": "Falta de comunicación y colaboración entre actores", "actor": "GAD Provincial", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "neutro", "factor_conflicto": "Sin posicionamiento sobre amenazas mineras"}, {"grupo": "Río Aguagrún", "code": "C3", "tipo": "Marginalización, tensión comunitaria o disturbios sociales", "actor": "Empresas mineras", "impacto_actor": "negativo", "factor_actor": "Division social por empresas mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Division social po politicas extractivistas"}, {"grupo": "Río Chalguayaco", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "Ministerio de Agricultura", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "negativo", "factor_conflicto": "Desintegracion social por influencia de proyectos mineros"}, {"grupo": "Río Chalguayaco", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "GAD Parroquial", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "negativo", "factor_conflicto": "Desintegracion social por influencia de proyectos mineros"}, {"grupo": "Río Chalguayaco", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "Ministerio del Ambiente", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "negativo", "factor_conflicto": "Desintegracion social por influencia de proyectos mineros"}, {"grupo": "Río Chalguayaco", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "ENAMI EP", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "negativo", "factor_conflicto": "Desintegracion social por influencia de proyectos mineros"}, {"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "DECOIN", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Chalguayaco", "code": "c1", "tipo": "c1", "actor": "GAD Municipal", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Chalguayaco", "code": "C4", "tipo": "Falta de comunicación y colaboración entre actores", "actor": "GAD Provincial", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "neutro", "factor_conflicto": "Sin tomar posicion sobre la tematica"}, {"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Comunas", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Junta de agua", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "ECOJUNIN", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "ASOCHAL", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "ASOPALVIDA", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Chalguayaco", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Fundaciones: Yaltes y Jambatu", "impacto_actor": "negativo", "factor_actor": "Desintegracion social por influencia de proyectos mineros", "impacto_conflicto": "positivo", "factor_conflicto": "Organizacion para defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "GADs Cuellaje y apuela", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "GAD Municipal", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C4", "tipo": "Falta de comunicación y colaboración entre actores", "actor": "GAD Provincial", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "neutro", "factor_conflicto": "Sin posicionamiento sobre amenazas mineras"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Corporacin Toisan", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "DECOIN", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Consejo de Cuencas del ACUSMIT", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Clubs Ecologicos", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "MAATE", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "negativo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Juntas de agua", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Cabildos Comunitarios", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Asociacion de productores", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa del territorio"}, {"grupo": "Río Cristopamba", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "Ministerio de Agricultura", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "negativo", "factor_conflicto": "Complice de empresas mineras"}, {"grupo": "Río Cristopamba", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "Empresas mineras", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "negativo", "factor_conflicto": "Fomento de división social, impocicion de politicas extractivistas vulnerando los derechos"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "CIPBAT", "impacto_actor": "negativo", "factor_actor": "Division social po conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Juntas de agua", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "GAD Parroquial", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Defensa de imposición de politicas extractivistas del gobierno"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Corporacion Toisan", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Grupo de mujeres Rio Magdalena", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Talleres Gran Valle", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "MAATE", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Defensa de imposición de politicas extractivistas del gobierno"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Comunidades", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "GAD Municipal", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C4", "tipo": "Falta de comunicación y colaboración entre actores", "actor": "GAD Provincial", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "neutro", "factor_conflicto": "Sin definición"}, {"grupo": "Río Magdalena", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Consejo de Cuencas del ACUSMIT", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "positivo", "factor_conflicto": "Defensa de los bosques"}, {"grupo": "Río Magdalena", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "Empresas mineras", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Defensa de impocicion de politicas extractivistas del gobierno"}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Corporacion Toisan", "impacto_actor": "negativo", "factor_actor": "La mayoria de lo socios se encuentran en la microcuenca", "impacto_conflicto": "positivo", "factor_conflicto": "Contribuye a la conservacion, sencivilizacion, buenas practicas agricolas, ganaderia, reforestacion"}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Juntas de agua", "impacto_actor": "negativo", "factor_actor": "La calidad del agua es mala y escasea", "impacto_conflicto": "positivo", "factor_conflicto": "Buen manejo de los recursos hidricos, de manera responsable, litros de base de consumo"}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Municipio de Cotacachi", "impacto_actor": "negativo", "factor_actor": "Control adecuado del territorio", "impacto_conflicto": "positivo", "factor_conflicto": "Con esfuerzos que ordenan el territorio"}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "Consejo de Cuencas del ACUSMIT", "impacto_actor": "negativo", "factor_actor": "Mas trabajo no remunerado", "impacto_conflicto": "positivo", "factor_conflicto": "Ayuda a controlar e imformar a instituciones pertinentes de las afectaciones"}, {"grupo": "Río Nangulví", "code": "C1", "tipo": "Competencia por recursos naturales", "actor": "DECOIN", "impacto_actor": "negativo", "factor_actor": "No alcanza los recursos para adquirir mas terrenos boscosos", "impacto_conflicto": "positivo", "factor_conflicto": "Compra de tierras para conservacion"}, {"grupo": "Río Nangulví", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "Empresas mineras", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Defensa de impocicion de politicas extractivistas del gobierno"}, {"grupo": "Río Nangulví", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "MAATE", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Defensa de imposición de politicas extractivistas del gobierno"}, {"grupo": "Río Nangulví", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "GAD Parroquial", "impacto_actor": "negativo", "factor_actor": "Divicion social por conseciones mineras", "impacto_conflicto": "negativo", "factor_conflicto": "Defensa de imposición de politicas extractivistas del gobierno"}, {"grupo": "Río Nangulví", "code": "C5", "tipo": "Instituciones frágiles o ineficientes", "actor": "Ministerio de Agricultura", "impacto_actor": "negativo", "factor_actor": "Division social por politicas extractivistas", "impacto_conflicto": "negativo", "factor_conflicto": "Complice de empresas mineras"}], "survey_group_avg": [{"grupo": "Río Aguagrún", "avg": 43.1, "n": 245}, {"grupo": "Río Chalguayaco", "avg": 39.3, "n": 244}, {"grupo": "Río Cristopamba", "avg": 43.9, "n": 238}, {"grupo": "Río Magdalena", "avg": 31.7, "n": 180}, {"grupo": "Río Nangulví", "avg": 43.4, "n": 242}], "survey_liv_avg": [{"livelihood": "Aguacate", "avg": 46.3, "n": 59}, {"livelihood": "Turismo", "avg": 44.1, "n": 119}, {"livelihood": "Producción forestal", "avg": 41.0, "n": 60}, {"livelihood": "Sábila", "avg": 40.8, "n": 61}, {"livelihood": "Agricultura", "avg": 40.2, "n": 427}, {"livelihood": "Ganadería", "avg": 40.0, "n": 303}, {"livelihood": "Tomate de árbol", "avg": 40.0, "n": 58}, {"livelihood": "Caña de azúcar", "avg": 36.1, "n": 62}], "survey_group_liv": [{"grupo": "Río Aguagrún", "cells": [{"livelihood": "Aguacate", "avg": null, "n": 0}, {"livelihood": "Turismo", "avg": null, "n": 0}, {"livelihood": "Producción forestal", "avg": null, "n": 0}, {"livelihood": "Sábila", "avg": null, "n": 0}, {"livelihood": "Agricultura", "avg": 43.7, "n": 184}, {"livelihood": "Ganadería", "avg": 41.1, "n": 61}, {"livelihood": "Tomate de árbol", "avg": null, "n": 0}, {"livelihood": "Caña de azúcar", "avg": null, "n": 0}]}, {"grupo": "Río Chalguayaco", "cells": [{"livelihood": "Aguacate", "avg": null, "n": 0}, {"livelihood": "Turismo", "avg": 40.7, "n": 60}, {"livelihood": "Producción forestal", "avg": null, "n": 0}, {"livelihood": "Sábila", "avg": 40.8, "n": 61}, {"livelihood": "Agricultura", "avg": null, "n": 0}, {"livelihood": "Ganadería", "avg": 39.5, "n": 61}, {"livelihood": "Tomate de árbol", "avg": null, "n": 0}, {"livelihood": "Caña de azúcar", "avg": 36.1, "n": 62}]}, {"grupo": "Río Cristopamba", "cells": [{"livelihood": "Aguacate", "avg": 46.3, "n": 59}, {"livelihood": "Turismo", "avg": null, "n": 0}, {"livelihood": "Producción forestal", "avg": null, "n": 0}, {"livelihood": "Sábila", "avg": null, "n": 0}, {"livelihood": "Agricultura", "avg": 46.1, "n": 61}, {"livelihood": "Ganadería", "avg": 43.0, "n": 60}, {"livelihood": "Tomate de árbol", "avg": 40.0, "n": 58}, {"livelihood": "Caña de azúcar", "avg": null, "n": 0}]}, {"grupo": "Río Magdalena", "cells": [{"livelihood": "Aguacate", "avg": null, "n": 0}, {"livelihood": "Turismo", "avg": null, "n": 0}, {"livelihood": "Producción forestal", "avg": null, "n": 0}, {"livelihood": "Sábila", "avg": null, "n": 0}, {"livelihood": "Agricultura", "avg": 29.8, "n": 120}, {"livelihood": "Ganadería", "avg": 35.3, "n": 60}, {"livelihood": "Tomate de árbol", "avg": null, "n": 0}, {"livelihood": "Caña de azúcar", "avg": null, "n": 0}]}, {"grupo": "Río Nangulví", "cells": [{"livelihood": "Aguacate", "avg": null, "n": 0}, {"livelihood": "Turismo", "avg": 47.6, "n": 59}, {"livelihood": "Producción forestal", "avg": 41.0, "n": 60}, {"livelihood": "Sábila", "avg": null, "n": 0}, {"livelihood": "Agricultura", "avg": 44.2, "n": 62}, {"livelihood": "Ganadería", "avg": 40.8, "n": 61}, {"livelihood": "Tomate de árbol", "avg": null, "n": 0}, {"livelihood": "Caña de azúcar", "avg": null, "n": 0}]}], "survey_liv_columns": ["Aguacate", "Turismo", "Producción forestal", "Sábila", "Agricultura", "Ganadería", "Tomate de árbol", "Caña de azúcar"], "q_weak": [{"no": 12, "pregunta": "… usa leña como principal fuente de energía en la casa?", "avg": 10.0, "n": 19}, {"no": 13, "pregunta": "… tiene acceso a leña/energía durante todo el año para uso en la casa?", "avg": 10.0, "n": 19}, {"no": 22, "pregunta": "… usa conocimiento local o ancestral para enfrentar amenazas climáticas?", "avg": 10.0, "n": 18}, {"no": 25, "pregunta": "... confía en instituciones locales (iglesia, organizaciones humanitarias, otras) en casos de desastres o amenazas climáticas?", "avg": 10.0, "n": 19}, {"no": 35, "pregunta": "… experimenta discriminación por ser migrante en este paisaje?", "avg": 10.0, "n": 19}], "q_strong": [{"no": 16, "pregunta": "… envía a niños y niñas a finalizar la primaria?", "avg": 90.0, "n": 19}, {"no": 8, "pregunta": "… tiene seguridad alimentaria durante todo el año? [todas las personas tienen acceso constante a tres tiempos de comida con alimentos suficientes, seguros y nutritivos para una vida saludable]", "avg": 90.0, "n": 19}, {"no": 28, "pregunta": "... puede transitar libremente sin problemas de seguridad?", "avg": 88.9, "n": 18}, {"no": 30, "pregunta": "... las mujeres pueden transitar libremente sin problemas de seguridad?", "avg": 84.7, "n": 19}, {"no": 14, "pregunta": "Tiene acceso a la electricidad", "avg": 82.6, "n": 19}], "quality_notes": ["Se consolidaron variantes ortográficas de microcuencas: Rio/Río, Río Nanguilvi/Nangulvi/Nalgulvi y variaciones de capitalización.", "Se consolidaron variantes ortográficas de amenazas: “Conseciones”, “Expancion”, “Lluvias externas”, “Devilidad”, entre otras.", "La hoja 7.1 contiene filas intermedias sin grupo que funcionan como etiquetas de medios de vida para el siguiente bloque; se usaron para renombrar columnas antes de calcular promedios.", "La encuesta de capacidad adaptativa usa rangos porcentuales; para sintetizar se usó el punto medio de cada rango, no respuestas individuales de hogares.", "Los servicios ecosistémicos aparecen en varias hojas como códigos P/R/C/A o codificaciones como EBN-PRC; cuando no hay nombre completo, se muestran como códigos y se documenta la limitación.", "Los códigos de conflicto C1–C7 se interpretaron con base en el orden de tipos de conflicto listado en la hoja variables; conviene validar esta correspondencia con el equipo metodológico.", "En 6.2 existe un registro con admin0 = El Salvador dentro de una base que en conjunto corresponde a Ecuador; se mantiene como alerta de calidad, no como cambio de país.", "Algunos campos de relaciones actorales usan letras o códigos no resueltos en lugar de nombres completos; se evita sobreinterpretarlos."]};
+
+const $ = (sel) => document.querySelector(sel);
+const el = (tag, cls='', html='') => {
+  const node = document.createElement(tag);
+  if(cls) node.className = cls;
+  if(html !== '') node.innerHTML = html;
+  return node;
+};
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const short = (s, n=110) => {
+  s = String(s ?? '');
+  return s.length > n ? s.slice(0,n-1).trim() + '…' : s;
+};
+const pct = (v, max=100) => Math.max(0, Math.min(100, (Number(v || 0)/max)*100));
+const scoreClass = (score, max=10) => {
+  if(score == null) return 'empty';
+  const p = Number(score)/max;
+  if(p >= .75) return 'high';
+  if(p >= .45) return 'mid';
+  return 'low';
+};
+const scoreLabel = (score, max=10) => {
+  if(score == null) return 'Sin dato';
+  const p = Number(score)/max;
+  if(p >= .75) return 'Alto';
+  if(p >= .45) return 'Medio';
+  return 'Bajo';
+};
+const chip = (text, cls='') => `<span class="chip ${cls}">${esc(text)}</span>`;
+
+function initHero(){
+  $('#hero-title').textContent = DATA.meta.org;
+  $('#hero-subtitle').textContent = `Dashboard socio-ecológico del paisaje ${DATA.meta.paisaje}, ${DATA.meta.country}. Lectura interactiva de medios de vida, ecosistemas, amenazas, gobernanza, conflictos y capacidad adaptativa.`;
+  $('#hero-location').innerHTML = [DATA.meta.country, DATA.meta.paisaje, `${DATA.meta.microcuencas.length} microcuencas`].map(x => `<span class="hero-pill">${esc(x)}</span>`).join('');
+  $('#hero-synthesis').textContent = `La base muestra un paisaje estructurado por microcuencas, con tres ecosistemas recurrentes y una presión territorial marcada por amenazas climáticas y no climáticas. Destacan concesiones mineras, debilidad institucional, sequía y lluvias extremas como señales que atraviesan varias herramientas del archivo.`;
+  $('#headline-grid').innerHTML = DATA.headline.map((d,i)=>`
+    <div class="headline">
+      <div class="big-num">${esc(d.value)}</div>
+      <div class="label">${esc(d.label)}</div>
+      <div class="detail">${esc(d.detail)}</div>
+    </div>
+  `).join('');
+}
+
+function initFilter(){
+  const select = $('#groupFilter');
+  select.innerHTML = `<option value="all">Todas las microcuencas</option>` + DATA.meta.microcuencas.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
+  const apply = () => {
+    const val = select.value;
+    $('#filterStatus').textContent = val === 'all' ? 'Vista general' : `Filtro activo: ${val}`;
+    document.querySelectorAll('[data-group]').forEach(node => {
+      const g = node.getAttribute('data-group');
+      const match = val === 'all' || g === val;
+      if(node.classList.contains('matrix-cell')){
+        node.classList.toggle('filtered-out', !match);
+      } else {
+        node.classList.toggle('hidden-by-filter', !match);
+      }
+    });
+  };
+  select.addEventListener('change', apply);
+  $('#resetFilter').addEventListener('click', () => { select.value = 'all'; apply(); });
+}
+
+function renderTerritory(){
+  const box = $('#micro-list');
+  box.innerHTML = DATA.profiles.map(p => `
+    <article class="micro-card" data-group="${esc(p.grupo)}">
+      <h3>${esc(p.grupo)}</h3>
+      <div class="micro-meta">
+        ${chip(`${p.livelihoods.length} medios de vida`, 'blue')}
+        ${chip(`${p.ecosystems.length} ecosistemas`, 'dark')}
+        ${chip(`${p.actor_count} actores`, 'violet')}
+        ${chip(`${p.conflict_events} eventos`, 'pink')}
+        ${p.adaptive_avg != null ? chip(`CA ${p.adaptive_avg}/100`, 'blue') : ''}
+      </div>
+      <p style="color:var(--muted);margin:12px 0 0">${p.top_threats.slice(0,2).map(t => `${t.amenaza} (${t.score})`).join(' · ') || 'Sin amenazas priorizadas'}</p>
+    </article>
+  `).join('');
+}
+
+function renderUniverse(){
+  $('#data-universe').innerHTML = DATA.sheet_overview.map(s => `
+    <div class="sheet-card">
+      <div class="sheet-name">${esc(s.sheet)}</div>
+      <div class="sheet-meta">
+        <span>${esc(s.rows)} filas</span>
+        <span>${esc(s.columns)} columnas</span>
+      </div>
+      <div style="margin-top:10px"><span class="status ${esc(s.status)}">${esc(s.status)}</span></div>
+      ${s.missing && s.missing.length ? `<p style="font-size:.76rem;color:var(--muted)">Faltan: ${esc(s.missing.join(', '))}</p>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderLivelihoods(){
+  $('#livelihood-cards').innerHTML = DATA.livelihoods.map(l => {
+    const avg = l.avg_priority == null ? 's/d' : l.avg_priority;
+    const max = 15;
+    return `<article class="card story-card">
+      <div class="score-pill">${esc(avg)}</div>
+      <h3>${esc(l.name)}</h3>
+      <p>${l.groups.length ? `Presente en: ${esc(l.groups.join(', '))}` : 'Sin microcuenca asociada.'}</p>
+      <div>${Object.keys(l.uses||{}).map(u => chip(u,'blue')).join('')} ${l.products.slice(0,3).map(p=>chip(p,'violet')).join('')}</div>
+      ${l.avg_priority != null ? `<div class="meter"><span style="--w:${pct(l.avg_priority,max)}%"></span></div><p style="font-size:.8rem;margin-top:8px">Puntaje promedio de priorización sobre 15.</p>` : `<p style="font-size:.8rem;margin-top:8px">Sin puntaje de priorización disponible; aparece en otros bloques del archivo.</p>`}
+    </article>`;
+  }).join('');
+}
+
+function renderEcosystems(){
+  $('#ecosystem-cards').innerHTML = DATA.ecosystems.map(e => `
+    <article class="card story-card">
+      <h3>${esc(e.ecosistema)}</h3>
+      <p>${esc(e.groups.length)} microcuencas con registro. Servicios codificados asociados: ${esc(Object.keys(e.service_codes).join(', ') || 'sin códigos')}</p>
+      <div>${Object.keys(e.livelihoods).slice(0,7).map(l => chip(l,'blue')).join('')}</div>
+    </article>
+  `).join('');
+  renderMatrix('#eco-matrix', ['Ecosistema', ...DATA.meta.microcuencas], DATA.eco_matrix.map(row => ({
+    stub: row.ecosistema,
+    cells: row.cells.map(c => ({
+      group:c.grupo, 
+      score:c.count, max:10, 
+      label:c.count ? `${c.count} códigos` : 'Sin dato', 
+      note: c.codes ? `${c.codes}<br>${short(c.livelihoods,80)}` : 'Sin relación registrada'
+    }))
+  })), {cols: DATA.meta.microcuencas.length});
+}
+
+function renderThreats(){
+  $('#threat-cards').innerHTML = DATA.threats.slice(0,9).map(t => `
+    <article class="card story-card">
+      <div class="score-pill">${esc(t.avg_score ?? 's/d')}</div>
+      <h3>${esc(t.amenaza)}</h3>
+      <p>${chip(t.tipo || 'sin tipo', t.tipo === 'climática' ? 'blue':'pink')} ${chip(`${t.mentions_all} menciones`, 'dark')} ${chip(`${t.groups.length} microcuencas`, 'violet')}</p>
+      <p>${t.sites && t.sites.length ? `Sitios reportados: ${esc(t.sites.join(' · '))}` : 'Sin sitios específicos consolidados.'}</p>
+      ${t.avg_score != null ? `<div class="meter"><span style="--w:${pct(t.avg_score,10)}%"></span></div><p style="font-size:.8rem;margin-top:8px">Promedio de severidad en 4.1 sobre 10.</p>` : ''}
+    </article>
+  `).join('');
+  renderMatrix('#threat-matrix', ['Amenaza', ...DATA.meta.microcuencas], DATA.threat_matrix.map(row => ({
+    stub: row.amenaza,
+    cells: row.cells.map(c => ({group:c.grupo, score:c.score, max:10, label:c.score ?? '—', note: c.site || scoreLabel(c.score,10)}))
+  })), {cols: DATA.meta.microcuencas.length});
+  renderMatrix('#impact-liv-matrix', ['Amenaza', ...DATA.impact_liv_columns], DATA.impact_liv_matrix.map(row => ({
+    stub: row.amenaza,
+    cells: row.cells.map(c => ({group:'', score:c.score, max:3, label:c.score ?? '—', note:c.count ? `${c.count} registros · ${c.livelihood}`:'Sin cruce'}))
+  })), {cols: DATA.impact_liv_columns.length, groupFilter:false});
+  renderMatrix('#impact-se-matrix', ['Amenaza', ...DATA.impact_se_columns], DATA.impact_se_matrix.map(row => ({
+    stub: row.amenaza,
+    cells: row.cells.map(c => ({group:'', score:c.score, max:3, label:c.score ?? '—', note:c.count ? `${c.count} registros · código ${c.code}`:'Sin cruce'}))
+  })), {cols: DATA.impact_se_columns.length, groupFilter:false});
+}
+
+function renderMatrix(selector, headers, rows, opts={}){
+  const cols = opts.cols || headers.length-1;
+  const node = $(selector);
+  node.innerHTML = '';
+  const matrix = el('div','matrix');
+  matrix.style.setProperty('--cols', cols);
+  const headerRow = el('div','matrix-row');
+  headerRow.innerHTML = headers.map((h,i)=>`<div class="${i===0?'matrix-head matrix-stub':'matrix-head'}">${esc(h)}</div>`).join('');
+  matrix.appendChild(headerRow);
+  rows.forEach(r => {
+    const row = el('div','matrix-row');
+    row.innerHTML = `<div class="matrix-stub">${esc(r.stub)}</div>` + r.cells.map(c => {
+      const empty = c.score == null;
+      const max = c.max || 10;
+      const intensity = empty ? 0 : Math.max(.05, Math.min(1, Number(c.score)/max));
+      return `<div class="matrix-cell ${scoreClass(c.score,max)} ${empty?'empty':''}" ${c.group ? `data-group="${esc(c.group)}"`:''} style="--intensity:${intensity}">
+        <div class="matrix-score">${esc(c.label)}</div>
+        <div class="matrix-note">${c.note || ''}</div>
+      </div>`;
+    }).join('');
+    matrix.appendChild(row);
+  });
+  node.appendChild(matrix);
+}
+
+function renderCapacity(){
+  $('#capacity-groups').innerHTML = DATA.survey_group_avg.map(g => `
+    <div class="micro-card" data-group="${esc(g.grupo)}" style="margin-bottom:10px">
+      <h3>${esc(g.grupo)}</h3>
+      <div>${chip(`${g.avg}/100`, 'blue')} ${chip(`${g.n} valores`, 'dark')}</div>
+      <div class="meter"><span style="--w:${pct(g.avg,100)}%"></span></div>
+    </div>
+  `).join('');
+  $('#capacity-livs').innerHTML = DATA.survey_liv_avg.slice(0,8).map(l => `
+    <div class="actor-mini">
+      <strong>${esc(l.livelihood)}</strong>
+      <span>${esc(l.avg)}/100 · ${esc(l.n)} valores codificados</span>
+      <div class="meter"><span style="--w:${pct(l.avg,100)}%"></span></div>
+    </div>
+  `).join('');
+  renderMatrix('#capacity-matrix', ['Microcuenca', ...DATA.survey_liv_columns], DATA.survey_group_liv.map(row => ({
+    stub: row.grupo,
+    cells: row.cells.map(c => ({group:row.grupo, score:c.avg, max:100, label:c.avg ?? '—', note:c.n ? `${c.n} valores · ${c.livelihood}`:'Sin dato'}))
+  })), {cols: DATA.survey_liv_columns.length});
+  $('#weak-signals').innerHTML = DATA.q_weak.map(q => `
+    <div class="actor-mini">
+      <strong>Pregunta ${esc(q.no)} · ${esc(q.avg)}/100</strong>
+      <span>${esc(q.pregunta)}</span>
+    </div>
+  `).join('');
+  $('#strong-signals').innerHTML = DATA.q_strong.map(q => `
+    <div class="actor-mini">
+      <strong>Pregunta ${esc(q.no)} · ${esc(q.avg)}/100</strong>
+      <span>${esc(q.pregunta)}</span>
+    </div>
+  `).join('');
+}
+
+function renderGovernance(){
+  $('#actor-types').innerHTML = Object.entries(DATA.actor_type_counts).map(([k,v]) => `
+    <div class="card flat">
+      <div class="big-num" style="color:var(--neutral);font-size:3rem">${esc(v)}</div>
+      <div class="section-label">${esc(k)}</div>
+    </div>
+  `).join('');
+  const order = ['Alta influencia / alto interés','Alta influencia / bajo interés','Baja influencia / alto interés','Baja influencia / bajo interés','Sin puntaje'];
+  $('#quadrants').innerHTML = order.filter(q => DATA.quadrants[q]).map(q => `
+    <div class="quadrant">
+      <h3>${esc(q)}</h3>
+      ${DATA.quadrants[q].map(a => `
+        <div class="actor-mini" data-group="${esc(a.grupo)}">
+          <strong>${esc(a.name)}</strong>
+          <span>${esc(a.tipo || '')} · poder ${esc(a.poder ?? 's/d')} · interés ${esc(a.interes ?? 's/d')}</span>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+  $('#dialogue-spaces').innerHTML = DATA.dialogue_spaces.map(d => `
+    <article class="card dialogue-card">
+      <h3>${esc(d.name)}</h3>
+      <div>${chip(d.tipo,'blue')} ${chip(d.alcance,'violet')} ${chip(`incidencia ${d.incidencia}`,'pink')}</div>
+      <p><strong>Función:</strong> ${esc(short(d.funcion,180))}</p>
+      <details><summary>Fortalezas y debilidades</summary><p><strong>Fortalezas:</strong> ${esc(d.fortalezas || 'Sin dato')}</p><p><strong>Debilidades:</strong> ${esc(d.debilidades || 'Sin dato')}</p></details>
+    </article>
+  `).join('');
+}
+
+function renderConflicts(){
+  $('#conflict-types').innerHTML = Object.entries(DATA.conflict_type_counts).map(([k,v]) => `
+    <article class="card flat">
+      <div class="big-num" style="color:var(--accent);font-size:3.2rem">${esc(v)}</div>
+      <h3 style="color:var(--neutral);font-size:1.25rem;margin:.3rem 0 0">${esc(k)}</h3>
+    </article>
+  `).join('');
+  $('#conflict-timeline').innerHTML = DATA.conflicts.map(c => `
+    <article class="timeline-item" data-group="${esc(c.grupo)}">
+      <div class="timeline-year">${esc(c.ano)} · ${esc(c.grupo)}</div>
+      <h3>${esc(c.evento)}</h3>
+      <div>${chip(c.tipo,'pink')} ${c.suma != null ? chip(`balance ${c.suma}`,'blue') : ''}</div>
+      <p><strong>Diferencias:</strong> ${esc(short(c.dif_factor,170))}</p>
+      <p><strong>Cooperación:</strong> ${esc(short(c.coop_factor,170))}</p>
+    </article>
+  `).join('');
+}
+
+function renderSynthesis(){
+  const topThreat = DATA.threats[0];
+  const highActors = (DATA.quadrants['Alta influencia / alto interés'] || []).slice(0,4).map(a=>a.name).join(', ');
+  const topEco = DATA.ecosystems[0];
+  const weakestGroup = [...DATA.survey_group_avg].sort((a,b)=>(a.avg||0)-(b.avg||0))[0];
+  const strongestGroup = [...DATA.survey_group_avg].sort((a,b)=>(b.avg||0)-(a.avg||0))[0];
+  const insights = [
+    {n:'01', h:'La base ecológica se repite en todo el paisaje', p:`Los tres ecosistemas recurrentes —${DATA.meta.microcuencas.length ? DATA.ecosystems.map(e=>e.ecosistema).join(', ') : 'ecosistemas registrados'}— aparecen vinculados a medios de vida y servicios codificados. Esto sugiere una estructura común para priorizar acciones por microcuenca.`},
+    {n:'02', h:'La presión extractiva aparece como señal crítica', p:`${topThreat.amenaza} alcanza el mayor promedio de severidad en la hoja de amenazas (${topThreat.avg_score}/10) y aparece en ${topThreat.groups.length} microcuencas.`},
+    {n:'03', h:'La gobernanza formal existe, pero tiene fragilidades', p:`El archivo registra ${DATA.dialogue_spaces.length} espacios de diálogo formales. Sus debilidades mencionan cambios de gobierno, discontinuidad, transición de representantes y necesidad de fortalecer conocimientos.`},
+    {n:'04', h:'La conflictividad combina tensión y cooperación', p:`La línea de tiempo contiene ${DATA.conflicts.length} eventos. Predomina la categoría de competencia por recursos naturales, junto con hitos de organización, defensa territorial y resoluciones colectivas.`},
+    {n:'05', h:'La capacidad adaptativa debe leerse como señal comparativa', p:`Los promedios por microcuenca van de ${weakestGroup.avg}/100 en ${weakestGroup.grupo} a ${strongestGroup.avg}/100 en ${strongestGroup.grupo}. La base usa rangos, no valores directos por familia.`},
+    {n:'06', h:'Entradas posibles para SbN', p:`Los cruces apuntan a trabajar donde convergen dependencia de agua, bosque nublado/agroecosistemas, medios de vida priorizados y amenazas de alta severidad. El tablero no define proyectos; ordena señales para discusión técnica.`}
+  ];
+  $('#synthesis-grid').innerHTML = insights.map(x => `
+    <article class="synthesis">
+      <div class="num">${x.n}</div>
+      <h3>${esc(x.h)}</h3>
+      <p>${esc(x.p)}</p>
+    </article>
+  `).join('');
+}
+
+function renderQuality(){
+  $('#quality-list').innerHTML = DATA.quality_notes.map(n => `<li>${esc(n)}</li>`).join('');
+}
+
+function initTabs(){
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      $('#' + btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+function boot(){
+  initHero();
+  initFilter();
+  renderTerritory();
+  renderUniverse();
+  renderLivelihoods();
+  renderEcosystems();
+  renderThreats();
+  renderCapacity();
+  renderGovernance();
+  renderConflicts();
+  renderSynthesis();
+  renderQuality();
+  initTabs();
+}
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>

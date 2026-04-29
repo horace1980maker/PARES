@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard territorial TIERRAVIVA · Ambuquí</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;600;700&family=Oswald:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --neutral:#001F89;
+      --primary:#009EE2;
+      --regional:#B71373;
+      --regional2:#751851;
+      --ink:#0e1838;
+      --muted:#5b6685;
+      --soft:#eef7fb;
+      --paper:#fbfcff;
+      --line:rgba(0,31,137,.16);
+      --shadow:0 22px 55px rgba(0,31,137,.13);
+      --radius:26px;
+      --radius-sm:16px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 8% 5%, rgba(0,158,226,.16), transparent 26rem),
+        radial-gradient(circle at 94% 4%, rgba(183,19,115,.14), transparent 27rem),
+        linear-gradient(180deg,#f7fbff 0%,#fff 46%,#f9f4fa 100%);
+      color:var(--ink);
+      font-family:"Noto Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+      line-height:1.55;
+    }
+    a{color:inherit}
+    .skip{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip:focus{left:1rem;top:1rem;width:auto;height:auto;background:white;padding:.6rem 1rem;border-radius:10px;z-index:1000}
+    .topbar{
+      position:sticky;top:0;z-index:100;
+      background:rgba(251,252,255,.84);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+      box-shadow:0 8px 25px rgba(0,31,137,.05);
+    }
+    .nav{
+      width:min(1260px,92vw);
+      margin:auto;
+      display:flex;align-items:center;justify-content:space-between;gap:1rem;
+      padding:.7rem 0;
+    }
+    .brand{
+      display:flex;align-items:center;gap:.7rem;font-family:"Oswald";letter-spacing:.08em;text-transform:uppercase;color:var(--neutral);font-weight:500;
+    }
+    .brand-dot{width:38px;height:38px;border-radius:50%;background:conic-gradient(from 180deg,var(--neutral),var(--primary),var(--regional),var(--regional2),var(--neutral));box-shadow:0 0 0 6px rgba(0,158,226,.08)}
+    .nav-links{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:flex-end}
+    .nav-links a{font-family:"Oswald";font-weight:300;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--neutral);padding:.48rem .64rem;border-radius:999px;font-size:.84rem}
+    .nav-links a:hover{background:rgba(0,158,226,.12)}
+    section{width:min(1260px,92vw);margin:0 auto;padding:86px 0}
+    .hero{
+      width:100%;
+      margin:0;
+      padding:0;
+      background:
+        linear-gradient(135deg,rgba(0,31,137,.94),rgba(0,31,137,.88) 42%,rgba(117,24,81,.90)),
+        radial-gradient(circle at 80% 10%,rgba(0,158,226,.50),transparent 40rem);
+      color:#fff;
+      overflow:hidden;
+      position:relative;
+      min-height:92vh;
+      display:grid;
+      place-items:center;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;inset:-20%;
+      background-image:
+        linear-gradient(120deg,rgba(255,255,255,.06) 0 1px,transparent 1px 22px),
+        radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1.5px);
+      background-size:44px 44px,28px 28px;
+      transform:rotate(-8deg);
+    }
+    .hero-inner{position:relative;width:min(1260px,92vw);padding:74px 0 64px;display:grid;grid-template-columns:1.1fr .9fr;gap:42px;align-items:center}
+    .eyebrow{
+      font-family:"Oswald";font-weight:300;letter-spacing:.16em;text-transform:uppercase;
+      color:rgba(255,255,255,.78);font-size:1rem;margin-bottom:1rem;
+    }
+    h1,h2,h3{
+      font-family:"Oswald",sans-serif;
+      text-transform:uppercase;
+      line-height:.98;
+      margin:0;
+      letter-spacing:.035em;
+    }
+    h1{font-size:clamp(4rem,10vw,8.8rem);font-weight:600;max-width:900px}
+    .hero h1 span{display:block;color:#a9e9ff}
+    .hero-summary{font-size:1.15rem;max-width:760px;color:rgba(255,255,255,.86);margin:1.4rem 0 1.8rem}
+    .hero-summary strong{color:#fff;font-weight:700}
+    .filter-panel{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.5rem}
+    .zone-btn,.reset-btn,.tab-btn{
+      border:1px solid rgba(255,255,255,.28);
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      border-radius:999px;
+      padding:.68rem 1rem;
+      font-family:"Oswald";font-weight:300;letter-spacing:.08em;text-transform:uppercase;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .zone-btn.active,.zone-btn:hover,.reset-btn:hover{background:#fff;color:var(--neutral);border-color:#fff}
+    .hero-panel{
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:var(--radius);
+      padding:1.2rem;
+      box-shadow:0 28px 70px rgba(0,0,0,.2);
+      backdrop-filter:blur(8px);
+    }
+    .headline-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}
+    .headline{
+      min-height:132px;
+      border-radius:22px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      padding:1rem;
+      display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .headline:nth-child(1),.headline:nth-child(2){grid-row:span 2;min-height:205px}
+    .headline .value{font-family:"Oswald";font-size:clamp(2.7rem,5vw,5.8rem);font-weight:600;line-height:.9;color:#fff}
+    .headline .label{font-family:"Oswald";letter-spacing:.10em;text-transform:uppercase;font-weight:300;color:#a9e9ff}
+    .headline .detail{font-size:.88rem;color:rgba(255,255,255,.74)}
+    .section-head{display:grid;grid-template-columns:0.9fr 1.1fr;gap:2rem;align-items:end;margin-bottom:2rem}
+    .section-kicker{font-family:"Oswald";font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--regional);margin-bottom:.6rem}
+    h2{font-size:clamp(2.6rem,5vw,5.2rem);color:var(--neutral)}
+    .section-head p{font-size:1.05rem;color:var(--muted);margin:0}
+    .panel{
+      background:rgba(255,255,255,.82);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:1.4rem;
+    }
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+    .territory-wrap{display:grid;grid-template-columns:.92fr 1.08fr;gap:1.4rem;align-items:stretch}
+    .map-schematic{
+      min-height:470px;
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 25% 20%,rgba(0,158,226,.15),transparent 12rem),
+        linear-gradient(145deg,#ffffff,#eef7ff);
+    }
+    .country-shape{
+      position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+      width:285px;height:390px;
+      background:linear-gradient(160deg,var(--primary),var(--neutral));
+      clip-path:polygon(42% 0,63% 5%,70% 18%,61% 30%,75% 43%,65% 58%,72% 77%,52% 100%,37% 84%,25% 76%,30% 58%,20% 46%,31% 32%,26% 16%);
+      opacity:.96;
+      box-shadow:0 35px 80px rgba(0,31,137,.24);
+    }
+    .territory-pin{
+      position:absolute;left:48%;top:34%;transform:translate(-50%,-50%);
+      width:24px;height:24px;border-radius:50%;
+      background:var(--regional);
+      box-shadow:0 0 0 12px rgba(183,19,115,.18),0 0 0 26px rgba(183,19,115,.08);
+      border:3px solid #fff;
+    }
+    .map-label{
+      position:absolute;left:1.2rem;bottom:1.2rem;right:1.2rem;
+      background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:20px;padding:1rem;
+    }
+    .zone-stack{display:grid;gap:.8rem}
+    .zone-band{
+      border-radius:22px;
+      padding:1.2rem;
+      color:#fff;
+      min-height:120px;
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .zone-band::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 90% 20%,rgba(255,255,255,.18),transparent 15rem)}
+    .zone-band h3{font-size:2rem;position:relative}
+    .zone-band p{margin:.4rem 0 0;position:relative;color:rgba(255,255,255,.85)}
+    .zone-band .chip{position:relative;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.22);color:#fff}
+    .zone-alta{background:linear-gradient(120deg,var(--neutral),#1644b5)}
+    .zone-media{background:linear-gradient(120deg,var(--primary),#0071a4)}
+    .zone-baja{background:linear-gradient(120deg,var(--regional),var(--regional2))}
+    .universe-card{min-height:220px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+    .universe-card::before{
+      content:"";position:absolute;right:-38px;top:-38px;width:120px;height:120px;border-radius:50%;background:rgba(0,158,226,.12);
+    }
+    .universe-card h3{color:var(--neutral);font-size:1.45rem}
+    .universe-card .big{font-family:"Oswald";font-size:3.8rem;font-weight:600;color:var(--regional);line-height:.95}
+    .chips{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.8rem}
+    .chip{
+      display:inline-flex;align-items:center;gap:.35rem;
+      font-size:.76rem;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--neutral);
+      border-radius:999px;
+      padding:.35rem .58rem;
+    }
+    .chip.dark{background:var(--neutral);color:#fff;border-color:var(--neutral)}
+    .chip.sky{background:rgba(0,158,226,.12);border-color:rgba(0,158,226,.20)}
+    .chip.regional{background:rgba(183,19,115,.10);border-color:rgba(183,19,115,.18);color:var(--regional2)}
+    .livelihood-card,.ecosystem-card,.threat-card,.actor-card,.dialogue-card,.conflict-card,.capacity-card{
+      background:#fff;border:1px solid var(--line);border-radius:22px;padding:1rem;box-shadow:0 12px 28px rgba(0,31,137,.06);
+      transition:.2s ease;position:relative;overflow:hidden;
+    }
+    .livelihood-card:hover,.ecosystem-card:hover,.threat-card:hover,.actor-card:hover{transform:translateY(-3px);box-shadow:0 18px 38px rgba(0,31,137,.11)}
+    .livelihood-card h3,.ecosystem-card h3,.threat-card h3,.actor-card h3,.dialogue-card h3{font-size:1.45rem;color:var(--neutral);margin-bottom:.35rem}
+    .score-orb{
+      width:72px;height:72px;border-radius:50%;
+      background:conic-gradient(var(--regional) calc(var(--score)*1%),rgba(0,31,137,.10) 0);
+      display:grid;place-items:center;flex:0 0 72px;
+      color:var(--neutral);font-family:"Oswald";font-size:1.7rem;font-weight:600;
+      position:relative;
+    }
+    .score-orb::before{content:"";position:absolute;inset:8px;border-radius:50%;background:#fff}
+    .score-orb span{position:relative}
+    .card-title-row{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}
+    .criteria-bars{display:grid;gap:.45rem;margin-top:.9rem}
+    .mini-bar{display:grid;grid-template-columns:115px 1fr 22px;gap:.5rem;align-items:center;font-size:.78rem;color:var(--muted)}
+    .mini-bar-track{height:9px;background:rgba(0,31,137,.08);border-radius:999px;overflow:hidden}
+    .mini-bar-fill{height:100%;width:calc(var(--v)/3*100%);background:linear-gradient(90deg,var(--primary),var(--regional));border-radius:999px}
+    .ecosystem-card .services{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:.7rem;max-height:86px;overflow:auto;padding-right:.3rem}
+    .service-pill{font-size:.72rem;border-radius:999px;background:rgba(0,158,226,.10);color:var(--neutral);padding:.32rem .48rem;border:1px solid rgba(0,158,226,.18)}
+    .threat-card{border-left:8px solid var(--regional)}
+    .threat-card.climática{border-left-color:var(--primary)}
+    .threat-score{
+      font-family:"Oswald";font-size:3.2rem;line-height:.9;color:var(--neutral);font-weight:600;
+    }
+    .heat-grid{display:grid;gap:.55rem}
+    .heat-row{display:grid;grid-template-columns:260px repeat(3,1fr);gap:.45rem;align-items:stretch}
+    .heat-label{font-weight:700;color:var(--neutral);padding:.6rem;border-radius:14px;background:#fff;border:1px solid var(--line)}
+    .heat-cell{
+      border-radius:14px;
+      padding:.65rem;
+      min-height:54px;
+      border:1px solid rgba(0,31,137,.08);
+      display:flex;align-items:center;justify-content:center;
+      font-family:"Oswald";font-size:1.2rem;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.16);
+      cursor:pointer;
+    }
+    .heat-cell.zero{background:#eef2f9;color:var(--muted);text-shadow:none}
+    .matrix-scroll{overflow:auto;max-width:100%;border-radius:22px;border:1px solid var(--line);background:white}
+    table.matrix{border-collapse:separate;border-spacing:0;width:100%;min-width:1000px}
+    table.matrix th,table.matrix td{padding:.58rem;border-bottom:1px solid var(--line);border-right:1px solid var(--line);font-size:.8rem;vertical-align:middle}
+    table.matrix th{font-family:"Oswald";letter-spacing:.06em;text-transform:uppercase;color:var(--neutral);background:#f4f9ff;position:sticky;top:0;z-index:1}
+    table.matrix th:first-child, table.matrix td:first-child{position:sticky;left:0;background:#fff;z-index:2;font-weight:700;color:var(--neutral)}
+    .dot-cell{width:28px;height:28px;border-radius:50%;display:inline-grid;place-items:center;margin:auto;background:rgba(0,158,226,.12)}
+    .dot-cell.present{background:var(--primary);box-shadow:0 0 0 8px rgba(0,158,226,.13)}
+    .tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+    .tabs .tab-btn{color:var(--neutral);border-color:var(--line);background:#fff}
+    .tabs .tab-btn.active,.tabs .tab-btn:hover{background:var(--neutral);color:#fff}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .impact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+    .impact-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:1rem}
+    .impact-card strong{color:var(--neutral)}
+    .impact-scale{display:grid;grid-template-columns:repeat(7,1fr);gap:.25rem;margin:.7rem 0}
+    .impact-tile{height:34px;border-radius:8px;display:grid;place-items:center;font-size:.72rem;color:#fff;font-weight:700}
+    .actor-quadrant{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;
+    }
+    .quadrant{min-height:280px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:1rem}
+    .quadrant h3{font-size:1.25rem;color:var(--neutral);margin-bottom:.7rem}
+    .actor-chip{
+      display:inline-flex;margin:.22rem;padding:.42rem .58rem;border-radius:999px;background:rgba(0,31,137,.07);border:1px solid rgba(0,31,137,.12);font-size:.78rem;cursor:help;
+    }
+    .timeline{position:relative;padding-left:1.6rem}
+    .timeline::before{content:"";position:absolute;left:.55rem;top:.2rem;bottom:.2rem;width:3px;background:linear-gradient(var(--primary),var(--regional));border-radius:999px}
+    .timeline-item{position:relative;margin-bottom:1rem;background:#fff;border:1px solid var(--line);border-radius:20px;padding:1rem}
+    .timeline-item::before{content:"";position:absolute;left:-1.37rem;top:1.2rem;width:15px;height:15px;border-radius:50%;background:var(--regional);box-shadow:0 0 0 7px rgba(183,19,115,.13)}
+    .timeline-year{font-family:"Oswald";font-size:1.8rem;color:var(--neutral);line-height:1}
+    .timeline-item.positive::before{background:var(--primary);box-shadow:0 0 0 7px rgba(0,158,226,.15)}
+    .timeline-item.neutral::before{background:#8b95aa;box-shadow:0 0 0 7px rgba(139,149,170,.16)}
+    .capacity-ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .capacity-card .avg{font-family:"Oswald";font-size:3.6rem;color:var(--regional);line-height:.9}
+    .q-list{display:grid;gap:.55rem}
+    .q-item{display:grid;grid-template-columns:70px 1fr;gap:.7rem;background:#fff;border:1px solid var(--line);border-radius:16px;padding:.7rem}
+    .q-score{font-family:"Oswald";font-size:1.6rem;color:var(--neutral)}
+    .synthesis-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .insight{
+      border-radius:24px;padding:1.2rem;color:#fff;min-height:210px;display:flex;flex-direction:column;justify-content:space-between;
+      background:linear-gradient(135deg,var(--neutral),#103dbe);position:relative;overflow:hidden;
+    }
+    .insight:nth-child(2){background:linear-gradient(135deg,var(--primary),#006da3)}
+    .insight:nth-child(3){background:linear-gradient(135deg,var(--regional),var(--regional2))}
+    .insight:nth-child(4){background:linear-gradient(135deg,var(--regional2),var(--neutral))}
+    .insight::after{content:"";position:absolute;right:-60px;top:-60px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.13)}
+    .insight h3{font-size:1.7rem;color:#fff;position:relative}
+    .insight p{position:relative;color:rgba(255,255,255,.86);margin:.8rem 0 0}
+    .quality details{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1rem;margin:.7rem 0}
+    .quality summary{cursor:pointer;font-family:"Oswald";letter-spacing:.06em;text-transform:uppercase;color:var(--neutral)}
+    .sheet-list{columns:2;column-gap:2rem;margin:.8rem 0 0;padding-left:1.2rem}
+    .source-mark{font-size:.88rem;color:var(--muted);margin-top:1rem}
+    .hidden{display:none!important}
+    .reveal{max-height:0;overflow:hidden;transition:max-height .25s ease}
+    .expanded .reveal{max-height:600px;margin-top:.8rem}
+    .click-note{font-size:.76rem;color:var(--muted);margin-top:.7rem}
+    footer{padding:52px 0;background:var(--neutral);color:#fff;margin-top:40px}
+    footer .inner{width:min(1260px,92vw);margin:auto;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    footer p{margin:0;color:rgba(255,255,255,.78)}
+    @media (max-width: 980px){
+      .hero-inner,.section-head,.territory-wrap,.grid-2,.grid-3,.grid-4,.impact-grid,.synthesis-grid{grid-template-columns:1fr}
+      .headline-grid{grid-template-columns:1fr 1fr}
+      .actor-quadrant,.capacity-ladder{grid-template-columns:1fr}
+      .heat-row{grid-template-columns:170px repeat(3,1fr)}
+      h1{font-size:4rem}
+      section{padding:64px 0}
+    }
+    @media (max-width: 660px){
+      .nav{align-items:flex-start}
+      .nav-links{display:none}
+      .headline-grid{grid-template-columns:1fr}
+      .headline:nth-child(1),.headline:nth-child(2){grid-row:auto;min-height:150px}
+      .heat-row{grid-template-columns:1fr;gap:.25rem}
+      .heat-label{margin-top:.8rem}
+      .sheet-list{columns:1}
+      .mini-bar{grid-template-columns:1fr}
+      .country-shape{width:210px;height:300px}
+    }
+    @media print{
+      body{background:#fff}
+      .topbar,.filter-panel,.click-note{display:none}
+      .hero{min-height:auto;color:#111;background:#fff}
+      .hero::before{display:none}
+      .hero-panel,.panel,.livelihood-card,.ecosystem-card,.threat-card{box-shadow:none}
+      section{padding:30px 0;break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Saltar al contenido principal</a>
+  <header class="topbar" aria-label="Navegación principal">
+    <nav class="nav">
+      <div class="brand"><span class="brand-dot" aria-hidden="true"></span><span>Lectura territorial PARES</span></div>
+      <div class="nav-links">
+        <a href="#territorio">Territorio</a><a href="#medios">Medios de vida</a><a href="#ecosistemas">Ecosistemas</a><a href="#amenazas">Amenazas</a><a href="#gobernanza">Gobernanza</a><a href="#conflictos">Conflictos</a><a href="#calidad">Calidad</a>
+      </div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero" id="inicio">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">Dashboard socioecológico interactivo</div>
+          <h1><span>TIERRAVIVA</span> AMBUQUÍ</h1>
+          <p class="hero-summary"><strong>Ecuador · Ambuquí.</strong> Esta lectura integra los datos participativos del archivo cargado para mostrar cómo se conectan zonas, medios de vida, ecosistemas, servicios ecosistémicos, amenazas, actores, espacios de diálogo, conflictos y capacidad adaptativa.</p>
+          <div class="filter-panel" aria-label="Filtro por zona">
+            <button class="zone-btn active" data-zone="Todas">Todas las zonas</button>
+            <button class="zone-btn" data-zone="Zona Alta">Zona Alta</button>
+            <button class="zone-btn" data-zone="Zona Media">Zona Media</button>
+            <button class="zone-btn" data-zone="Zona Baja">Zona Baja</button>
+          </div>
+          <p class="source-mark">Fuente: database_general_TIERRAVIVA_FINAL.xlsx · Representaciones visuales no cartográficas.</p>
+        </div>
+        <aside class="hero-panel" aria-label="Números clave">
+          <div class="headline-grid" id="headlineGrid"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="territorio">
+      <div class="section-head">
+        <div><div class="section-kicker">Identidad territorial</div><h2>Un paisaje, tres lecturas zonales</h2></div>
+        <p>La base organiza Ambuquí en tres zonas de análisis. El panel no usa coordenadas: resume la estructura territorial declarada en el archivo y la conecta con ecosistemas, medios de vida y amenazas.</p>
+      </div>
+      <div class="territory-wrap">
+        <div class="panel map-schematic">
+          <div class="country-shape" aria-hidden="true"></div>
+          <div class="territory-pin" title="Ambuquí, Ecuador" aria-hidden="true"></div>
+          <div class="map-label">
+            <div class="section-kicker">Ubicación esquemática</div>
+            <h3 style="color:var(--neutral);font-size:2rem">Ecuador · Ambuquí</h3>
+            <p style="margin:.5rem 0 0;color:var(--muted)">El archivo identifica el país como Ecuador y el paisaje como Ambuquí. No se incluyen coordenadas ni límites geográficos exactos.</p>
+          </div>
+        </div>
+        <div class="zone-stack" id="zoneStack"></div>
+      </div>
+    </section>
+
+    <section id="universo">
+      <div class="section-head">
+        <div><div class="section-kicker">Huella de información</div><h2>Qué analiza este dashboard</h2></div>
+        <p>La base combina registros de diagnóstico socioecológico, matrices de amenazas, caracterización de actores, espacios de coordinación, trayectoria de conflictos y una encuesta de capacidad adaptativa.</p>
+      </div>
+      <div class="grid-3" id="universeGrid"></div>
+    </section>
+
+    <section id="medios">
+      <div class="section-head">
+        <div><div class="section-kicker">Medios de vida</div><h2>Sistemas productivos priorizados</h2></div>
+        <p>La priorización se muestra por zona, usando los puntajes presentes en la hoja 3.2. Las tarjetas no inventan jerarquías: ordenan los medios de vida según el total registrado.</p>
+      </div>
+      <div class="grid-3" id="livelihoodGrid"></div>
+    </section>
+
+    <section id="ecosistemas">
+      <div class="section-head">
+        <div><div class="section-kicker">Ecosistemas y servicios</div><h2>La infraestructura ecológica del territorio</h2></div>
+        <p>Las tarjetas muestran ecosistemas, medios de vida relacionados, causas de degradación y códigos de servicios ecosistémicos. Cuando el nombre del servicio no está explícito, el dashboard mantiene el código y avisa la limitación.</p>
+      </div>
+      <div class="grid-3" id="ecosystemGrid"></div>
+    </section>
+
+    <section id="amenazas">
+      <div class="section-head">
+        <div><div class="section-kicker">Amenazas</div><h2>Presiones climáticas y no climáticas</h2></div>
+        <p>La lectura combina magnitud, frecuencia y tendencia en el puntaje “suma” de la hoja 4.1. La sequía aparece en las tres zonas, pero con intensidad diferenciada.</p>
+      </div>
+      <div class="grid-3" id="threatGrid"></div>
+    </section>
+
+    <section id="matrices">
+      <div class="section-head">
+        <div><div class="section-kicker">Matrices relacionales</div><h2>Conexiones críticas</h2></div>
+        <p>Estas matrices usan celdas, intensidad visual y tarjetas de relación en lugar de gráficos convencionales. Sirven para leer dependencias y exposición sin perder el detalle territorial.</p>
+      </div>
+      <div class="panel">
+        <div class="tabs" role="tablist">
+          <button class="tab-btn active" data-tab="tabThreatZone">Amenazas × zonas</button>
+          <button class="tab-btn" data-tab="tabEcoService">Ecosistemas × servicios</button>
+          <button class="tab-btn" data-tab="tabImpact">Amenazas × medios de vida</button>
+        </div>
+        <div id="tabThreatZone" class="tab-panel active">
+          <div class="heat-grid" id="threatZoneMatrix"></div>
+          <p class="click-note">La intensidad corresponde al puntaje “suma” registrado por amenaza y zona.</p>
+        </div>
+        <div id="tabEcoService" class="tab-panel">
+          <div class="matrix-scroll"><table class="matrix" id="ecoServiceMatrix"></table></div>
+          <p class="click-note">Punto azul = servicio codificado asociado al ecosistema en la hoja 3.4.</p>
+        </div>
+        <div id="tabImpact" class="tab-panel">
+          <div class="impact-grid" id="impactGrid"></div>
+          <p class="click-note">Promedio calculado sobre dimensiones de impacto disponibles: económica, alimentaria, sanitaria, ambiental, personal, comunitaria y política.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="capacidad">
+      <div class="section-head">
+        <div><div class="section-kicker">Capacidad adaptativa</div><h2>Señales de fortaleza y brecha</h2></div>
+        <p>La encuesta tiene 14 respuestas. Los rangos se resumen con punto medio para construir una lectura exploratoria; no deben interpretarse como mediciones exactas ni como una muestra estadística amplia.</p>
+      </div>
+      <div class="capacity-ladder" id="capacityZones"></div>
+      <div class="grid-2" style="margin-top:1rem">
+        <div class="panel"><h3 style="color:var(--neutral);font-size:1.8rem">Señales más fuertes</h3><div class="q-list" id="capacityStrengths"></div></div>
+        <div class="panel"><h3 style="color:var(--neutral);font-size:1.8rem">Brechas más visibles</h3><div class="q-list" id="capacityGaps"></div></div>
+      </div>
+    </section>
+
+    <section id="gobernanza">
+      <div class="section-head">
+        <div><div class="section-kicker">Actores y gobernanza</div><h2>Constelación de influencia e interés</h2></div>
+        <p>Los actores se agrupan en cuadrantes usando los puntajes de poder e interés disponibles en la hoja 5.1. El umbral usado es 6 sobre la escala registrada.</p>
+      </div>
+      <div class="actor-quadrant" id="actorQuadrants"></div>
+    </section>
+
+    <section id="dialogo">
+      <div class="section-head">
+        <div><div class="section-kicker">Espacios de diálogo</div><h2>Arquitectura de coordinación</h2></div>
+        <p>Los espacios formales e informales muestran funciones distintas: comercialización, salud, presupuesto participativo, agua, organización campesina y producción.</p>
+      </div>
+      <div class="grid-3" id="dialogueGrid"></div>
+    </section>
+
+    <section id="conflictos">
+      <div class="section-head">
+        <div><div class="section-kicker">Conflictos</div><h2>Eventos, cooperación y tensión</h2></div>
+        <p>La línea temporal muestra eventos registrados entre 1975 y 2025. La señal positiva, neutra o negativa se basa en la suma de diferencias y cooperación que trae la base.</p>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3 style="color:var(--neutral);font-size:1.8rem">Línea temporal</h3>
+          <div class="timeline" id="conflictTimeline"></div>
+        </div>
+        <div class="panel">
+          <h3 style="color:var(--neutral);font-size:1.8rem">Actores dentro de los conflictos</h3>
+          <div class="q-list" id="conflictActorList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sintesis">
+      <div class="section-head">
+        <div><div class="section-kicker">Síntesis integrada</div><h2>Lo que sugieren los datos</h2></div>
+        <p>Esta lectura integra relaciones observadas en la base. No agrega información externa y evita convertir señales parciales en conclusiones absolutas.</p>
+      </div>
+      <div class="synthesis-grid">
+        <article class="insight"><h3>Agua como eje de dependencia y tensión</h3><p>La sequía aparece en las tres zonas; los eventos de conflicto y las tarjetas de actores también mencionan distribución, infraestructura y gestión del agua.</p></article>
+        <article class="insight"><h3>Alta concentración de servicios en bosque espinoso</h3><p>El bosque espinoso registra más códigos de servicios ecosistémicos y se vincula con sistemas como mango, aguacate, limón, gallinas y turismo comunitario.</p></article>
+        <article class="insight"><h3>Zona baja con presión sanitaria y productiva</h3><p>Relleno sanitario, uso inadecuado de agroquímicos, contaminación de agua y desbordamiento del río aparecen como señales relevantes para los medios de vida de la zona baja.</p></article>
+        <article class="insight"><h3>Gobernanza con alta base comunitaria</h3><p>La mayoría de actores mapeados son comunitarios. Las juntas de agua y espacios locales aparecen como piezas importantes para coordinar respuestas territoriales.</p></article>
+      </div>
+    </section>
+
+    <section id="calidad" class="quality">
+      <div class="section-head">
+        <div><div class="section-kicker">Calidad y límites</div><h2>Cómo leer este tablero</h2></div>
+        <p>El dashboard prioriza transparencia: muestra dónde la base es fuerte, dónde hay códigos incompletos y qué supuestos técnicos se aplicaron para visualizar la información.</p>
+      </div>
+      <div class="panel">
+        <details open><summary>Hojas analizadas</summary><ul class="sheet-list" id="sheetList"></ul></details>
+        <details open><summary>Limitaciones y supuestos</summary><ul id="qualityList"></ul></details>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="inner">
+      <p>Dashboard HTML autónomo · CSS y JavaScript integrados · Sin librerías de gráficos.</p>
+      <p>Generado a partir del archivo cargado por el usuario.</p>
+    </div>
+  </footer>
+
+  <script>
+    const DATA = {"meta": {"organization": "TIERRAVIVA", "country": "Ecuador", "territory": "Ambuquí", "zones": ["Zona Alta", "Zona Media", "Zona Baja"], "source_file": "database_general_TIERRAVIVA_FINAL.xlsx"}, "headlines": [{"label": "ZONAS ANALIZADAS", "value": 3, "detail": "Zona Alta, Zona Media y Zona Baja"}, {"label": "MEDIOS DE VIDA PRIORIZADOS", "value": 17, "detail": "Registros únicos de priorización"}, {"label": "ECOSISTEMAS REGISTRADOS", "value": 6, "detail": "Incluye bosque montano, páramo, matorral, bosque espinoso y riberas"}, {"label": "CÓDIGOS DE SERVICIOS ECOSISTÉMICOS", "value": 15, "detail": "Algunos códigos no tienen nombre completo en la base"}, {"label": "AMENAZAS REGISTRADAS", "value": 13, "detail": "8 climáticas / 5 no climáticas"}, {"label": "ACTORES MAPEADOS", "value": 25, "detail": "Poder e interés disponibles"}, {"label": "ESPACIOS DE DIÁLOGO", "value": 6, "detail": "Formales e informales"}, {"label": "EVENTOS DE CONFLICTO", "value": 13, "detail": "Línea temporal 1975–2025"}], "data_universe": [{"theme": "Territorio y medios de vida", "sheets": ["3.1. Lluvia MdV&SE", "3.2. Priorización", "3.3. Car_A", "3.3. Car_B", "3.3. Car_C", "3.3. Car_D"], "count": 426, "quality": "completo"}, {"theme": "Ecosistemas y servicios", "sheets": ["3.4. Ecosistemas", "3.5. SE y MdV"], "count": 36, "quality": "códigos parciales"}, {"theme": "Amenazas e impactos", "sheets": ["4.1. Amenazas", "4.2.1. Amenazas_MdV", "4.2.2. Amenazas_SE"], "count": 45, "quality": "con duplicados puntuales"}, {"theme": "Gobernanza", "sheets": ["5.1. Actores", "5.2. Diálogo"], "count": 31, "quality": "completo"}, {"theme": "Conflictos", "sheets": ["6.1. Evolución_conflict", "6.2. Actores_conflict"], "count": 21, "quality": "códigos sin diccionario"}, {"theme": "Capacidad adaptativa", "sheets": ["7.1. Encuesta CA"], "count": 14, "quality": "muestra pequeña"}], "livelihood_cards": [{"name": "Maíz", "product": "Maíz seco, choclo, mote, harinas", "score": 13, "criteria": {"Seguridad alimentaria": 3, "Área": 3, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta", "markets": {"local": 1, "regional": 1}, "uses": {"comercial": 2, "autoconsumo": 1}, "system": "Maíz, trigo y arveja", "size_profile": [{"tamano": "pequeño", "rango": "< 1.5", "porcentaje": 50.0}, {"tamano": "mediano", "rango": "1.6 - 2.5", "porcentaje": 40.0}, {"tamano": "grande", "rango": "2.6 - 5", "porcentaje": 10.0}], "threats": [{"threat": "Sequía", "avg": 1.86, "type": "climática"}]}, {"name": "Trigo", "product": "Harina, machica, trigo pelado", "score": 13, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 3, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta", "markets": {"local": 1, "regional": 1}, "uses": {"comercial": 2, "autoconsumo": 1}, "system": "Maíz, trigo y arveja", "size_profile": [{"tamano": "pequeño", "rango": "< 1.5", "porcentaje": 50.0}, {"tamano": "mediano", "rango": "1.6 - 2.5", "porcentaje": 40.0}, {"tamano": "grande", "rango": "2.6 - 5", "porcentaje": 10.0}], "threats": [{"threat": "Sequía", "avg": 1.86, "type": "climática"}]}, {"name": "Gallinas", "product": "Carne, huevos, abono", "score": 12, "criteria": {"Seguridad alimentaria": 3, "Área": 1, "Desarrollo local": 3, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta", "markets": {"local": 2, "regional": 1}, "uses": {"comercial": 3, "autoconsumo": 2}, "system": "Gallinas", "size_profile": [{"tamano": "pequeño", "rango": "< 10", "porcentaje": 80.0}, {"tamano": "mediano", "rango": "11 - 100", "porcentaje": 15.0}, {"tamano": "grande", "rango": "101 - 200", "porcentaje": 5.0}], "threats": []}, {"name": "Arveja", "product": "Tierna, seca, harina", "score": 12, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 3, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Alta", "markets": {"local": 1, "regional": 1}, "uses": {"comercial": 2, "autoconsumo": 1}, "system": "Maíz, trigo y arveja", "size_profile": [{"tamano": "pequeño", "rango": "< 1.5", "porcentaje": 50.0}, {"tamano": "mediano", "rango": "1.6 - 2.5", "porcentaje": 40.0}, {"tamano": "grande", "rango": "2.6 - 5", "porcentaje": 10.0}], "threats": [{"threat": "Sequía", "avg": 1.86, "type": "climática"}]}, {"name": "Ganadería", "product": "Carne, leche, queso, suero, cuero, abono", "score": 11, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta", "markets": {"local": 1, "regional": 1}, "uses": {"comercial": 2}, "system": "Ganadería y borregos", "size_profile": [{"tamano": "pequeño", "rango": "1 - 3", "porcentaje": 50.0}, {"tamano": "mediano", "rango": "3.1 - 8", "porcentaje": 25.0}, {"tamano": "grande", "rango": "8.1 - 15", "porcentaje": 25.0}], "threats": [{"threat": "Quema", "avg": 2.0, "type": "no-climática"}]}, {"name": "Borregos", "product": "Carne, lana, abono", "score": 10, "criteria": {"Seguridad alimentaria": 1, "Área": 2, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta", "markets": {"local": 1, "regional": 1}, "uses": {"comercial": 2, "autoconsumo": 1}, "system": "Ganadería y borregos", "size_profile": [], "threats": [{"threat": "Quema", "avg": 2.0, "type": "no-climática"}]}, {"name": "Gallinas", "product": "Carne, huevos, abono", "score": 11, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 2, "Ambiente": 3, "Inclusión": 1}, "zone": "Zona Media", "markets": {"local": 2, "regional": 1}, "uses": {"comercial": 3, "autoconsumo": 2}, "system": "Gallinas", "size_profile": [{"tamano": "pequeño", "rango": "< 10", "porcentaje": 80.0}, {"tamano": "mediano", "rango": "11 - 100", "porcentaje": 15.0}, {"tamano": "grande", "rango": "101 - 200", "porcentaje": 5.0}], "threats": []}, {"name": "Aguacate", "product": "Fruto en gavetas, aceites, pulpa, helados", "score": 11, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Media", "markets": {"exportación": 1, "local": 1}, "uses": {"comercial": 2, "autoconsumo": 2}, "system": "Aguacate y Limón", "size_profile": [{"tamano": "pequeño", "rango": "< 1", "porcentaje": 50.0}, {"tamano": "mediano", "rango": "1.1 - 2", "porcentaje": 25.0}, {"tamano": "grande", "rango": "2.1 - 4", "porcentaje": 25.0}], "threats": [{"threat": "Sequía", "avg": 1.71, "type": "climática"}]}, {"name": "Turismo comunitario", "product": "Alimentación, senderismo, Artesanías, actividades culturales, medicinal, productos agricolas", "score": 10, "criteria": {"Seguridad alimentaria": 1, "Área": 1, "Desarrollo local": 2, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Media", "markets": {"local": 1, "nacional": 1, "exportación": 1}, "uses": {"comercial": 3}, "system": "Turismo comunitario y ovos", "size_profile": [{"tamano": "pequeño", "rango": "< 1", "porcentaje": 70.0}, {"tamano": "mediano", "rango": "1 - 2", "porcentaje": 20.0}, {"tamano": "grande", "rango": "2.1 - 3", "porcentaje": 10.0}], "threats": []}, {"name": "Mango", "product": "Furto fresco en mallas, gabetas o cartones, pulpa, helados, mermeladas, vino, jugos, fruto deshidratado", "score": 10, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Media", "markets": {"nacional": 2, "exportación": 1}, "uses": {"comercial": 3, "autoconsumo": 2}, "system": "Mango y limón", "size_profile": [{"tamano": "pequeño", "rango": "< 1", "porcentaje": 50.0}, {"tamano": "mediano", "rango": "1.1 - 2", "porcentaje": 25.0}, {"tamano": "grande", "rango": "2.1 - 4", "porcentaje": 25.0}], "threats": [{"threat": "Cambio de uso de suelo", "avg": 1.14, "type": "no-climática"}]}, {"name": "Limón", "product": "Fruto en bultos o costales", "score": 9, "criteria": {"Seguridad alimentaria": 3, "Área": 1, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 2}, "zone": "Zona Media", "markets": {"nacional": 3, "local": 1}, "uses": {"comercial": 4, "autoconsumo": 4}, "system": "Aguacate y Limón", "size_profile": [{"tamano": "pequeño", "rango": "< 1", "porcentaje": 50.0}, {"tamano": "mediano", "rango": "1.1 - 2", "porcentaje": 25.0}, {"tamano": "grande", "rango": "2.1 - 4", "porcentaje": 25.0}], "threats": [{"threat": "Sequía", "avg": 1.71, "type": "climática"}]}, {"name": "Ovo", "product": "Fruto, helado, vino, pulpa, mermelada", "score": 8, "criteria": {"Seguridad alimentaria": 1, "Área": 1, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Media", "markets": {}, "uses": {}, "system": "", "size_profile": [], "threats": []}, {"name": "Mango y limón", "product": "Frutos en gavetas, bultos, cajas de carton y por unidades", "score": 14, "criteria": {"Seguridad alimentaria": 2, "Área": 3, "Desarrollo local": 3, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Baja", "markets": {}, "uses": {}, "system": "", "size_profile": [], "threats": [{"threat": "Contaminación basurero", "avg": 2.43, "type": "no-climática"}, {"threat": "Sequía", "avg": 1.17, "type": "climática"}]}, {"name": "Fréjol", "product": "Quintal del grano seco y en bultos grano tierno", "score": 13, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 3, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Baja", "markets": {"local": 1, "nacional": 1}, "uses": {"comercial": 2, "autoconsumo": 1}, "system": "Fréjol", "size_profile": [{"tamano": "pequeño", "rango": "< 1", "porcentaje": 20.0}, {"tamano": "mediano", "rango": "1.1 - 5", "porcentaje": 30.0}, {"tamano": "grande", "rango": "> 5", "porcentaje": 50.0}], "threats": [{"threat": "Contaminación basurero", "avg": 2.43, "type": "no-climática"}, {"threat": "Desbordamiento de río", "avg": 1.5, "type": "climática"}, {"threat": "Desbordamiento de río", "avg": 1.5, "type": "climática"}]}, {"name": "Jamaica", "product": "Flor de jamaica en cajas, tarrinas, flor fresca y seca", "score": 12, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Baja", "markets": {}, "uses": {}, "system": "", "size_profile": [], "threats": [{"threat": "Contaminación basurero", "avg": 2.43, "type": "no-climática"}, {"threat": "Desbordamiento de río", "avg": 1.5, "type": "climática"}, {"threat": "Desbordamiento de río", "avg": 1.5, "type": "climática"}]}, {"name": "Pimiento", "product": "Verduras en bultos o gavetas", "score": 11, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 3, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Baja", "markets": {"local": 1}, "uses": {"comercial": 1, "autoconsumo": 1}, "system": "Pimiento", "size_profile": [{"tamano": "pequeño", "rango": "< 1", "porcentaje": 20.0}, {"tamano": "mediano", "rango": "1.1 - 5", "porcentaje": 30.0}, {"tamano": "grande", "rango": "> 5", "porcentaje": 50.0}], "threats": [{"threat": "Contaminación basurero", "avg": 2.43, "type": "no-climática"}, {"threat": "Desbordamiento de río", "avg": 1.5, "type": "climática"}, {"threat": "Desbordamiento de río", "avg": 1.5, "type": "climática"}]}, {"name": "Aguacate y limón", "product": "Frutos en gavetas y bultos", "score": 11, "criteria": {"Seguridad alimentaria": 1, "Área": 2, "Desarrollo local": 2, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Baja", "markets": {}, "uses": {}, "system": "", "size_profile": [], "threats": [{"threat": "Contaminación basurero", "avg": 2.43, "type": "no-climática"}, {"threat": "Sequía", "avg": 1.17, "type": "climática"}]}, {"name": "Turismo comunitario y artesanías", "product": "Danza, gastronomia, piscinas, música, instrumentos musicales, vestimenta, collares", "score": 5, "criteria": {"Seguridad alimentaria": 1, "Área": 1, "Desarrollo local": 1, "Ambiente": 1, "Inclusión": 1}, "zone": "Zona Baja", "markets": {}, "uses": {}, "system": "", "size_profile": [], "threats": []}], "livelihood_top_by_zone": {"Zona Alta": [{"name": "Maíz", "product": "Maíz seco, choclo, mote, harinas", "score": 13, "criteria": {"Seguridad alimentaria": 3, "Área": 3, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta"}, {"name": "Trigo", "product": "Harina, machica, trigo pelado", "score": 13, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 3, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta"}, {"name": "Gallinas", "product": "Carne, huevos, abono", "score": 12, "criteria": {"Seguridad alimentaria": 3, "Área": 1, "Desarrollo local": 3, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta"}, {"name": "Arveja", "product": "Tierna, seca, harina", "score": 12, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 3, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Alta"}, {"name": "Ganadería", "product": "Carne, leche, queso, suero, cuero, abono", "score": 11, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta"}, {"name": "Borregos", "product": "Carne, lana, abono", "score": 10, "criteria": {"Seguridad alimentaria": 1, "Área": 2, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Alta"}], "Zona Media": [{"name": "Gallinas", "product": "Carne, huevos, abono", "score": 11, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 2, "Ambiente": 3, "Inclusión": 1}, "zone": "Zona Media"}, {"name": "Aguacate", "product": "Fruto en gavetas, aceites, pulpa, helados", "score": 11, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Media"}, {"name": "Turismo comunitario", "product": "Alimentación, senderismo, Artesanías, actividades culturales, medicinal, productos agricolas", "score": 10, "criteria": {"Seguridad alimentaria": 1, "Área": 1, "Desarrollo local": 2, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Media"}, {"name": "Mango", "product": "Furto fresco en mallas, gabetas o cartones, pulpa, helados, mermeladas, vino, jugos, fruto deshidratado", "score": 10, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Media"}, {"name": "Limón", "product": "Fruto en bultos o costales", "score": 9, "criteria": {"Seguridad alimentaria": 3, "Área": 1, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 2}, "zone": "Zona Media"}, {"name": "Ovo", "product": "Fruto, helado, vino, pulpa, mermelada", "score": 8, "criteria": {"Seguridad alimentaria": 1, "Área": 1, "Desarrollo local": 2, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Media"}], "Zona Baja": [{"name": "Mango y limón", "product": "Frutos en gavetas, bultos, cajas de carton y por unidades", "score": 14, "criteria": {"Seguridad alimentaria": 2, "Área": 3, "Desarrollo local": 3, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Baja"}, {"name": "Fréjol", "product": "Quintal del grano seco y en bultos grano tierno", "score": 13, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 3, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Baja"}, {"name": "Jamaica", "product": "Flor de jamaica en cajas, tarrinas, flor fresca y seca", "score": 12, "criteria": {"Seguridad alimentaria": 3, "Área": 2, "Desarrollo local": 2, "Ambiente": 2, "Inclusión": 3}, "zone": "Zona Baja"}, {"name": "Pimiento", "product": "Verduras en bultos o gavetas", "score": 11, "criteria": {"Seguridad alimentaria": 2, "Área": 2, "Desarrollo local": 3, "Ambiente": 1, "Inclusión": 3}, "zone": "Zona Baja"}, {"name": "Aguacate y limón", "product": "Frutos en gavetas y bultos", "score": 11, "criteria": {"Seguridad alimentaria": 1, "Área": 2, "Desarrollo local": 2, "Ambiente": 3, "Inclusión": 3}, "zone": "Zona Baja"}, {"name": "Turismo comunitario y artesanías", "product": "Danza, gastronomia, piscinas, música, instrumentos musicales, vestimenta, collares", "score": 5, "criteria": {"Seguridad alimentaria": 1, "Área": 1, "Desarrollo local": 1, "Ambiente": 1, "Inclusión": 1}, "zone": "Zona Baja"}]}, "ecosystems": [{"zone": "Zona Alta", "ecosystem": "Bosque montano", "code": "Bm", "health": 2, "mdv": "Cuy, manzana, Maíz, claudia, trigo, borregos, gallinas, cerdos, Ganadería, arveja, huertos horticolas", "degradation": "Tala, aumento frontera agrícola y pecuaria, extracción de madera, uso de agroquímicos, quemas, mal manejo de residuos sólidos", "services": ["P2 · leña y carbón", "P4 · plantas medicinales", "A1 · insumos de tutoreo", "R5 · materia orgánica / suelo", "A2 · servicio codificado sin descripción directa", "P3 · agua para consumo, animales y riego", "R1 · servicio codificado sin descripción directa", "R2 · servicio codificado sin descripción directa", "R6 · polinización y apicultura", "C2 · servicio codificado sin descripción directa", "R3 · servicio codificado sin descripción directa"], "service_codes": ["P2", "P4", "A1", "R5", "A2", "P3", "R1", "R2", "R6", "C2", "R3"], "service_count": 11}, {"zone": "Zona Alta", "ecosystem": "Páramo", "code": "Pr", "health": 2, "mdv": "Cerdos, borregos, fréjol, gallinas, Maíz, trigo, Ganadería, huertos horticolas, chocho, arveja", "degradation": "Quemas, aumento frontera agrícola, mal manejo de residuos sólidos", "services": ["P3 · agua para consumo, animales y riego", "P4 · plantas medicinales", "R6 · polinización y apicultura", "R7 · servicio codificado sin descripción directa", "R1 · servicio codificado sin descripción directa", "A1 · insumos de tutoreo", "R2 · servicio codificado sin descripción directa", "P1 · alimentos / forraje"], "service_codes": ["P3", "P4", "R6", "R7", "R1", "A1", "R2", "P1"], "service_count": 8}, {"zone": "Zona Alta", "ecosystem": "Matorral interandino", "code": "Mi", "health": 3, "mdv": "Borregos, Ganadería, gallinas, cuyes", "degradation": "Quemas, aumento frontera agrícola y pecuaria, uso de agroquímicos, extracción de leña, mal manejo de residuos sólidos", "services": ["R6 · polinización y apicultura", "R5 · materia orgánica / suelo", "R2 · servicio codificado sin descripción directa", "A2 · servicio codificado sin descripción directa", "P2 · leña y carbón", "R7 · servicio codificado sin descripción directa", "R3 · servicio codificado sin descripción directa", "P4 · plantas medicinales", "P1 · alimentos / forraje"], "service_codes": ["R6", "R5", "R2", "A2", "P2", "R7", "R3", "P4", "P1"], "service_count": 9}, {"zone": "Zona Media", "ecosystem": "Bosque espinoso", "code": "Be", "health": 2, "mdv": "Mango, aguacate, limón (cítricos), ovos, gallinas, turismo comunitario", "degradation": "Aumento frontera agrícola, uso de insecticidas y herbicidas, mineria, deforestación, incendios forestales, escorrentias, olas de calor, heladas, mal uso del agua de riego, basura en las quebradas", "services": ["P4 · plantas medicinales", "A2 · servicio codificado sin descripción directa", "R2 · servicio codificado sin descripción directa", "P1 · alimentos / forraje", "C1 · servicio codificado sin descripción directa", "C2 · servicio codificado sin descripción directa", "R1 · servicio codificado sin descripción directa", "R6 · polinización y apicultura", "R5 · materia orgánica / suelo", "P2 · leña y carbón", "R3 · servicio codificado sin descripción directa", "A1 · insumos de tutoreo", "R7 · servicio codificado sin descripción directa"], "service_codes": ["P4", "A2", "R2", "P1", "C1", "C2", "R1", "R6", "R5", "P2", "R3", "A1", "R7"], "service_count": 13}, {"zone": "Zona Baja", "ecosystem": "Riberas del río", "code": "Rv", "health": 2, "mdv": "Artesanías, fréjol, peces", "degradation": "Tala, quemas, contaminación fuentes hídricas", "services": ["P3 · agua para consumo, animales y riego", "R1 · servicio codificado sin descripción directa", "R5 · materia orgánica / suelo", "R4 · servicio codificado sin descripción directa", "P1 · alimentos / forraje", "A1 · insumos de tutoreo", "P2 · leña y carbón"], "service_codes": ["P3", "R1", "R5", "R4", "P1", "A1", "P2"], "service_count": 7}, {"zone": "Zona Baja", "ecosystem": "Bosque espinoso", "code": "Be", "health": 2, "mdv": "Mango, aguacate, fréjol, limón (cítricos), flor de jamaica, pimiento", "degradation": "Tala, uso de maquinaria agrícola, quema, contaminación", "services": ["P4 · plantas medicinales", "P1 · alimentos / forraje", "P2 · leña y carbón", "A2 · servicio codificado sin descripción directa", "A1 · insumos de tutoreo", "R2 · servicio codificado sin descripción directa", "R3 · servicio codificado sin descripción directa", "R6 · polinización y apicultura", "R5 · materia orgánica / suelo"], "service_codes": ["P4", "P1", "P2", "A2", "A1", "R2", "R3", "R6", "R5"], "service_count": 9}], "service_labels": {"P1": "P1 · alimentos / forraje", "P3": "P3 · agua para consumo, animales y riego", "R6": "R6 · polinización y apicultura", "R5": "R5 · materia orgánica / suelo", "A1": "A1 · insumos de tutoreo", "P2": "P2 · leña y carbón", "P4": "P4 · plantas medicinales", "A2": "A2 · servicio codificado sin descripción directa", "C1": "C1 · servicio codificado sin descripción directa", "C2": "C2 · servicio codificado sin descripción directa", "R1": "R1 · servicio codificado sin descripción directa", "R2": "R2 · servicio codificado sin descripción directa", "R3": "R3 · servicio codificado sin descripción directa", "R4": "R4 · servicio codificado sin descripción directa", "R7": "R7 · servicio codificado sin descripción directa"}, "service_codes": ["A1", "A2", "C1", "C2", "P1", "P2", "P3", "P4", "R1", "R2", "R3", "R4", "R5", "R6", "R7"], "eco_service_matrix": [{"zone": "Zona Alta", "ecosystem": "Bosque montano", "code": "Bm", "cells": [{"code": "A1", "label": "A1 · insumos de tutoreo", "value": 1}, {"code": "A2", "label": "A2 · servicio codificado sin descripción directa", "value": 1}, {"code": "C1", "label": "C1 · servicio codificado sin descripción directa", "value": 0}, {"code": "C2", "label": "C2 · servicio codificado sin descripción directa", "value": 1}, {"code": "P1", "label": "P1 · alimentos / forraje", "value": 0}, {"code": "P2", "label": "P2 · leña y carbón", "value": 1}, {"code": "P3", "label": "P3 · agua para consumo, animales y riego", "value": 1}, {"code": "P4", "label": "P4 · plantas medicinales", "value": 1}, {"code": "R1", "label": "R1 · servicio codificado sin descripción directa", "value": 1}, {"code": "R2", "label": "R2 · servicio codificado sin descripción directa", "value": 1}, {"code": "R3", "label": "R3 · servicio codificado sin descripción directa", "value": 1}, {"code": "R4", "label": "R4 · servicio codificado sin descripción directa", "value": 0}, {"code": "R5", "label": "R5 · materia orgánica / suelo", "value": 1}, {"code": "R6", "label": "R6 · polinización y apicultura", "value": 1}, {"code": "R7", "label": "R7 · servicio codificado sin descripción directa", "value": 0}]}, {"zone": "Zona Alta", "ecosystem": "Páramo", "code": "Pr", "cells": [{"code": "A1", "label": "A1 · insumos de tutoreo", "value": 1}, {"code": "A2", "label": "A2 · servicio codificado sin descripción directa", "value": 0}, {"code": "C1", "label": "C1 · servicio codificado sin descripción directa", "value": 0}, {"code": "C2", "label": "C2 · servicio codificado sin descripción directa", "value": 0}, {"code": "P1", "label": "P1 · alimentos / forraje", "value": 1}, {"code": "P2", "label": "P2 · leña y carbón", "value": 0}, {"code": "P3", "label": "P3 · agua para consumo, animales y riego", "value": 1}, {"code": "P4", "label": "P4 · plantas medicinales", "value": 1}, {"code": "R1", "label": "R1 · servicio codificado sin descripción directa", "value": 1}, {"code": "R2", "label": "R2 · servicio codificado sin descripción directa", "value": 1}, {"code": "R3", "label": "R3 · servicio codificado sin descripción directa", "value": 0}, {"code": "R4", "label": "R4 · servicio codificado sin descripción directa", "value": 0}, {"code": "R5", "label": "R5 · materia orgánica / suelo", "value": 0}, {"code": "R6", "label": "R6 · polinización y apicultura", "value": 1}, {"code": "R7", "label": "R7 · servicio codificado sin descripción directa", "value": 1}]}, {"zone": "Zona Alta", "ecosystem": "Matorral interandino", "code": "Mi", "cells": [{"code": "A1", "label": "A1 · insumos de tutoreo", "value": 0}, {"code": "A2", "label": "A2 · servicio codificado sin descripción directa", "value": 1}, {"code": "C1", "label": "C1 · servicio codificado sin descripción directa", "value": 0}, {"code": "C2", "label": "C2 · servicio codificado sin descripción directa", "value": 0}, {"code": "P1", "label": "P1 · alimentos / forraje", "value": 1}, {"code": "P2", "label": "P2 · leña y carbón", "value": 1}, {"code": "P3", "label": "P3 · agua para consumo, animales y riego", "value": 0}, {"code": "P4", "label": "P4 · plantas medicinales", "value": 1}, {"code": "R1", "label": "R1 · servicio codificado sin descripción directa", "value": 0}, {"code": "R2", "label": "R2 · servicio codificado sin descripción directa", "value": 1}, {"code": "R3", "label": "R3 · servicio codificado sin descripción directa", "value": 1}, {"code": "R4", "label": "R4 · servicio codificado sin descripción directa", "value": 0}, {"code": "R5", "label": "R5 · materia orgánica / suelo", "value": 1}, {"code": "R6", "label": "R6 · polinización y apicultura", "value": 1}, {"code": "R7", "label": "R7 · servicio codificado sin descripción directa", "value": 1}]}, {"zone": "Zona Media", "ecosystem": "Bosque espinoso", "code": "Be", "cells": [{"code": "A1", "label": "A1 · insumos de tutoreo", "value": 1}, {"code": "A2", "label": "A2 · servicio codificado sin descripción directa", "value": 1}, {"code": "C1", "label": "C1 · servicio codificado sin descripción directa", "value": 1}, {"code": "C2", "label": "C2 · servicio codificado sin descripción directa", "value": 1}, {"code": "P1", "label": "P1 · alimentos / forraje", "value": 1}, {"code": "P2", "label": "P2 · leña y carbón", "value": 1}, {"code": "P3", "label": "P3 · agua para consumo, animales y riego", "value": 0}, {"code": "P4", "label": "P4 · plantas medicinales", "value": 1}, {"code": "R1", "label": "R1 · servicio codificado sin descripción directa", "value": 1}, {"code": "R2", "label": "R2 · servicio codificado sin descripción directa", "value": 1}, {"code": "R3", "label": "R3 · servicio codificado sin descripción directa", "value": 1}, {"code": "R4", "label": "R4 · servicio codificado sin descripción directa", "value": 0}, {"code": "R5", "label": "R5 · materia orgánica / suelo", "value": 1}, {"code": "R6", "label": "R6 · polinización y apicultura", "value": 1}, {"code": "R7", "label": "R7 · servicio codificado sin descripción directa", "value": 1}]}, {"zone": "Zona Baja", "ecosystem": "Riberas del río", "code": "Rv", "cells": [{"code": "A1", "label": "A1 · insumos de tutoreo", "value": 1}, {"code": "A2", "label": "A2 · servicio codificado sin descripción directa", "value": 0}, {"code": "C1", "label": "C1 · servicio codificado sin descripción directa", "value": 0}, {"code": "C2", "label": "C2 · servicio codificado sin descripción directa", "value": 0}, {"code": "P1", "label": "P1 · alimentos / forraje", "value": 1}, {"code": "P2", "label": "P2 · leña y carbón", "value": 1}, {"code": "P3", "label": "P3 · agua para consumo, animales y riego", "value": 1}, {"code": "P4", "label": "P4 · plantas medicinales", "value": 0}, {"code": "R1", "label": "R1 · servicio codificado sin descripción directa", "value": 1}, {"code": "R2", "label": "R2 · servicio codificado sin descripción directa", "value": 0}, {"code": "R3", "label": "R3 · servicio codificado sin descripción directa", "value": 0}, {"code": "R4", "label": "R4 · servicio codificado sin descripción directa", "value": 1}, {"code": "R5", "label": "R5 · materia orgánica / suelo", "value": 1}, {"code": "R6", "label": "R6 · polinización y apicultura", "value": 0}, {"code": "R7", "label": "R7 · servicio codificado sin descripción directa", "value": 0}]}, {"zone": "Zona Baja", "ecosystem": "Bosque espinoso", "code": "Be", "cells": [{"code": "A1", "label": "A1 · insumos de tutoreo", "value": 1}, {"code": "A2", "label": "A2 · servicio codificado sin descripción directa", "value": 1}, {"code": "C1", "label": "C1 · servicio codificado sin descripción directa", "value": 0}, {"code": "C2", "label": "C2 · servicio codificado sin descripción directa", "value": 0}, {"code": "P1", "label": "P1 · alimentos / forraje", "value": 1}, {"code": "P2", "label": "P2 · leña y carbón", "value": 1}, {"code": "P3", "label": "P3 · agua para consumo, animales y riego", "value": 0}, {"code": "P4", "label": "P4 · plantas medicinales", "value": 1}, {"code": "R1", "label": "R1 · servicio codificado sin descripción directa", "value": 0}, {"code": "R2", "label": "R2 · servicio codificado sin descripción directa", "value": 1}, {"code": "R3", "label": "R3 · servicio codificado sin descripción directa", "value": 1}, {"code": "R4", "label": "R4 · servicio codificado sin descripción directa", "value": 0}, {"code": "R5", "label": "R5 · materia orgánica / suelo", "value": 1}, {"code": "R6", "label": "R6 · polinización y apicultura", "value": 1}, {"code": "R7", "label": "R7 · servicio codificado sin descripción directa", "value": 0}]}], "threats": [{"zone": "Zona Media", "threat": "Sequía", "type": "climática", "score": 10, "magnitude": 5, "frequency": 3, "trend": 2, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}, {"zone": "Zona Baja", "threat": "Relleno sanitario", "type": "no-climática", "score": 8, "magnitude": 3, "frequency": 3, "trend": 2, "sites": "Espadillas, San Alfonso, El Refugio, Bermejal, Ramal, Chota"}, {"zone": "Zona Alta", "threat": "Sequía", "type": "climática", "score": 7, "magnitude": 5, "frequency": 2, "trend": 0, "sites": "Peñaherrera, Rumipamba"}, {"zone": "Zona Baja", "threat": "Uso inadecuado de agroquímicos", "type": "no-climática", "score": 7, "magnitude": 3, "frequency": 3, "trend": 1, "sites": "Carpuela, Bermejal, Espadillas, El Ramal, San Alfonso"}, {"zone": "Zona Alta", "threat": "Lluvias intensas", "type": "climática", "score": 6, "magnitude": 5, "frequency": 1, "trend": 0, "sites": "Todas las comunidades zona alta, caminos, cultivos, quebradas, sitios poblados"}, {"zone": "Zona Media", "threat": "Heladas", "type": "climática", "score": 6, "magnitude": 3, "frequency": 2, "trend": 1, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}, {"zone": "Zona Media", "threat": "Deforestación", "type": "no-climática", "score": 6, "magnitude": 3, "frequency": 2, "trend": 1, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}, {"zone": "Zona Baja", "threat": "Desbordamiento del río", "type": "climática", "score": 6, "magnitude": 3, "frequency": 3, "trend": 0, "sites": "Chalguayacu, Carpuela, El Ramal"}, {"zone": "Zona Baja", "threat": "Contaminación de agua", "type": "no-climática", "score": 6, "magnitude": 3, "frequency": 2, "trend": 1, "sites": "Carpuela, Chota, Juncal, Charguayacu"}, {"zone": "Zona Alta", "threat": "Quemas", "type": "no-climática", "score": 5, "magnitude": 5, "frequency": 1, "trend": -1, "sites": "Rumipamba, Chaupi Gurangui, Peñaherrera"}, {"zone": "Zona Media", "threat": "Crecidas torrenciales", "type": "climática", "score": 5, "magnitude": 5, "frequency": 1, "trend": -1, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}, {"zone": "Zona Baja", "threat": "Sequía", "type": "climática", "score": 5, "magnitude": 2, "frequency": 2, "trend": 1, "sites": "Chalguayacu, La Playa, Carpuela, Espadillas, Bermejal, San Alfonso"}, {"zone": "Zona Baja", "threat": "Olas de calor", "type": "climática", "score": 4, "magnitude": 2, "frequency": 1, "trend": 1, "sites": "Carpuela, Chota, Juncal, Charguayacu"}], "threats_by_zone": {"Zona Alta": [{"zone": "Zona Alta", "threat": "Sequía", "type": "climática", "score": 7, "magnitude": 5, "frequency": 2, "trend": 0, "sites": "Peñaherrera, Rumipamba"}, {"zone": "Zona Alta", "threat": "Lluvias intensas", "type": "climática", "score": 6, "magnitude": 5, "frequency": 1, "trend": 0, "sites": "Todas las comunidades zona alta, caminos, cultivos, quebradas, sitios poblados"}, {"zone": "Zona Alta", "threat": "Quemas", "type": "no-climática", "score": 5, "magnitude": 5, "frequency": 1, "trend": -1, "sites": "Rumipamba, Chaupi Gurangui, Peñaherrera"}], "Zona Media": [{"zone": "Zona Media", "threat": "Sequía", "type": "climática", "score": 10, "magnitude": 5, "frequency": 3, "trend": 2, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}, {"zone": "Zona Media", "threat": "Heladas", "type": "climática", "score": 6, "magnitude": 3, "frequency": 2, "trend": 1, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}, {"zone": "Zona Media", "threat": "Deforestación", "type": "no-climática", "score": 6, "magnitude": 3, "frequency": 2, "trend": 1, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}, {"zone": "Zona Media", "threat": "Crecidas torrenciales", "type": "climática", "score": 5, "magnitude": 5, "frequency": 1, "trend": -1, "sites": "Lavandero, San Clemente, Las Mercedes y Ambuqui"}], "Zona Baja": [{"zone": "Zona Baja", "threat": "Relleno sanitario", "type": "no-climática", "score": 8, "magnitude": 3, "frequency": 3, "trend": 2, "sites": "Espadillas, San Alfonso, El Refugio, Bermejal, Ramal, Chota"}, {"zone": "Zona Baja", "threat": "Uso inadecuado de agroquímicos", "type": "no-climática", "score": 7, "magnitude": 3, "frequency": 3, "trend": 1, "sites": "Carpuela, Bermejal, Espadillas, El Ramal, San Alfonso"}, {"zone": "Zona Baja", "threat": "Desbordamiento del río", "type": "climática", "score": 6, "magnitude": 3, "frequency": 3, "trend": 0, "sites": "Chalguayacu, Carpuela, El Ramal"}, {"zone": "Zona Baja", "threat": "Contaminación de agua", "type": "no-climática", "score": 6, "magnitude": 3, "frequency": 2, "trend": 1, "sites": "Carpuela, Chota, Juncal, Charguayacu"}, {"zone": "Zona Baja", "threat": "Sequía", "type": "climática", "score": 5, "magnitude": 2, "frequency": 2, "trend": 1, "sites": "Chalguayacu, La Playa, Carpuela, Espadillas, Bermejal, San Alfonso"}, {"zone": "Zona Baja", "threat": "Olas de calor", "type": "climática", "score": 4, "magnitude": 2, "frequency": 1, "trend": 1, "sites": "Carpuela, Chota, Juncal, Charguayacu"}]}, "threat_zone_rows": [{"threat": "Sequía", "zones": [{"zone": "Zona Alta", "score": 7}, {"zone": "Zona Media", "score": 10}, {"zone": "Zona Baja", "score": 5}]}, {"threat": "Relleno sanitario", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 0}, {"zone": "Zona Baja", "score": 8}]}, {"threat": "Uso inadecuado de agroquímicos", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 0}, {"zone": "Zona Baja", "score": 7}]}, {"threat": "Lluvias intensas", "zones": [{"zone": "Zona Alta", "score": 6}, {"zone": "Zona Media", "score": 0}, {"zone": "Zona Baja", "score": 0}]}, {"threat": "Heladas", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 6}, {"zone": "Zona Baja", "score": 0}]}, {"threat": "Deforestación", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 6}, {"zone": "Zona Baja", "score": 0}]}, {"threat": "Desbordamiento del río", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 0}, {"zone": "Zona Baja", "score": 6}]}, {"threat": "Contaminación de agua", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 0}, {"zone": "Zona Baja", "score": 6}]}, {"threat": "Quemas", "zones": [{"zone": "Zona Alta", "score": 5}, {"zone": "Zona Media", "score": 0}, {"zone": "Zona Baja", "score": 0}]}, {"threat": "Crecidas torrenciales", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 5}, {"zone": "Zona Baja", "score": 0}]}, {"threat": "Olas de calor", "zones": [{"zone": "Zona Alta", "score": 0}, {"zone": "Zona Media", "score": 0}, {"zone": "Zona Baja", "score": 4}]}], "mdv_threat_impacts": [{"zone": "Zona Baja", "threat": "Contaminación basurero", "type": "no-climática", "livelihood": "Mango y limón, Fréjol, Flor de Jamaica, Aguacate y Limón, Pimiento", "avg": 2.43, "total": 17.0, "scores": {"Económica": 2.0, "Alimentaria": 2.0, "Sanitaria": 3.0, "Ambiental": 3.0, "Personal": 2.0, "Comunitaria": 2.0, "Política": 3.0}, "comment": "Perdida de fuentes de empleo por el mal olor"}, {"zone": "Zona Alta", "threat": "Quema", "type": "no-climática", "livelihood": "Ganadería, Borregos", "avg": 2.0, "total": 14.0, "scores": {"Económica": 3.0, "Alimentaria": 2.0, "Sanitaria": 2.0, "Ambiental": 3.0, "Personal": 1.0, "Comunitaria": 1.0, "Política": 2.0}, "comment": "Aumento insostenible de gastos"}, {"zone": "Zona Alta", "threat": "Sequía", "type": "climática", "livelihood": "Maíz, Trigo y Arveja", "avg": 1.86, "total": 13.0, "scores": {"Económica": 3.0, "Alimentaria": 3.0, "Sanitaria": 1.0, "Ambiental": 2.0, "Personal": 1.0, "Comunitaria": 2.0, "Política": 1.0}, "comment": "Si la sequía es prolongada existe la perdida total de ingresos economicos"}, {"zone": "Zona Media", "threat": "Sequía", "type": "climática", "livelihood": "Aguacate, Limón", "avg": 1.71, "total": 12.0, "scores": {"Económica": 2.0, "Alimentaria": 2.0, "Sanitaria": 1.0, "Ambiental": 3.0, "Personal": 1.0, "Comunitaria": 1.0, "Política": 2.0}, "comment": "Perdida en ingresos economicos por la reduccion de la produccion"}, {"zone": "Zona Baja", "threat": "Desbordamiento de río", "type": "climática", "livelihood": "Pimiento, Flor de Jamaica, Fréjol", "avg": 1.5, "total": 9.0, "scores": {"Económica": 2.0, "Alimentaria": 1.0, "Sanitaria": 1.0, "Ambiental": 2.0, "Personal": null, "Comunitaria": 2.0, "Política": 1.0}, "comment": "El rio se lleva los cultivos y produce perdidas parcial"}, {"zone": "Zona Baja", "threat": "Desbordamiento de río", "type": "climática", "livelihood": "Pimiento, Flor de Jamaica, Fréjol", "avg": 1.5, "total": 9.0, "scores": {"Económica": 2.0, "Alimentaria": 1.0, "Sanitaria": 1.0, "Ambiental": 2.0, "Personal": null, "Comunitaria": 2.0, "Política": 1.0}, "comment": "El rio se lleva los cultivos y produce perdidas economicas"}, {"zone": "Zona Baja", "threat": "Sequía", "type": "climática", "livelihood": "Mango y limón, Fréjol, Flor de Jamaica, Aguacate y Limón, Pimiento", "avg": 1.17, "total": 7.0, "scores": {"Económica": 2.0, "Alimentaria": 1.0, "Sanitaria": 1.0, "Ambiental": 1.0, "Personal": null, "Comunitaria": 1.0, "Política": 1.0}, "comment": "Perdida parcial o prolongada de fuentes de ingreso o empleo"}, {"zone": "Zona Media", "threat": "Cambio de uso de suelo", "type": "no-climática", "livelihood": "Mango", "avg": 1.14, "total": 8.0, "scores": {"Económica": 1.0, "Alimentaria": 1.0, "Sanitaria": 1.0, "Ambiental": 2.0, "Personal": 1.0, "Comunitaria": 1.0, "Política": 1.0}, "comment": "Perdida de los cultivos nativos como el ovo para implementar cultivos de mango"}], "actors": [{"name": "Junta de Agua San Clemente", "type": "Comunitario", "role": "Gestion del agua de riego para los medios de vida como aguacate, Limón, mango, gallinas, Fréjol, pimiento", "conflict_with": "Junta de Agua Pueblo Viejo; Junta de Agua La Yunguilla", "collab_with": "Prefectura de Imbabura", "poder": 3.0, "interes": 7.0, "quad": "Baja-media influencia / alto interés"}, {"name": "Asoprovalle", "type": "ONG", "role": "Produccion y comercializacion de mango y pimiento", "conflict_with": "N/A", "collab_with": "Prefectura de Imbabura; MAG; Agrocalidad", "poder": 7.0, "interes": 4.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "Coop. agrícola Ambuqui", "type": "Privado", "role": "Manejo de productos como Maíz, trigo, arveja, mango, aguacate y Limón; asi tambien se relaciona con los servicios ecosistemicos como provision de alimentos y la prevencion de la erosion y mantenimiento de la fertilidad del suelo", "conflict_with": "N/A", "collab_with": "GAD Parroquial de Ambuqui; Agrocalidad", "poder": 3.0, "interes": 3.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "GAD Parroquial Ambuqui", "type": "Local", "role": "Apoyo a la produccion de aguacate, mango, gallinas, etc", "conflict_with": "N/A", "collab_with": "Coop. agrícola Ambuqui; MAATE; MAG; EMAPA; Junta de Agua La Yunguilla; Prefectura de Imbabura", "poder": 7.0, "interes": 3.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "MAG (Ministerio de Agricultura y Ganadería)", "type": "Gubernamental", "role": "Asesoria tecnica en la produccion de todo tipo de productos agricolas y pecuarios", "conflict_with": "N/A", "collab_with": "Asoprovalle; GAD Parroquial de Ambuqui; Aso. Ambuko; Coop. agrícola La Esperanza; Agrocalidad; Aso. de Tuneros Juncal", "poder": 7.0, "interes": 5.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "Prefectura de Imbabura", "type": "Gubernamental", "role": "Asesoria tecnica en la produccion de todo tipo de productos agricolas y pecuarios, asi tambien, en la conservacion del ambiente.", "conflict_with": "N/A", "collab_with": "Junra de Agua San Clemente; Junta de Agua Pueblo Viejo; Junta de Agua La Yunguilla; Asoprovalle; Aso. Ambuko; Infraestructura hotelera; GAD Parroquial de Ambuqui", "poder": 9.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Infraestructura Hotelera", "type": "Privado", "role": "Fomento del turismo comunitario", "conflict_with": "Aso. Ambuko; EMAPA", "collab_with": "Prefectura de Imabura", "poder": 2.0, "interes": 2.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "EMAPA", "type": "Gubernamental", "role": "Gestion y manejo del agua, relacionado directamente con los servicios ecosistemicos como la provision de agua dulce, alimentos, habitats para las especies y la prevencion de la erosion y mantenimiento de la fertilidad del suelo", "conflict_with": "Infraestructura hotelera", "collab_with": "GAD Parroquial de Ambuqui", "poder": 7.0, "interes": 5.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "MAATE (Ministerio de Ambiente, Agua y Transicion Ecologica)", "type": "Gubernamental", "role": "Gestion y manejo de los servicios ecosistemicos como en la provision de materias primas, agua dulce y los habitats para las especies", "conflict_with": "N/A", "collab_with": "GAD Parroquial de Ambuqui", "poder": 7.0, "interes": 5.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "Aso. Tuneros de Juncal", "type": "Privado", "role": "Se relacionan con los servicios ecosistemicos como la provision de recursos medicinales, materias primas y la moderacion de los desastres naturales", "conflict_with": "N/A", "collab_with": "MAG", "poder": 5.0, "interes": 5.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "Junta de Agua Pueblo Viejo", "type": "Comunitario", "role": "Gestion del agua de riego para la produccion de alimentos, materias primas", "conflict_with": "Junta de Agua San Clemente; Junta de Agua Pueblo Viejo", "collab_with": "Prefectura de Imbabura", "poder": 3.0, "interes": 7.0, "quad": "Baja-media influencia / alto interés"}, {"name": "Junta de Agua La Yunguilla", "type": "Comunitario", "role": "Gestion del agua de riego para los medios de vida como aguacate, Limón, mango, flor de jamaica, Fréjol, pimiento", "conflict_with": "Junta de Agua San Clemente; Junta de Agua La Yunguilla", "collab_with": "Prefectura de Imbabura; GAD Parroquial de Ambuqui", "poder": 7.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Aso. Ambuko", "type": "Comunitario", "role": "Fomento del turismo comunitario seguido con la produccion de ovo", "conflict_with": "Infraestructura hotelera", "collab_with": "Prefectura de Imbabura; GAD Parroquial de Ambuqui", "poder": 8.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}, {"name": "Coop. agrícola La Esperanza", "type": "Privado", "role": "Manejo de productos como mango, flor de jamaica, pimiento, Limón, Fréjol, aguacate, entre otros productos", "conflict_with": "N/A", "collab_with": "Agrocalidad; MAG", "poder": 3.0, "interes": 4.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "Agrocalidad", "type": "Gubernamental", "role": "Manejo y seguimiento en la calidad de los productos agricolas como los ovos, Limón, aguacate, mango, entre otros.", "conflict_with": "N/A", "collab_with": "Coop. agrícola La Esperanza; Coop. agrícola Ambuqui; Asoprovalle; MAG", "poder": 7.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Junta de Agua de Consumo", "type": "Comunitario", "role": "Tienen ingerencia en servicios ecosistemicos como en la provision de alimentos y agua dulce", "conflict_with": "N/A", "collab_with": "Junta de Agua de Consumo Rumipamba; Junta de Agua de Riego Rumipamba; UCIGMA; Junta de Agua de Riego Chaguarpamba; IEDECA", "poder": 8.0, "interes": 10.0, "quad": "Alta influencia / alto interés"}, {"name": "Union Cochapamba", "type": "Comunitario", "role": "Fomento en la produccion agrícola como en el Maíz, trigo, arveja, la cual va relacionado al servicio ecosistemicos en la provision de alimentos", "conflict_with": "N/A", "collab_with": "Prefectura de Imbabura", "poder": 5.0, "interes": 4.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "Junta de Agua de Riego Chaguarpamba", "type": "Comunitario", "role": "Tienen ingerencia en servicios ecosistemicos como en la provision de alimentos y agua dulce, seguido en el fortalecimiento en la produccion de Maíz, trigo, arveja, Ganadería, borregos", "conflict_with": "Prefectura de Imbabura", "collab_with": "IEDECA; Junta de Agua para Consumo", "poder": 8.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Aso. de Productores San Guillermo", "type": "Comunitario", "role": "Fomento en la produccion agrícola como en el Maíz, trigo, arveja y en el manejo del ganado, asi tambien, relacionado a los servicios ecosistemicos de provision de alimentos y el apoyo en la conservacion de habitats para las especies", "conflict_with": "N/A", "collab_with": "Prefectura de Imabura", "poder": 5.0, "interes": 6.0, "quad": "Baja-media influencia / alto interés"}, {"name": "Junta de Agua de Consumo Rumipamba", "type": "Comunitario", "role": "Tienen ingerencia en los servicios ecosistemicos de provision de alimentos y agua dulce", "conflict_with": "N/A", "collab_with": "Junta de Agua de Consumo; Junta de Agua de Riego Rumipamba", "poder": 8.0, "interes": 10.0, "quad": "Alta influencia / alto interés"}, {"name": "Comuna Peñaherrera", "type": "Comunitario", "role": "Tienen ingerencia en el ambito productivo como en cultivos de Maíz, trigo y arveja, asi tambien en los servicios ecosistemicos de regulacion como lo es en la prevension de la erosion y mantenimiento de la fertilidad del suelo", "conflict_with": "N/A", "collab_with": "MAG; GAD Parroquial de Ambuqui", "poder": 8.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}, {"name": "Junta de Agua de Riego Rumipamba", "type": "Comunitario", "role": "Tienen ingerencia en servicios ecosistemicos como en la provision de alimentos y agua dulce", "conflict_with": "Prefectura de Imbabura", "collab_with": "Junta de Agua de Consumo Rumipamba; UCIGMA", "poder": 9.0, "interes": 10.0, "quad": "Alta influencia / alto interés"}, {"name": "UCICMA (Union de Comunidades Indigenas de Mariano Acosta)", "type": "Comunitario", "role": "Tienen ingerencia en el ambito productivo como en cultivos de Maíz, trigo, arveja y en el manejo del ganado borregos y gallinas, asi tambien en los servicios ecosistemicos es la provision de agua.", "conflict_with": "N/A", "collab_with": "Junta de Agua de Riego Rumipamba", "poder": 3.0, "interes": 6.0, "quad": "Baja-media influencia / alto interés"}, {"name": "IEDECA (Instituto de Ecologia y Desarrollo de las Comunidades Andinas)", "type": "ONG", "role": "Ingerencia en el ambito productivo en productos como el Maíz, trigo, arveja y en el manejo de la Ganadería, borregos y gallinas", "conflict_with": "N/A", "collab_with": "Junta de Agua de Consumo Rumipamba; Junta de Agua de Riego Rumipamba; UCIGMA; Junta de Agua de Riego Chaguarpamba", "poder": 8.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}, {"name": "Aso. de Guarango", "type": "Comunitario", "role": "Ingerencia en la proteccion de los servicios ecosistemicos como en la provision de materias primas, prevencion de la erosion y mantenimiento de la fertilidad del suelo, polinización y conservacion de habitats para las especies.", "conflict_with": "N/A", "collab_with": "Prefectura de Imbabura", "poder": 6.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}], "actor_type_count": {"Comunitario": 13, "ONG": 2, "Privado": 4, "Local": 1, "Gubernamental": 5}, "actor_quads": {"Baja-media influencia / alto interés": [{"name": "Junta de Agua San Clemente", "type": "Comunitario", "role": "Gestion del agua de riego para los medios de vida como aguacate, Limón, mango, gallinas, Fréjol, pimiento", "conflict_with": "Junta de Agua Pueblo Viejo; Junta de Agua La Yunguilla", "collab_with": "Prefectura de Imbabura", "poder": 3.0, "interes": 7.0, "quad": "Baja-media influencia / alto interés"}, {"name": "Junta de Agua Pueblo Viejo", "type": "Comunitario", "role": "Gestion del agua de riego para la produccion de alimentos, materias primas", "conflict_with": "Junta de Agua San Clemente; Junta de Agua Pueblo Viejo", "collab_with": "Prefectura de Imbabura", "poder": 3.0, "interes": 7.0, "quad": "Baja-media influencia / alto interés"}, {"name": "Aso. de Productores San Guillermo", "type": "Comunitario", "role": "Fomento en la produccion agrícola como en el Maíz, trigo, arveja y en el manejo del ganado, asi tambien, relacionado a los servicios ecosistemicos de provision de alimentos y el apoyo en la conservacion de habitats para las especies", "conflict_with": "N/A", "collab_with": "Prefectura de Imabura", "poder": 5.0, "interes": 6.0, "quad": "Baja-media influencia / alto interés"}, {"name": "UCICMA (Union de Comunidades Indigenas de Mariano Acosta)", "type": "Comunitario", "role": "Tienen ingerencia en el ambito productivo como en cultivos de Maíz, trigo, arveja y en el manejo del ganado borregos y gallinas, asi tambien en los servicios ecosistemicos es la provision de agua.", "conflict_with": "N/A", "collab_with": "Junta de Agua de Riego Rumipamba", "poder": 3.0, "interes": 6.0, "quad": "Baja-media influencia / alto interés"}], "Alta influencia / bajo-medio interés": [{"name": "Asoprovalle", "type": "ONG", "role": "Produccion y comercializacion de mango y pimiento", "conflict_with": "N/A", "collab_with": "Prefectura de Imbabura; MAG; Agrocalidad", "poder": 7.0, "interes": 4.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "GAD Parroquial Ambuqui", "type": "Local", "role": "Apoyo a la produccion de aguacate, mango, gallinas, etc", "conflict_with": "N/A", "collab_with": "Coop. agrícola Ambuqui; MAATE; MAG; EMAPA; Junta de Agua La Yunguilla; Prefectura de Imbabura", "poder": 7.0, "interes": 3.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "MAG (Ministerio de Agricultura y Ganadería)", "type": "Gubernamental", "role": "Asesoria tecnica en la produccion de todo tipo de productos agricolas y pecuarios", "conflict_with": "N/A", "collab_with": "Asoprovalle; GAD Parroquial de Ambuqui; Aso. Ambuko; Coop. agrícola La Esperanza; Agrocalidad; Aso. de Tuneros Juncal", "poder": 7.0, "interes": 5.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "EMAPA", "type": "Gubernamental", "role": "Gestion y manejo del agua, relacionado directamente con los servicios ecosistemicos como la provision de agua dulce, alimentos, habitats para las especies y la prevencion de la erosion y mantenimiento de la fertilidad del suelo", "conflict_with": "Infraestructura hotelera", "collab_with": "GAD Parroquial de Ambuqui", "poder": 7.0, "interes": 5.0, "quad": "Alta influencia / bajo-medio interés"}, {"name": "MAATE (Ministerio de Ambiente, Agua y Transicion Ecologica)", "type": "Gubernamental", "role": "Gestion y manejo de los servicios ecosistemicos como en la provision de materias primas, agua dulce y los habitats para las especies", "conflict_with": "N/A", "collab_with": "GAD Parroquial de Ambuqui", "poder": 7.0, "interes": 5.0, "quad": "Alta influencia / bajo-medio interés"}], "Baja-media influencia / bajo-medio interés": [{"name": "Coop. agrícola Ambuqui", "type": "Privado", "role": "Manejo de productos como Maíz, trigo, arveja, mango, aguacate y Limón; asi tambien se relaciona con los servicios ecosistemicos como provision de alimentos y la prevencion de la erosion y mantenimiento de la fertilidad del suelo", "conflict_with": "N/A", "collab_with": "GAD Parroquial de Ambuqui; Agrocalidad", "poder": 3.0, "interes": 3.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "Infraestructura Hotelera", "type": "Privado", "role": "Fomento del turismo comunitario", "conflict_with": "Aso. Ambuko; EMAPA", "collab_with": "Prefectura de Imabura", "poder": 2.0, "interes": 2.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "Aso. Tuneros de Juncal", "type": "Privado", "role": "Se relacionan con los servicios ecosistemicos como la provision de recursos medicinales, materias primas y la moderacion de los desastres naturales", "conflict_with": "N/A", "collab_with": "MAG", "poder": 5.0, "interes": 5.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "Coop. agrícola La Esperanza", "type": "Privado", "role": "Manejo de productos como mango, flor de jamaica, pimiento, Limón, Fréjol, aguacate, entre otros productos", "conflict_with": "N/A", "collab_with": "Agrocalidad; MAG", "poder": 3.0, "interes": 4.0, "quad": "Baja-media influencia / bajo-medio interés"}, {"name": "Union Cochapamba", "type": "Comunitario", "role": "Fomento en la produccion agrícola como en el Maíz, trigo, arveja, la cual va relacionado al servicio ecosistemicos en la provision de alimentos", "conflict_with": "N/A", "collab_with": "Prefectura de Imbabura", "poder": 5.0, "interes": 4.0, "quad": "Baja-media influencia / bajo-medio interés"}], "Alta influencia / alto interés": [{"name": "Prefectura de Imbabura", "type": "Gubernamental", "role": "Asesoria tecnica en la produccion de todo tipo de productos agricolas y pecuarios, asi tambien, en la conservacion del ambiente.", "conflict_with": "N/A", "collab_with": "Junra de Agua San Clemente; Junta de Agua Pueblo Viejo; Junta de Agua La Yunguilla; Asoprovalle; Aso. Ambuko; Infraestructura hotelera; GAD Parroquial de Ambuqui", "poder": 9.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Junta de Agua La Yunguilla", "type": "Comunitario", "role": "Gestion del agua de riego para los medios de vida como aguacate, Limón, mango, flor de jamaica, Fréjol, pimiento", "conflict_with": "Junta de Agua San Clemente; Junta de Agua La Yunguilla", "collab_with": "Prefectura de Imbabura; GAD Parroquial de Ambuqui", "poder": 7.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Aso. Ambuko", "type": "Comunitario", "role": "Fomento del turismo comunitario seguido con la produccion de ovo", "conflict_with": "Infraestructura hotelera", "collab_with": "Prefectura de Imbabura; GAD Parroquial de Ambuqui", "poder": 8.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}, {"name": "Agrocalidad", "type": "Gubernamental", "role": "Manejo y seguimiento en la calidad de los productos agricolas como los ovos, Limón, aguacate, mango, entre otros.", "conflict_with": "N/A", "collab_with": "Coop. agrícola La Esperanza; Coop. agrícola Ambuqui; Asoprovalle; MAG", "poder": 7.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Junta de Agua de Consumo", "type": "Comunitario", "role": "Tienen ingerencia en servicios ecosistemicos como en la provision de alimentos y agua dulce", "conflict_with": "N/A", "collab_with": "Junta de Agua de Consumo Rumipamba; Junta de Agua de Riego Rumipamba; UCIGMA; Junta de Agua de Riego Chaguarpamba; IEDECA", "poder": 8.0, "interes": 10.0, "quad": "Alta influencia / alto interés"}, {"name": "Junta de Agua de Riego Chaguarpamba", "type": "Comunitario", "role": "Tienen ingerencia en servicios ecosistemicos como en la provision de alimentos y agua dulce, seguido en el fortalecimiento en la produccion de Maíz, trigo, arveja, Ganadería, borregos", "conflict_with": "Prefectura de Imbabura", "collab_with": "IEDECA; Junta de Agua para Consumo", "poder": 8.0, "interes": 8.0, "quad": "Alta influencia / alto interés"}, {"name": "Junta de Agua de Consumo Rumipamba", "type": "Comunitario", "role": "Tienen ingerencia en los servicios ecosistemicos de provision de alimentos y agua dulce", "conflict_with": "N/A", "collab_with": "Junta de Agua de Consumo; Junta de Agua de Riego Rumipamba", "poder": 8.0, "interes": 10.0, "quad": "Alta influencia / alto interés"}, {"name": "Comuna Peñaherrera", "type": "Comunitario", "role": "Tienen ingerencia en el ambito productivo como en cultivos de Maíz, trigo y arveja, asi tambien en los servicios ecosistemicos de regulacion como lo es en la prevension de la erosion y mantenimiento de la fertilidad del suelo", "conflict_with": "N/A", "collab_with": "MAG; GAD Parroquial de Ambuqui", "poder": 8.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}, {"name": "Junta de Agua de Riego Rumipamba", "type": "Comunitario", "role": "Tienen ingerencia en servicios ecosistemicos como en la provision de alimentos y agua dulce", "conflict_with": "Prefectura de Imbabura", "collab_with": "Junta de Agua de Consumo Rumipamba; UCIGMA", "poder": 9.0, "interes": 10.0, "quad": "Alta influencia / alto interés"}, {"name": "IEDECA (Instituto de Ecologia y Desarrollo de las Comunidades Andinas)", "type": "ONG", "role": "Ingerencia en el ambito productivo en productos como el Maíz, trigo, arveja y en el manejo de la Ganadería, borregos y gallinas", "conflict_with": "N/A", "collab_with": "Junta de Agua de Consumo Rumipamba; Junta de Agua de Riego Rumipamba; UCIGMA; Junta de Agua de Riego Chaguarpamba", "poder": 8.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}, {"name": "Aso. de Guarango", "type": "Comunitario", "role": "Ingerencia en la proteccion de los servicios ecosistemicos como en la provision de materias primas, prevencion de la erosion y mantenimiento de la fertilidad del suelo, polinización y conservacion de habitats para las especies.", "conflict_with": "N/A", "collab_with": "Prefectura de Imbabura", "poder": 6.0, "interes": 7.0, "quad": "Alta influencia / alto interés"}]}, "dialogues": [{"name": "Asoprovalle", "type": "formal", "scope": "Nacional", "actors": "MAG, Prefectura de Imbabura, Agrocalidad", "function": "Compra y venta de mango, cuentan con un centro de acopio", "incidence": "alto", "strengths": "Alta produccion y calidad; mercado seguro; precios estables", "weaknesses": "Desconocimiento del manejo del cultivo; no todos los agricultores tienen acceso, porque no pertenecen a la asociacion"}, {"name": "Comite local de salud", "type": "informal", "scope": "Local", "actors": "GAD Parroquial Ambuqui, Cabildos, EMAPA", "function": "Detectar los problemas relacionados a la salud, ambiente y seguridad", "incidence": "medio", "strengths": "Estan involucrados diferentes actores institucionales; deteccion temprana de problemas de salud", "weaknesses": "No tiene recursos economicos, no hay metodos de exigibilidad, la participacion es voluntaria"}, {"name": "Espacios para priorizar el presupuesto participativo", "type": "informal", "scope": "Local", "actors": "GAD Parroquial de Ambuqui, Prefectura de Imbabura, Municipio de Ibarra, Cabildos comunitarios", "function": "Identificar las obras prioritarias para el territorio", "incidence": "alto", "strengths": "Existen acuerdos con las comunidades, presenta medidas de exigibilidad", "weaknesses": "Existe una limitante en el numero de obras priorizadas son maximo tres, no existe la participacion de toda la poblacion"}, {"name": "Asambleas del Agua", "type": "informal", "scope": "Local", "actors": "Juntas de Agua, representantes de comunidades", "function": "Organizacion de mingas, cobros de tasas del agua, socializacion de proyectos", "incidence": "medio", "strengths": "Cuentan con nivel organizativo y alta participacion", "weaknesses": "Incumplimiento de los pagos, no hay rendimiento de cuentas"}, {"name": "Union de organizacion campesino de Cochapamba", "type": "formal", "scope": "Paisaje", "actors": "Participacion de once comunidades, Prefectura de Imbabura, GAD Parroquial de Ambuqui, MAG, Municipio de Ibarra", "function": "Apoyo en la comercializacion de productos agricolas y pecuarios, mejoramiento de vialidad", "incidence": "medio", "strengths": "Cuenta con la participacion de los representantes de todas la comunidades, cuentan con un respaldo normativo", "weaknesses": "Poca participacion, falta de comunicacion"}, {"name": "Aso. de productores San Guillermo", "type": "formal", "scope": "Local", "actors": "Participacion de las comunidades", "function": "Brindan apoyo para la compra y venta de tierras", "incidence": "bajo", "strengths": "Cuenta con un nivel de organizacion y participacion de las comunidades", "weaknesses": "No cuenta con el apoyo de instituciones"}], "conflict_events": [{"zone": "Zona Media", "code": "C1, C4, C5", "event": "1era. concesión de agua de riego", "year": 1975, "differences": 1, "diff_factor": "Abundancia de agua, presencia de cultivos de ciclo corto", "cooperation": 1, "coop_factor": "Trabajo en conjunto entre la comunidad y el Consejo Provincial de Imbabura", "sum": 2}, {"zone": "Zona Media", "code": "C1, C4, C5", "event": "Concesión de agua para consumo humano", "year": 1980, "differences": 1, "diff_factor": "Unión de la población por necesidad", "cooperation": 1, "coop_factor": "Unión de la población por necesidad", "sum": 2}, {"zone": "Zona Media", "code": "C1, C4, C5", "event": "Conflicto en el páramo por contaminación por el pisoteo del ganado y conflicto por distribución del agua de riego.", "year": 2000, "differences": -1, "diff_factor": "Daño fuentes hídricas por contaminación y deforestación", "cooperation": 1, "coop_factor": "Incursión de instituciones gubernamentales y no gubernamentales", "sum": 0}, {"zone": "Zona Media", "code": "C1, C4, C5", "event": "Creación de juntas de agua / Construcción de tanques de reserva de agua para consumo humano y construcción de canales con revestimiento para agua de riego.", "year": 2004, "differences": 0, "diff_factor": "Pugna en la adminstración entre instituciones públicas y comunitarias", "cooperation": 1, "coop_factor": "Participación de mingas comunitarias con apoyo de ONGs", "sum": 1}, {"zone": "Zona Media", "code": "C1, C4, C5", "event": "Mingas de reforestación / Iniciativas de riego tecnificado", "year": 2009, "differences": 0, "diff_factor": "Costos altos de los insumos para riego tecnificado", "cooperation": 1, "coop_factor": "Cooperación entre comunidades, GAD parroquial, MAATE, prefectura", "sum": 1}, {"zone": "Zona Alta", "code": "C1, C3", "event": "Organizacion de la regional para la gestion del agua", "year": 2014, "differences": 1, "diff_factor": "No se presentaron diferencias todos participaron", "cooperation": 1, "coop_factor": "Necesidad de agua", "sum": 2}, {"zone": "Zona Baja", "code": "C3, C6", "event": "Paralizacion de actividades debido a la inconformidad en la construcción del botadero de basura", "year": 2016, "differences": 1, "diff_factor": "Poca seriedad de las autoridades", "cooperation": 1, "coop_factor": "Firma de acuerdos compromiso", "sum": 2}, {"zone": "Zona Alta", "code": "C1, C3", "event": "USAID y MIES fortalecieron los sistemas de agua con el apoyo de recursos", "year": 2017, "differences": 1, "diff_factor": "No se presentaron diferencias todos participaron", "cooperation": 1, "coop_factor": "Apoyo con accesorios para la implementacion de sistemas de riego", "sum": 2}, {"zone": "Zona Alta", "code": "C1, C3", "event": "Union de comunidades de la parte alta para la proteccion del paramo", "year": 2018, "differences": 1, "diff_factor": "Union de comunidades", "cooperation": 1, "coop_factor": "Proteccion del paramo", "sum": 2}, {"zone": "Zona Alta", "code": "C1, C3", "event": "Rancho Chico impide entrar al paramo", "year": 2020, "differences": -1, "diff_factor": "Conflicto de intereses por la administracion del paramo", "cooperation": 0, "coop_factor": "Se da por terminado la organizacion de la regional debido a que no querian que la gente ingrese al paramo", "sum": -1}, {"zone": "Zona Media", "code": "C1, C4, C5", "event": "En la administración del agua se separa Ambuqui y San Clemente por temas de distribución del agua.", "year": 2020, "differences": -1, "diff_factor": "Conflictos entre directivas de juntas de agua", "cooperation": -1, "coop_factor": "Intereses personales", "sum": -2}, {"zone": "Zona Baja", "code": "C3, C6", "event": "Paralización de la comunidad para retirar el botadero de basura de San Alfonso", "year": 2022, "differences": 1, "diff_factor": "Falta de cumplimiento de autoridades", "cooperation": 1, "coop_factor": "Firma de acuerdos compromiso", "sum": 2}, {"zone": "Zona Media", "code": "C1, C4, C5", "event": "Falta de agua para consumo humano por daños en los tanques de reserva y aumento de la población lo que produce desabastecimiento de agua.", "year": 2025, "differences": -1, "diff_factor": "Falta de mantenimiento de infraestructura y falta de pago por el servicio.", "cooperation": -1, "coop_factor": "Falta de gestión del GAD parroquial.", "sum": -2}], "conflict_codes": {"C1": 11, "C4": 7, "C5": 7, "C3": 6, "C6": 2}, "conflict_actors": [{"code": "C5", "actor": "EMAPA", "impact_actor": "negativo", "actor_factor": "Existe problemas de abastecimiento en cuanto al agua de consumo, la poblacion tiene que comprar el agua en botellones, no hay comunicion oportuna a la poblacion", "impact_conflict": "neutro", "conflict_factor": "Implica la movilizacion de mas recursos economicos para mitigar amenazas como la sequía"}, {"code": "C4", "actor": "GAD Parroquial de Ambuqui", "impact_actor": "negativo", "actor_factor": "Presion social por necesidades incumplidas por falta de recursos economicos", "impact_conflict": "negativo", "conflict_factor": "Falta de gestion para la obtencion de mas recursos mediante la generacion de alianzas con otras instituciones."}, {"code": "C1", "actor": "MAATE", "impact_actor": "negativo", "actor_factor": "Se generan conflictos por temas en permisos para el aprovechamiento de los recursos naturales", "impact_conflict": "positivo", "conflict_factor": "Regula y controla el aprovechamiento de los recursos hidricos, seguido de campañas de conservacion de bosques y reforestacion"}, {"code": "C4", "actor": "Prefectura de Imbabura", "impact_actor": "negativo", "actor_factor": "Presion social por necesidades incumplidas por falta de recursos economicos", "impact_conflict": "neutro", "conflict_factor": "Ayudan con tanqueros para agua de riego, apoyan con maquinaria para la limpieza de acequias"}, {"code": "C1", "actor": "Juntas de Agua", "impact_actor": "negativo", "actor_factor": "Reduccion de los caudales del agua de riego los cuales ocasionan problemas en la distribucion", "impact_conflict": "positivo", "conflict_factor": "Mejoramiento de la infraestructura de distribucion del agua mediante mingas"}, {"code": "C4", "actor": "Bomberos", "impact_actor": "negativo", "actor_factor": "mediante la presencia de incendios forestales se necesita el uso de mas recursos economicos que no cuenta la institucion", "impact_conflict": "positivo", "conflict_factor": "Abastecen de agua para el consumo diario en epoca de sequía y contribuyen a sofocar los incendios forestales."}, {"code": "C5", "actor": "MAG", "impact_actor": "negativo", "actor_factor": "Existe mayor riesgo de incumplimiento por las aseguradoras a los productores por la mayor presencia de riesgos climaticos", "impact_conflict": "neutro", "conflict_factor": "Asegura los cultivos de ciclo corto bajo contribucion economica por parte del propietario"}, {"code": "C1", "actor": "Comunas", "impact_actor": "negativo", "actor_factor": "Reduccion de las areas boscosas y paramos las cuales afectan a la provision de agua a las comunidades", "impact_conflict": "positivo", "conflict_factor": "Union de las comunidades por medio de convocatorias para enfrentar alguna problematica"}], "capacity": {"sample": 14, "zone_counts": {"Zona Alta": 4, "Zona Baja": 5, "Zona Media": 5}, "zone_scores": {"Zona Alta": 40.4, "Zona Media": 44.3, "Zona Baja": 39.7}, "top_strengths": [{"num": 14, "question": "tiene acceso a la electricidad?", "avg": 78.6, "n": 14}, {"num": 16, "question": "envía a los niños a finalizar la enseñanza primaria?", "avg": 74.3, "n": 14}, {"num": 18, "question": "tiene a todas las personas mayores de 15 años que saben leer y escribir?", "avg": 72.9, "n": 14}, {"num": 17, "question": "envía a los jóvenes a terminar la enseñanza secundaria?", "avg": 68.6, "n": 14}, {"num": 28, "question": "puede transitar libremente sin problemas de seguridad?", "avg": 64.3, "n": 14}, {"num": 30, "question": "las mujeres pueden transitar libremente sin problemas de seguridad?", "avg": 61.4, "n": 14}, {"num": 49, "question": "vende sus productos a través de un intermediario?", "avg": 60.0, "n": 14}, {"num": 11, "question": "tiene acceso a agua limpia y potable durante todo el año?", "avg": 60.0, "n": 14}], "top_gaps": [{"num": 47, "question": "dispone de sus propios medios de transporte para comercializar sus productos?", "avg": 15.7, "n": 14}, {"num": 55, "question": "recibe información climática para su sistema productivo?", "avg": 16.0, "n": 10}, {"num": 57, "question": "De las familias que reciben información agroclimática y/o de mercados, ¿cuántas pueden implementar las recomendaciones?", "avg": 16.2, "n": 13}, {"num": 45, "question": "dispone de instalaciones o infraestructuras para almacenar productos (por ejemplo, centros de acopio)?", "avg": 17.3, "n": 11}, {"num": 4, "question": "tiene jóvenes 15–24 años empleados con remuneración en este sistema productivo?", "avg": 20.0, "n": 12}, {"num": 34, "question": "son familias las que migraron a este paisaje desde el extranjero o desde otras partes del país?", "avg": 20.0, "n": 14}, {"num": 44, "question": "tiene acceso a seguros para la producción?", "avg": 22.0, "n": 10}, {"num": 32, "question": "tiene algún miembro del núcleo familiar (padres-hijos) qué ha migrado fuera del país?", "avg": 23.3, "n": 12}], "questions_count": 62}, "sheets_table": [{"sheet": "3.1. Lluvia MdV&SE", "records": 124}, {"sheet": "3.2. Priorización", "records": 18}, {"sheet": "3.3. Car_A", "records": 48}, {"sheet": "3.3. Car_B", "records": 45}, {"sheet": "3.3. Car_C", "records": 58}, {"sheet": "3.3. Car_D", "records": 133}, {"sheet": "3.4. Ecosistemas", "records": 6}, {"sheet": "3.5. SE y MdV", "records": 30}, {"sheet": "4.1. Amenazas", "records": 13}, {"sheet": "4.2.1. Amenazas_MdV", "records": 16}, {"sheet": "4.2.2. Amenazas_SE", "records": 16}, {"sheet": "5.1. Actores", "records": 25}, {"sheet": "5.2. Diálogo", "records": 6}, {"sheet": "6.1. Evolución_conflict", "records": 13}, {"sheet": "6.2. Actores_conflict", "records": 8}, {"sheet": "7.1. Encuesta CA", "records": 14}], "quality_notes": ["El nombre de la organización no aparece como campo dentro de las hojas; se usa TIERRAVIVA porque está en el nombre del archivo cargado.", "La base contiene filas vacías con fórmulas o valores cero en algunas hojas; fueron excluidas cuando no tenían el campo clave de la sección.", "Los servicios ecosistémicos aparecen principalmente como códigos (por ejemplo P1, P3, R5). Cuando no hubo una descripción directa en 3.5, se mantuvo el código y se señaló la limitación.", "Los códigos de conflicto (C1, C3, C4, C5, C6) no incluyen un diccionario de nombres en la base; se presentan junto a los eventos y factores descritos.", "La encuesta de capacidad adaptativa tiene 14 respuestas. Los rangos 0-20, 20-40, etc. se representaron con su punto medio para resumir señales, no como mediciones exactas.", "Hay variaciones de escritura en algunos términos: Maiz/Maíz, Limon/Limón, Agucate/Aguacate, Bosque espinozo/Bosque espinoso. Se aplicó normalización visual mínima para lectura, sin cambiar el significado.", "No se usaron coordenadas ni límites geográficos exactos; la sección territorial es esquemática y no cartográfica."]};
+    let currentZone = "Todas";
+
+    function esc(value){
+      return String(value ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+    function zoneClass(zone){
+      if(zone === "Zona Alta") return "zone-alta";
+      if(zone === "Zona Media") return "zone-media";
+      if(zone === "Zona Baja") return "zone-baja";
+      return "zone-media";
+    }
+    function intensityColor(value, max=10, palette="primary"){
+      const v = Math.max(0, Math.min(1, (Number(value)||0)/max));
+      if(palette==="regional") return `rgba(183,19,115,${0.12 + v*.76})`;
+      if(palette==="purple") return `rgba(117,24,81,${0.12 + v*.76})`;
+      return `rgba(0,158,226,${0.12 + v*.76})`;
+    }
+    function scoreText(v){ return (v===null || v===undefined || v==="") ? "s/d" : v; }
+    function renderHeadlines(){
+      const el=document.getElementById("headlineGrid");
+      el.innerHTML = DATA.headlines.map(h=>`
+        <article class="headline">
+          <div class="label">${esc(h.label)}</div>
+          <div class="value">${esc(h.value)}</div>
+          <div class="detail">${esc(h.detail)}</div>
+        </article>`).join("");
+    }
+    function renderZones(){
+      const zoneSummaries = {
+        "Zona Alta":"Páramo, bosque montano y matorral interandino. Sistemas priorizados: maíz, trigo, gallinas, arveja, ganadería y borregos.",
+        "Zona Media":"Bosque espinoso. Sistemas priorizados: gallinas, aguacate, turismo comunitario, mango, limón y ovo.",
+        "Zona Baja":"Riberas del río y bosque espinoso. Sistemas priorizados: mango-limón, fréjol, jamaica, pimiento y turismo-artesanías."
+      };
+      const countsByZone = {};
+      DATA.livelihood_cards.forEach(d=>{countsByZone[d.zone]=(countsByZone[d.zone]||0)+1});
+      document.getElementById("zoneStack").innerHTML = DATA.meta.zones.map(z=>`
+        <article class="zone-band ${zoneClass(z)} filterable" data-zone="${esc(z)}">
+          <div>
+            <h3>${esc(z)}</h3>
+            <p>${esc(zoneSummaries[z] || "Zona registrada en la base.")}</p>
+          </div>
+          <span class="chip">${countsByZone[z] || 0} medios priorizados</span>
+        </article>
+      `).join("");
+    }
+    function renderUniverse(){
+      document.getElementById("universeGrid").innerHTML = DATA.data_universe.map(u=>`
+        <article class="panel universe-card">
+          <div><h3>${esc(u.theme)}</h3><div class="chips">${u.sheets.map(s=>`<span class="chip sky">${esc(s)}</span>`).join("")}</div></div>
+          <div><div class="big">${esc(u.count)}</div><span class="chip regional">${esc(u.quality)}</span></div>
+        </article>`).join("");
+    }
+    function renderLivelihoods(){
+      const cards = DATA.livelihood_cards.map(d=>{
+        const criteria = Object.entries(d.criteria || {}).map(([k,v])=>`
+          <div class="mini-bar"><span>${esc(k)}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="--v:${Number(v)||0}"></div></div><b>${esc(v)}</b></div>`).join("");
+        const threats = (d.threats||[]).length ? (d.threats||[]).map(t=>`<span class="chip regional">${esc(t.threat)} · ${esc(t.avg)}</span>`).join("") : `<span class="chip">Sin relación directa registrada en 4.2.1</span>`;
+        const markets = d.markets && Object.keys(d.markets).length ? Object.keys(d.markets).map(m=>`<span class="chip sky">${esc(m)}</span>`).join("") : `<span class="chip">Mercado no especificado</span>`;
+        return `<article class="livelihood-card filterable expandable" data-zone="${esc(d.zone)}" tabindex="0">
+          <div class="card-title-row">
+            <div><h3>${esc(d.name)}</h3><span class="chip dark">${esc(d.zone)}</span></div>
+            <div class="score-orb" style="--score:${(Number(d.score)||0)/15*100}"><span>${esc(d.score)}</span></div>
+          </div>
+          <p style="color:var(--muted);margin:.7rem 0 0">${esc(d.product)}</p>
+          <div class="criteria-bars">${criteria}</div>
+          <div class="reveal">
+            <div class="chips"><span class="chip dark">Mercados</span>${markets}</div>
+            <div class="chips"><span class="chip dark">Amenazas relacionadas</span>${threats}</div>
+            ${d.system ? `<p style="font-size:.88rem;color:var(--muted)"><strong>Sistema:</strong> ${esc(d.system)}</p>` : ``}
+          </div>
+          <p class="click-note">Clic para ampliar</p>
+        </article>`;
+      }).join("");
+      document.getElementById("livelihoodGrid").innerHTML=cards;
+    }
+    function renderEcosystems(){
+      document.getElementById("ecosystemGrid").innerHTML = DATA.ecosystems.map(e=>`
+        <article class="ecosystem-card filterable expandable" data-zone="${esc(e.zone)}" tabindex="0">
+          <div class="card-title-row">
+            <div><h3>${esc(e.ecosystem)}</h3><span class="chip dark">${esc(e.zone)}</span> <span class="chip">${esc(e.code)}</span></div>
+            <div class="score-orb" style="--score:${(Number(e.service_count)||0)/15*100}"><span>${esc(e.service_count)}</span></div>
+          </div>
+          <p style="color:var(--muted);margin:.7rem 0 0"><strong>Medios relacionados:</strong> ${esc(e.mdv)}</p>
+          <div class="services">${(e.services||[]).map(s=>`<span class="service-pill">${esc(s)}</span>`).join("")}</div>
+          <div class="reveal"><p style="color:var(--muted)"><strong>Causas de degradación reportadas:</strong> ${esc(e.degradation)}</p><p style="color:var(--muted)"><strong>Salud ecosistémica registrada:</strong> ${esc(e.health)}</p></div>
+          <p class="click-note">Clic para ver causas de degradación</p>
+        </article>`).join("");
+    }
+    function renderThreats(){
+      document.getElementById("threatGrid").innerHTML = DATA.threats.map(t=>`
+        <article class="threat-card ${esc(t.type)} filterable" data-zone="${esc(t.zone)}">
+          <div class="card-title-row">
+            <div><h3>${esc(t.threat)}</h3><span class="chip ${t.type==='climática'?'sky':'regional'}">${esc(t.type)}</span> <span class="chip dark">${esc(t.zone)}</span></div>
+            <div class="threat-score">${esc(t.score)}</div>
+          </div>
+          <div class="criteria-bars">
+            <div class="mini-bar"><span>Magnitud</span><div class="mini-bar-track"><div class="mini-bar-fill" style="--v:${(Number(t.magnitude)||0)/5*3}"></div></div><b>${esc(t.magnitude)}</b></div>
+            <div class="mini-bar"><span>Frecuencia</span><div class="mini-bar-track"><div class="mini-bar-fill" style="--v:${(Number(t.frequency)||0)/3*3}"></div></div><b>${esc(t.frequency)}</b></div>
+            <div class="mini-bar"><span>Tendencia</span><div class="mini-bar-track"><div class="mini-bar-fill" style="--v:${Math.max(0,Number(t.trend)||0)/2*3}"></div></div><b>${esc(t.trend)}</b></div>
+          </div>
+          <p style="color:var(--muted);font-size:.88rem"><strong>Sitios afectados:</strong> ${esc(t.sites || "No especificado")}</p>
+        </article>`).join("");
+    }
+    function renderThreatZoneMatrix(){
+      const header = `<div class="heat-row"><div></div>${DATA.meta.zones.map(z=>`<div class="heat-label" style="text-align:center">${esc(z)}</div>`).join("")}</div>`;
+      const rows = DATA.threat_zone_rows.map(r=>`
+        <div class="heat-row">
+          <div class="heat-label">${esc(r.threat)}</div>
+          ${r.zones.map(z=>`<div class="heat-cell ${z.score===0?'zero':''}" style="background:${z.score===0?'#eef2f9':intensityColor(z.score,10,z.zone==='Zona Baja'?'regional':'primary')}" title="${esc(r.threat)} · ${esc(z.zone)} · puntaje ${esc(z.score)}">${esc(z.score || "—")}</div>`).join("")}
+        </div>`).join("");
+      document.getElementById("threatZoneMatrix").innerHTML=header+rows;
+    }
+    function renderEcoServiceMatrix(){
+      const head = `<thead><tr><th>Ecosistema</th>${DATA.service_codes.map(c=>`<th title="${esc(DATA.service_labels[c])}">${esc(DATA.service_labels[c])}</th>`).join("")}</tr></thead>`;
+      const body = `<tbody>${DATA.eco_service_matrix.map(r=>`
+        <tr class="filterable" data-zone="${esc(r.zone)}"><td>${esc(r.ecosystem)}<br><span class="chip">${esc(r.zone)}</span></td>${r.cells.map(c=>`<td title="${esc(c.label)}">${c.value?'<span class="dot-cell present">✓</span>':'<span class="dot-cell">—</span>'}</td>`).join("")}</tr>`).join("")}</tbody>`;
+      document.getElementById("ecoServiceMatrix").innerHTML=head+body;
+    }
+    function renderImpacts(){
+      document.getElementById("impactGrid").innerHTML = DATA.mdv_threat_impacts.map(d=>{
+        const scoreTiles = Object.entries(d.scores || {}).map(([k,v])=>`<div class="impact-tile" style="background:${v?intensityColor(v,3, d.type==='climática'?'primary':'regional'):'#e8edf7'};color:${v?'#fff':'#5b6685'}" title="${esc(k)}">${esc(v ?? "—")}</div>`).join("");
+        return `<article class="impact-card filterable" data-zone="${esc(d.zone)}">
+          <div class="card-title-row"><div><strong>${esc(d.threat)}</strong><br><span class="chip dark">${esc(d.zone)}</span> <span class="chip">${esc(d.type)}</span></div><div class="threat-score" style="font-size:2.3rem">${esc(d.avg)}</div></div>
+          <p style="color:var(--muted)"><strong>Medio(s) de vida:</strong> ${esc(d.livelihood)}</p>
+          <div class="impact-scale">${scoreTiles}</div>
+          <p style="font-size:.84rem;color:var(--muted)">${esc(d.comment)}</p>
+        </article>`;
+      }).join("");
+    }
+    function renderCapacity(){
+      document.getElementById("capacityZones").innerHTML = Object.entries(DATA.capacity.zone_scores).map(([zone,avg])=>`
+        <article class="capacity-card panel filterable" data-zone="${esc(zone)}">
+          <span class="chip dark">${esc(zone)}</span>
+          <div class="avg">${esc(avg)}%</div>
+          <p style="color:var(--muted)">Promedio exploratorio de respuestas válidas. n=${esc(DATA.capacity.zone_counts[zone] || 0)}</p>
+        </article>`).join("");
+      const qItem = q=>`<div class="q-item"><div class="q-score">${esc(q.avg)}%</div><div><strong>P${esc(q.num)}</strong> · ${esc(q.question)}<br><span class="chip">n=${esc(q.n)}</span></div></div>`;
+      document.getElementById("capacityStrengths").innerHTML = DATA.capacity.top_strengths.map(qItem).join("");
+      document.getElementById("capacityGaps").innerHTML = DATA.capacity.top_gaps.map(qItem).join("");
+    }
+    function renderActors(){
+      const order=["Alta influencia / alto interés","Alta influencia / bajo-medio interés","Baja-media influencia / alto interés","Baja-media influencia / bajo-medio interés"];
+      document.getElementById("actorQuadrants").innerHTML = order.map(q=>{
+        const list = DATA.actor_quads[q] || [];
+        return `<article class="quadrant"><h3>${esc(q)}</h3>${list.map(a=>`<span class="actor-chip" title="${esc(a.role)} · Poder ${esc(a.poder)} · Interés ${esc(a.interes)}">${esc(a.name)}</span>`).join("") || '<p>Sin actores en este cuadrante.</p>'}</article>`;
+      }).join("");
+    }
+    function renderDialogues(){
+      document.getElementById("dialogueGrid").innerHTML = DATA.dialogues.map(d=>`
+        <article class="dialogue-card">
+          <h3>${esc(d.name)}</h3>
+          <div class="chips"><span class="chip dark">${esc(d.type)}</span><span class="chip sky">${esc(d.scope)}</span><span class="chip regional">Incidencia ${esc(d.incidence)}</span></div>
+          <p style="color:var(--muted)">${esc(d.function)}</p>
+          <details><summary>Fortalezas y debilidades</summary><p><strong>Fortalezas:</strong> ${esc(d.strengths)}</p><p><strong>Debilidades:</strong> ${esc(d.weaknesses)}</p><p><strong>Actores:</strong> ${esc(d.actors)}</p></details>
+        </article>`).join("");
+    }
+    function renderConflicts(){
+      document.getElementById("conflictTimeline").innerHTML = DATA.conflict_events.map(e=>{
+        const cls = e.sum>0 ? "positive" : e.sum<0 ? "" : "neutral";
+        return `<article class="timeline-item ${cls} filterable" data-zone="${esc(e.zone)}">
+          <div class="timeline-year">${esc(e.year)}</div>
+          <h3 style="color:var(--neutral);font-size:1.2rem;margin:.3rem 0">${esc(e.event)}</h3>
+          <div class="chips"><span class="chip dark">${esc(e.zone)}</span><span class="chip">Código ${esc(e.code)}</span><span class="chip ${e.sum>0?'sky':e.sum<0?'regional':''}">Balance ${esc(e.sum)}</span></div>
+          <p style="font-size:.88rem;color:var(--muted)"><strong>Diferencias:</strong> ${esc(e.diff_factor)}<br><strong>Cooperación:</strong> ${esc(e.coop_factor)}</p>
+        </article>`;
+      }).join("");
+      document.getElementById("conflictActorList").innerHTML = DATA.conflict_actors.map(a=>`
+        <div class="q-item"><div class="q-score">${esc(a.code)}</div><div><strong>${esc(a.actor)}</strong><br><span class="chip regional">Actor: ${esc(a.impact_actor)}</span> <span class="chip sky">Conflicto: ${esc(a.impact_conflict)}</span><p style="margin:.45rem 0 0;color:var(--muted)">${esc(a.conflict_factor)}</p></div></div>`).join("");
+    }
+    function renderQuality(){
+      document.getElementById("sheetList").innerHTML = DATA.sheets_table.map(s=>`<li><strong>${esc(s.sheet)}</strong>: ${esc(s.records)} registros útiles</li>`).join("");
+      document.getElementById("qualityList").innerHTML = DATA.quality_notes.map(n=>`<li>${esc(n)}</li>`).join("");
+    }
+    function setupInteractions(){
+      document.querySelectorAll(".zone-btn").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          currentZone = btn.dataset.zone;
+          document.querySelectorAll(".zone-btn").forEach(b=>b.classList.remove("active"));
+          btn.classList.add("active");
+          applyZoneFilter();
+        });
+      });
+      document.querySelectorAll(".tab-btn").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+          document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.tab).classList.add("active");
+          applyZoneFilter();
+        });
+      });
+      document.addEventListener("click", e=>{
+        const card=e.target.closest(".expandable");
+        if(card){ card.classList.toggle("expanded"); }
+      });
+      document.addEventListener("keydown", e=>{
+        if((e.key==="Enter" || e.key===" ") && e.target.classList.contains("expandable")){
+          e.preventDefault(); e.target.classList.toggle("expanded");
+        }
+      });
+    }
+    function applyZoneFilter(){
+      document.querySelectorAll(".filterable").forEach(el=>{
+        const z=el.getAttribute("data-zone") || "";
+        const show = currentZone==="Todas" || z.includes(currentZone);
+        el.classList.toggle("hidden", !show);
+      });
+    }
+    function init(){
+      renderHeadlines();renderZones();renderUniverse();renderLivelihoods();renderEcosystems();renderThreats();
+      renderThreatZoneMatrix();renderEcoServiceMatrix();renderImpacts();renderCapacity();renderActors();renderDialogues();renderConflicts();renderQuality();
+      setupInteractions();applyZoneFilter();
+    }
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
