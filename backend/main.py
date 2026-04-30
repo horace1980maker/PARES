@@ -1101,12 +1101,15 @@ def get_report(org_folder: str):
     try:
         import glob
         
+        # Ensure we're using the correct folder name if the org name was passed
+        actual_folder = ORG_NAME_TO_FOLDER.get(org_folder, org_folder)
+        
         # Build path to REPORTE directory
         reporte_dir = os.path.join(
             os.path.dirname(__file__),
             'documents',
             'orgs',
-            org_folder,
+            actual_folder,
             'REPORTE'
         )
         

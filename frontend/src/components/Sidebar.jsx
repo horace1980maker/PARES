@@ -6,7 +6,7 @@ import { openOrgReport } from '../exportUtils';
 const ORG_NAME_TO_FOLDER = {
     "Corporación Biocomercio": "Corporación Biocomercio",
     "Tierra Viva": "TIERRA VIVA",
-    "Corporación Toisán": "Corporación Toisán",
+    "Corporación Toisán": "TOISAN",
     "CECROPIA": "CECROPIA",
     "FONCET": "FONCET",
     "Fundación PUCA": "Fundación PUCA",
