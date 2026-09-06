@@ -70,8 +70,8 @@ const MapComponent = ({ onCountrySelect, selectedCountry, markers = [] }) => {
         <div className="h-full w-full rounded-xl overflow-hidden shadow-lg border border-nature-200 relative">
             <MapContainer center={[14, -88]} zoom={5} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    url={`https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(config.CARTO_API_KEY)}`}
                 />
                 {geoJsonData && (
                     <GeoJSON
