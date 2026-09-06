@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from 'react-leaflet';
 import { useTranslation } from 'react-i18next';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import config from '../config';
 
 // Fix for default marker icon in Leaflet with React
 // Note: In Vite/Webpack, sometimes image paths need specific handling, 
