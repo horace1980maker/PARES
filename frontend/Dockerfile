@@ -8,11 +8,9 @@ RUN npm ci
 
 COPY . .
 
-# Inyectar variables de entorno durante el build
+# Inyectar variable de entorno durante el build
 ARG VITE_API_URL
-ARG VITE_CARTO_API_KEY
 ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_CARTO_API_KEY=$VITE_CARTO_API_KEY
 
 RUN npm run build
 
